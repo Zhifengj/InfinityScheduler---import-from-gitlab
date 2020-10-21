@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30517.126
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Infinity-Scheduler", "Infinity-Scheduler\Infinity-Scheduler.njsproj", "{9920175A-041F-489C-B1E5-B5BA0CB89DD1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9920175A-041F-489C-B1E5-B5BA0CB89DD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9920175A-041F-489C-B1E5-B5BA0CB89DD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9920175A-041F-489C-B1E5-B5BA0CB89DD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9920175A-041F-489C-B1E5-B5BA0CB89DD1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7F459BD4-AC10-4830-AF63-42504C964687}
+	EndGlobalSection
+EndGlobal
