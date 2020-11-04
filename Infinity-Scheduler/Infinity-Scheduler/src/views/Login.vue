@@ -6,11 +6,11 @@
             <p>Username</p>
             <input type="text" id="uname" v-model="uname">
             <p>Password</p>
-            <input type="text" id="pword" v-model="pword">
+            <input type="password" id="pword" v-model="pword">
             <p></p>
             <button v-on:click="tryLogin">Log In</button>
         </form>
-       
+      
     </div>   
   </div>
 </template>
@@ -22,16 +22,20 @@
         name: 'login',
         data(){
             return {
-
+                //attributes for the vue go here (local)
                 uname: "",
                 pword: ""
             }
         },
         methods: {
-            tryLogin(){
-                alert("hello!")
+            //local methods go here
+            tryLogin() {
+                alert(`dologin for ${this.uname}, ${this.pword}`)
+                
             }
+            
         }
+        
         
     }
 </script>

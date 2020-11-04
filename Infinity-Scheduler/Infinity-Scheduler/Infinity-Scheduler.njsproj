@@ -37,6 +37,9 @@
     <Content Include="src\router\index.js">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="src\store\index.js">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="src\views\About.vue" />
     <Content Include="src\views\Login.vue" />
   </ItemGroup>
@@ -45,6 +48,7 @@
     <Folder Include="public\" />
     <Folder Include="src\" />
     <Folder Include="src\assets\" />
+    <Folder Include="src\store\" />
     <Folder Include="src\router\" />
     <Folder Include="src\views\" />
   </ItemGroup>
