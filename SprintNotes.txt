@@ -1,0 +1,11 @@
+Sprint 1 Start: 11/1/2020
+-Everyone set up repository on local machine
+-Kennedy assigned to work on AI Spike task
+-Jason assigned to work on Database Backend task
+-Ben asssigned to work on Front End task
+-Youli assigned to work on natural language spike task
+
+Sprint 1 Update 1: 11/3/2020
+-Went over what each member of the team is currently working one with the project partner
+-Project partner wanted to reiterate on what the deliverables were for the research spikes
+-Project partner requested database schema and data structure layout be made for the project, both were added as tasks for sprint 1.
