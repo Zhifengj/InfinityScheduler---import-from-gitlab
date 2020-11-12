@@ -1,6 +1,6 @@
 How to run the python file:
 
-1: Download python 3.8 with 32bits
+1: Download Python 3.8 with 32bits
 
 2: Install pip
 
