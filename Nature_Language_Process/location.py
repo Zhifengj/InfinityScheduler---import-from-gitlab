@@ -1,6 +1,11 @@
 import nltk
 from nltk.tokenize import sent_tokenize, word_tokenize
-from nltk.corpus import stopwords, state_union, wordnet
+from nltk.corpus import stopwords
+
+# sent_tokenize: split sentences
+# word_tokenize: split words
+# stopword: delete unuseful words like "a, in"
+
 
 example_text = input("Enter text:")
 stop_words = set(stopwords.words("english"))
