@@ -7,4 +7,5 @@ Run the python file
 3: Download NLTK
 
 4: Here is a video might help you to setup these software:
-   https://www.youtube.com/watch?v=FLZvOKSCkxY&list=PLQVvvaa0QuDf2JswnfiGkliBInZnIC4HL&index=1
+
+https://www.youtube.com/watch?v=FLZvOKSCkxY&list=PLQVvvaa0QuDf2JswnfiGkliBInZnIC4HL&index=1
