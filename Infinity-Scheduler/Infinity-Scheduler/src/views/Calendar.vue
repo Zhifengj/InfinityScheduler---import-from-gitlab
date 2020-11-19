@@ -15,6 +15,7 @@
                   :useCreationPopup="useCreationPopup"
                   :useDetailPopup="useDetailPopup"
                   @beforeCreateSchedule="onBeforeCreateSchedule"
+                  ref="calref"
              />
     </div>
 </template>
@@ -34,14 +35,14 @@
         name: 'calendar',
         data(){
             return {
-                events: this.$store.events,
-                view: this.$store.calView,
-                taskView: true,
+                events: this.$store.state.events,
+                view: this.$store.state.calView,
+                taskView: false,
                 scheduleView: ['time'],
-                theme: this.$store.theme,
-                weekOptions: this.$store.weekOptions,
-                monthOptions: this.$store.monthOptions,
-                timeZoneOptions: this.$store.timeZoneOptions,
+                theme: this.$store.state.theme,
+                weekOptions: this.$store.state.weekOptions,
+                monthOptions: this.$store.state.monthOptions,
+                timeZoneOptions: this.$store.state.timeZoneOptions,
                 disableDblClick: false,
                 isReadOnly: false,
                 template: {
@@ -60,6 +61,7 @@
         methods: {
             onBeforeCreateSchedule(e) {
                 this.$store.commit("addEvent", e)
+                //this.$refs.calref.invoke("createSchedules", [e])
             },
         },
         components: {
