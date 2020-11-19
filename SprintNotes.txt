@@ -9,3 +9,16 @@ Sprint 1 Update 1: 11/3/2020
 -Went over what each member of the team is currently working one with the project partner
 -Project partner wanted to reiterate on what the deliverables were for the research spikes
 -Project partner requested database schema and data structure layout be made for the project, both were added as tasks for sprint 1.
+
+Sprint 1 Update 2: 11/5/2020
+-Skiped due to sickness
+
+Sprint 1 Update 3: 11/10/2020
+-Went over ERD with project partner, added many things
+
+Sprint 1 Update 4: 11/12/2020
+-Shared Sprint plan with TA
+-Talked about putting database on cloud server
+-Talked about hosting websever
+-Found 'comprimise' library for nlp
+-Went over what everyone was working on and deliverables for the end of sprint 1
