@@ -36,6 +36,38 @@ print("List of nouns and proper noun:")
 print(noun_list)
 
 
+place_list = ["school","cafe","starbuck","foorball field","soccer field","restaurant","gym","city","town","capital","metropolis",
+        "village","hamlet","settlement","port","resort","center","downtown","suburb","outskirts","slums","ghetto","region",
+        "district","neighborhood","borough","block","limit","area","quarter","place","location","site","locality","vicinity",
+        "environment","surroundings","street","road","avenue","alley","boulevard","lane","drive","route","thoroughfare",
+        "byroad","byway","by pass","path","track","trail","passage","driveway","highway","speedway","expressway","freeway",
+        "parkway","causeway","turnpike","autobahn","motorway","superhighway","intersection","crossroads","junction","crossing",
+        "crosswalk","sidewalk","pavement","walkway","corner","overpass","underpass","bridge","tunnel","busstop","parking",
+        "station","garage","house","brownstone","building","cottage","cabin","bungalow","hut","lodge","castle","palace","villa",
+        "estate","mansion","fortress","farmhouse","tower","hospital","supermarket","store","hotel","bank","office","museum",
+        "library","movie","theater","factory","plant","department","hall","prison","jail","church","cathedral","temple","chapel",
+        "mosque","synagogue","park","club","garden","square","showroom","monument","plaza","zoo","aviary","planetarium","cinema",
+        "circus","disco","discotheque","inn","motel","lodge","lodging","lodgings","cafeterua","lunchroom","luncheonette",
+        "tearoom","diner","eatery","canteen","grillroom","bar","barroom","pub","tavern","saloon","ATM","mall","bookstore",
+        "bakery","fair","market","bazaar","newsstand","playground","campground","pool","stadium","clinic","polyclinic","room",
+        "zoom","pharmacy","drugstore","kingdergarten","college","academy","campus","dormitory","shop","parlor","solarium",
+        "agency","rental","laundry","laundromat","repair"]
+
+places = set()
+
+print("Locations:")
+for ls in noun_list:
+    for l in ls:
+        for w in l:
+            if l.lower() in place_list:
+                places.add(l)
+
+print(places)
+
+
+# Some commonly words of the location
+#https://usefulenglish.ru/vocabulary/places-in-the-city
+
 
 
 
