@@ -8,9 +8,9 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        nextEventId: 2,
+        nextEventId: 1,
         events: [{
-            id: '1',
+            id: '0',
             calendarId: '0',
             title: 'my schedule',
             category: 'time',
@@ -55,6 +55,13 @@ export default new Vuex.Store({
             state.events.push(e)
             state.nextEventId += 1
            
+        },
+
+        updateEvent(state, e) {
+          
+            state.events[parseInt(e.schedule.id, 10)].start = e.changes.start
+            state.events[parseInt(e.schedule.id, 10)].end = e.changes.end
+          
         }
     },
     actions: {

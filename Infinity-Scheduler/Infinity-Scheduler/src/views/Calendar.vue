@@ -15,6 +15,7 @@
                   :useCreationPopup="useCreationPopup"
                   :useDetailPopup="useDetailPopup"
                   @beforeCreateSchedule="onBeforeCreateSchedule"
+                  @beforeUpdateSchedule="onBeforeUpdateSchedule"
                   ref="calref"
              />
     </div>
@@ -63,6 +64,11 @@
                 this.$store.commit("addEvent", e)
                 //this.$refs.calref.invoke("createSchedules", [e])
             },
+            onBeforeUpdateSchedule(e) {
+                //update the store too
+                this.$store.commit("updateEvent", e)
+                this.$refs.calref.invoke("updateSchedule", e.schedule.id, e.schedule.calendarId, e.changes)
+            }
         },
         components: {
             'cal': Calendar
