@@ -40,5 +40,5 @@ Sprint 2 Update 2:
 -Discussed AI features
 
 Sprint 2 Update 3: 11/22/2020
-- Going over what we've done so far this spring
+- Going over what we've done so far this sprint
 - Still having troubles connecting database
