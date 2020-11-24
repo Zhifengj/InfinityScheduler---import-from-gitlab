@@ -42,3 +42,9 @@ Sprint 2 Update 2:
 Sprint 2 Update 3: 11/22/2020
 - Going over what we've done so far this sprint
 - Still having troubles connecting database
+
+Sprint 2 Update 4: 11/24/2020
+- Going over what has been done on the project so far with our partner
+- Talking about porting to mobile and NLP library we found
+- Talked about database hosting
+- 
