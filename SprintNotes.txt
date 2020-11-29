@@ -48,3 +48,7 @@ Sprint 2 Update 4: 11/24/2020
 - Talking about porting to mobile and NLP library we found
 - Talked about database hosting
 - 
+Sprint 3: 11/29/2020
+- going over last sprint and worked completed/still need to complete
+- talking about Fall Retrospective assignment
+- 
