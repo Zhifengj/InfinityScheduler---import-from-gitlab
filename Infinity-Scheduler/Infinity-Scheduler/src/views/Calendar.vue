@@ -1,23 +1,32 @@
 <template>
     <div id="calendar">
-        <cal style="height: 800px;"
-                  :schedules="events"
-                  :view="view"
-                  :taskView="taskView"
-                  :scheduleView="scheduleView"
-                  :theme="theme"
-                  :week="weekOptions"
-                  :month="monthOptions"
-                  :timeZones="timeZoneOptions"
-                  :disableDblClick="disableDblClick"
-                  :isReadOnly="isReadOnly"
-                  :template="template"
-                  :useCreationPopup="useCreationPopup"
-                  :useDetailPopup="useDetailPopup"
-                  @beforeCreateSchedule="onBeforeCreateSchedule"
-                  @beforeUpdateSchedule="onBeforeUpdateSchedule"
-                  ref="calref"
-             />
+        <div id="cal-month">{{monthName}}</div>
+
+        <select v-model="view" id="calViewSelect">
+            <option value="month">Month</option>
+            <option value="week">Week</option>
+            <option value="day">Day</option>
+        </select>
+        <div class="calContainer">
+            <cal style="height: 800px;"
+                 :schedules="events"
+                 :view="view"
+                 :taskView="taskView"
+                 :scheduleView="scheduleView"
+                 :theme="theme"
+                 :week="weekOptions"
+                 :month="monthOptions"
+                 :timeZones="timeZoneOptions"
+                 :disableDblClick="disableDblClick"
+                 :isReadOnly="isReadOnly"
+                 :template="template"
+                 :useCreationPopup="useCreationPopup"
+                 :useDetailPopup="useDetailPopup"
+                 @beforeCreateSchedule="onBeforeCreateSchedule"
+                 @beforeUpdateSchedule="onBeforeUpdateSchedule"
+                 @beforeDeleteSchedule="onBeforeDeleteSchedule"
+                 ref="calref" />
+        </div>
     </div>
 </template>
 
@@ -37,7 +46,7 @@
         data(){
             return {
                 events: this.$store.state.events,
-                view: this.$store.state.calView,
+                view: "month",
                 taskView: false,
                 scheduleView: ['time'],
                 theme: this.$store.state.theme,
@@ -55,7 +64,8 @@
                     },
                 },
                 useCreationPopup: true,
-                useDetailPopup: false,
+                useDetailPopup: true,
+                monthName: this.$store.state.monthNames[(new Date).getUTCMonth()]
 
             }
         },
@@ -68,6 +78,11 @@
                 //update the store too
                 this.$store.commit("updateEvent", e)
                 this.$refs.calref.invoke("updateSchedule", e.schedule.id, e.schedule.calendarId, e.changes)
+            },
+            onBeforeDeleteSchedule(e) {
+                //update the store too
+                this.$store.commit("deleteEvent", e)
+                this.$refs.calref.invoke("deleteSchedule", e.schedule.id, e.schedule.calendarId)
             }
         },
         components: {
@@ -95,5 +110,10 @@
         font-style: italic;
     }
 
+    #cal-month {
+        text-align: center;
+        padding: 20px;
+        font-size: large;
+    }
     
 </style>

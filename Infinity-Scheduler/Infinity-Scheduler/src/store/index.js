@@ -1,23 +1,19 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-
+import process from 'process'
+process.version = 'v14.0.1'
+import mariadb from 'mariadb'
 
 
 Vue.use(Vuex)
 
 
+
+
 export default new Vuex.Store({
     state: {
-        nextEventId: 1,
-        events: [{
-            id: '0',
-            calendarId: '0',
-            title: 'my schedule',
-            category: 'time',
-            dueDateClass: '',
-            start: '2020-11-18T22:30:00+09:00',
-            end: '2020-11-19T02:30:00+09:00'
-        }],
+        nextEventId: 0,
+        events: [],
         calView: "month",
         weekOptions: {
             narrowWeekend: true,
@@ -37,7 +33,23 @@ export default new Vuex.Store({
             'week.timegridLeft.width': '100px'
 
         },
-        timezoneOptions: []
+        timezoneOptions: [],
+        monthNames: [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"
+
+
+        ]
             
 
     },
@@ -59,9 +71,12 @@ export default new Vuex.Store({
 
         updateEvent(state, e) {
           
-            state.events[parseInt(e.schedule.id, 10)].start = e.changes.start
-            state.events[parseInt(e.schedule.id, 10)].end = e.changes.end
+            state.events[state.events.indexOf(e)].start = e.changes.start
+            state.events[state.events.indexOf(e)].end = e.changes.end
           
+        },
+        deleteEvent(state, e) {
+            state.events.splice(state.events.indexOf(e), 1)
         }
     },
     actions: {

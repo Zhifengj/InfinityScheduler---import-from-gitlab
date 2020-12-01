@@ -14,6 +14,7 @@
   "dependencies": {
     "@toast-ui/vue-calendar": "^1.1.1",
     "compromise": "^13.7.0",
+    "mariadb": "^2.5.1",
     "pg": "^8.5.0",
     "pg-hstore": "^2.3.3",
     "sequelize": "^6.3.5",
