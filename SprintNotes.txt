@@ -47,8 +47,14 @@ Sprint 2 Update 4: 11/24/2020
 - Going over what has been done on the project so far with our partner
 - Talking about porting to mobile and NLP library we found
 - Talked about database hosting
-- 
-Sprint 3: 11/29/2020
+
+Sprint 3 Start: 11/29/2020
 - going over last sprint and worked completed/still need to complete
 - talking about Fall Retrospective assignment
-- 
+
+Sprint 3 Update 1: 12/1/2020
+- Went over calendar updates
+- Calendar part is almost complete
+- Database connection is being worked on
+- Went over hosting options with project partner
+- Going over goals for this sprint and rest of the term
