@@ -22,3 +22,33 @@ Sprint 1 Update 4: 11/12/2020
 -Talked about hosting websever
 -Found 'comprimise' library for nlp
 -Went over what everyone was working on and deliverables for the end of sprint 1
+
+Sprint 2 Start: 
+-Jason could not attend, still working on database API
+-TA has insisted on finding hosting sites, created tasks for both
+-Kennedy assigned to more AI research until a demo can be created
+-Youli assigned to create registration page front end
+-Ben assigned to create calendar page front end
+
+Sprint 2 Update 1:
+meeting skipped due to the project partner having a conflicting meeting
+
+Sprint 2 Update 2:
+-Talked with TA about hosting
+-TA suggested looking into cross platform ability
+-TA checked in with each member on what they were working on
+-Discussed AI features
+
+Sprint 2 Update 3: 11/22/2020
+- Going over what we've done so far this sprint
+- Still having troubles connecting database
+
+Sprint 2 Update 4: 11/24/2020
+- Going over what has been done on the project so far with our partner
+- Talking about porting to mobile and NLP library we found
+- Talked about database hosting
+- 
+Sprint 3: 11/29/2020
+- going over last sprint and worked completed/still need to complete
+- talking about Fall Retrospective assignment
+- 
