@@ -58,3 +58,8 @@ Sprint 3 Update 1: 12/1/2020
 - Database connection is being worked on
 - Went over hosting options with project partner
 - Going over goals for this sprint and rest of the term
+
+Sprint 3 Update 2: 12/8/2020
+- Went over what we've done in the last week
+- Talked more about hosting admin priviliges through our partners server
+- 
