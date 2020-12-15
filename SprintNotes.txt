@@ -62,4 +62,6 @@ Sprint 3 Update 1: 12/1/2020
 Sprint 3 Update 2: 12/8/2020
 - Went over what we've done in the last week
 - Talked more about hosting admin priviliges through our partners server
-- 
+
+Sprint 3 Update 3: 12/15/2020
+- just caught up with partner
