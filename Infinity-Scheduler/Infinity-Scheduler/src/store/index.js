@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import process from 'process'
 process.version = 'v14.0.1'
-import mariadb from 'mariadb'
+//import mariadb from 'mariadb'
 
 
 Vue.use(Vuex)
@@ -50,7 +50,7 @@ export default new Vuex.Store({
 
 
         ]
-            
+
 
     },
     mutations:{
@@ -59,21 +59,21 @@ export default new Vuex.Store({
 
         //adds an event e to the calendar
         addEvent(state, e) {
-           
+
             e.calendarId = '0'
             e.id = `${state.nextEventId}`
             //might have to change this later
             e.category = 'time'
             state.events.push(e)
             state.nextEventId += 1
-           
+
         },
 
         updateEvent(state, e) {
-          
+
             state.events[state.events.indexOf(e)].start = e.changes.start
             state.events[state.events.indexOf(e)].end = e.changes.end
-          
+
         },
         deleteEvent(state, e) {
             state.events.splice(state.events.indexOf(e), 1)
