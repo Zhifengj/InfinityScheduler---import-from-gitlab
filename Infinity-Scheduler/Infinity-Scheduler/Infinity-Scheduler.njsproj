@@ -44,6 +44,9 @@
     <Content Include="src\views\Calendar.vue">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="src\views\Construction.vue">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="src\views\Login.vue" />
     <Content Include="src\views\Register.vue">
       <SubType>Code</SubType>
