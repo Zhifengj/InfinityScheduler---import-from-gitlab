@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import process from 'process'
 process.version = 'v14.0.1'
-import mariadb from 'mariadb'
+//import mariadb from 'mariadb'
 
 
 Vue.use(Vuex)

@@ -16,7 +16,9 @@
 </template>
 
 <script>
-   
+
+
+
 
     export default {
         name: 'login',
@@ -30,6 +32,8 @@
         methods: {
             //local methods go here
             tryLogin() {
+
+
                 alert(`dologin for ${this.uname}, ${this.pword}`)
                
                 
