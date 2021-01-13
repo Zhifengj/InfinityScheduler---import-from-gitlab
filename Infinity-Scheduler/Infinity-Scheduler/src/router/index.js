@@ -4,6 +4,8 @@ import Login from '@/views/Login'
 import About from '@/views/About'
 import Calendar from '@/views/Calendar'
 import Register from '@/views/Register'
+import Navigation from '@/views/Navigation'
+
 
 Vue.use(Router)
 
@@ -29,5 +31,12 @@ export default new Router({
             name: 'Register',
             component: Register
         }
+        ,
+        {
+            path: '/navigation',
+            name: 'navigation',
+            component: Navigation
+        }
+
     ]
 })
