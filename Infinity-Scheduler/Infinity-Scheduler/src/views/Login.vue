@@ -10,7 +10,11 @@
             <p></p>
             <button v-on:click="tryLogin">Log In</button>
         </form>
-      
+        <form action="http://localhost:8080/?#/register">
+            <input type="submit" value="Register" />
+        </form>
+
+
     </div>   
   </div>
 </template>
