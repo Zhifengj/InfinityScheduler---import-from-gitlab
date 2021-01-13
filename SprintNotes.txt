@@ -66,7 +66,15 @@ Sprint 3 Update 2: 12/8/2020
 Sprint 3 Update 3: 12/15/2020
 - just caught up with partner
 
-Sprint 4 Update 1 : 1/6/2021
+Sprint 4:
+- off for holidays
+
+Sprint 5 Update 1 : 1/6/2021
 - went over plan for new term/sprint finishing this week
 - deploy a construction page
 - talk about how to push features 
+
+Sprint 6 Update 1: 1/13/21
+- went over plans for this sprint
+- talked about what we did on previous sprint 
+- made a "under construction" page, website is up on server
