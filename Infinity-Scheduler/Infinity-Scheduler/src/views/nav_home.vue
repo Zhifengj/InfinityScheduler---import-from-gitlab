@@ -62,7 +62,7 @@ export default {
   .main_container {
       display:inline-block;
       float:right;
-      margin-right: 30px;
+      margin-right: 80px;
       background-color: #a1d5f0;
       color: #000000;
       width:1700px;
