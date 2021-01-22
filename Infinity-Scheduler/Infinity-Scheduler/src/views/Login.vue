@@ -10,13 +10,19 @@
             <p></p>
             <button v-on:click="tryLogin">Log In</button>
         </form>
-      
+        <form action="http://localhost:8080/?#/register">
+            <input type="submit" value="Register" />
+        </form>
+
+
     </div>   
   </div>
 </template>
 
 <script>
-   
+
+
+
 
     export default {
         name: 'login',
@@ -30,6 +36,8 @@
         methods: {
             //local methods go here
             tryLogin() {
+
+
                 alert(`dologin for ${this.uname}, ${this.pword}`)
                
                 

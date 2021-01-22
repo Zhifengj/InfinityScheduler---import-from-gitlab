@@ -32,9 +32,21 @@
   <ItemGroup>
     <Content Include="public\favicon.ico" />
     <Content Include="public\index.html" />
+    <Content Include="server\index.js">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="server\routes\api\posts.js">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="src\App.vue" />
     <Content Include="package.json" />
     <Content Include="README.md" />
+    <Content Include="src\conndb.js">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="src\PostService.js">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="src\router\index.js">
       <SubType>Code</SubType>
     </Content>
@@ -52,7 +64,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="dist\" />
+    <Folder Include="server\" />
     <Folder Include="public\" />
+    <Folder Include="server\routes\" />
+    <Folder Include="server\routes\api\" />
     <Folder Include="src\" />
     <Folder Include="src\assets\" />
     <Folder Include="src\store\" />

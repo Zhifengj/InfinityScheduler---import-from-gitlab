@@ -24,6 +24,9 @@
 </template>
 
 <script>
+
+    import PostService from '../PostService';
+
     export default {
         name: 'register',
         data() {
@@ -39,9 +42,9 @@
         },
         methods: {
             //local methods go here
-            tryRegister() {
-                alert(`${this.user_name} Register > m < !!!!!!!!!!!!`)
-
+            async tryRegister() {
+                await PostService.addPost(this.user_name, this.first_name, this.last_name, this.email, this.conf_word);
+                this.posts = await PostService.getPosts();
 
             }
 
