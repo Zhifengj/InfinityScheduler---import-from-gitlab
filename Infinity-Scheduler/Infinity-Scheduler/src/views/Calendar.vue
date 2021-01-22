@@ -39,7 +39,7 @@
     import 'tui-date-picker/dist/tui-date-picker.css';
     import 'tui-time-picker/dist/tui-time-picker.css';
 
-   
+
 
     export default {
         name: 'calendar',
@@ -94,8 +94,15 @@
 </script>
 
 <style>
-  
-   
+
+   #calendar {
+     margin-right: 300px;
+     margin-left: 300px;
+     margin-top: 50px;
+     padding: 50px;
+     border: 2px groove #329ea8;
+     border-radius: 5px;
+   }
 
     .inf-header {
         border: 2px solid black;
@@ -115,5 +122,5 @@
         padding: 20px;
         font-size: large;
     }
-    
+
 </style>
