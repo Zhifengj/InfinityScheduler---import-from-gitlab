@@ -1,0 +1,12 @@
+<div class="icon">
+  <img src="./icons/cogs-solid.svg" width="35" height="35">
+</div>
+<div class="icon">
+  <img src="./icons/bell-solid.svg" width="35" height="35">
+</div>
+<div class="icon">
+  <img src="./icons/calendar-alt-regular.svg" width="35" height="35">
+</div>
+<div class="icon">
+  <img src="./icons/home-solid.svg" width="35" height="35">
+</div>
