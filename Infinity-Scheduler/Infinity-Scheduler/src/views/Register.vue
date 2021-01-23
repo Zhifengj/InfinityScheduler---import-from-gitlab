@@ -25,7 +25,7 @@
 
 <script>
 
-    import PostService from '../PostService';
+    
 
     export default {
         name: 'register',
@@ -43,9 +43,7 @@
         methods: {
             //local methods go here
             async tryRegister() {
-                await PostService.addPost(this.user_name, this.first_name, this.last_name, this.email, this.conf_word);
-                this.posts = await PostService.getPosts();
-
+               
             }
 
         }

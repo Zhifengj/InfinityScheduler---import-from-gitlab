@@ -1,12 +1,15 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import process from 'process'
+import axios from 'axios'
 process.version = 'v14.0.1'
 //import mariadb from 'mariadb'
 
 
 Vue.use(Vuex)
 
+
+const SERVER_URL = "http://localhost:80"
 
 
 
@@ -49,7 +52,8 @@ export default new Vuex.Store({
             "December"
 
 
-        ]
+        ],
+        authed: false
 
 
     },
@@ -80,6 +84,17 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        //can be async, called with $store.dispatch("<name>", <arg1>, etc...)
+        //can be async, called with $store.dispatch("<name>", args, options)
+
+        async auth(state, ep) {
+            console.log(ep.uname)
+            try {
+                const response = await axios.get(`${SERVER_URL}`);
+                console.log(response);
+            } catch (error) {
+                console.error(error);
+            }
+            state.authed = true
+        }
     }
 })

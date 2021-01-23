@@ -10,9 +10,8 @@
             <p></p>
             <button v-on:click="tryLogin">Log In</button>
         </form>
-        <form action="http://localhost:8080/?#/register">
-            <input type="submit" value="Register" />
-        </form>
+        <router-link to="/register">Register</router-link>
+        
 
 
     </div>   
@@ -36,9 +35,12 @@
         methods: {
             //local methods go here
             tryLogin() {
+                console.log(this.pword)
 
-
-                alert(`dologin for ${this.uname}, ${this.pword}`)
+                this.$store.dispatch("auth", {
+                    "uname": this.uname,
+                    "pword": this.pword
+                })
                
                 
             }

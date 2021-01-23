@@ -35,9 +35,6 @@
     <Content Include="src\App.vue" />
     <Content Include="package.json" />
     <Content Include="README.md" />
-    <Content Include="src\db.js">
-      <SubType>Code</SubType>
-    </Content>
     <Content Include="src\router\index.js">
       <SubType>Code</SubType>
     </Content>
