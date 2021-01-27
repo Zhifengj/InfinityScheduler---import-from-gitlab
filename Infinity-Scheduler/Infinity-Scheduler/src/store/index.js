@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import process from 'process'
 import axios from 'axios'
+import router from './../router'
 process.version = 'v14.0.1'
 //import mariadb from 'mariadb'
 
@@ -12,6 +13,13 @@ Vue.use(Vuex)
 const SERVER_URL = "http://localhost:80"
 
 
+function getServerFuncURL(name, args = {}) {
+    
+    return `${SERVER_URL}/server/${name}.php?args=${encodeURIComponent(JSON.stringify(args))}`
+}
+
+
+ 
 
 export default new Vuex.Store({
     state: {
@@ -53,7 +61,10 @@ export default new Vuex.Store({
 
 
         ],
-        authed: false
+        UID: -1,
+        loginFailure: false
+      
+
 
 
     },
@@ -89,12 +100,23 @@ export default new Vuex.Store({
         async auth(state, ep) {
             console.log(ep.uname)
             try {
-                const response = await axios.get(`${SERVER_URL}`);
-                console.log(response);
+                const response = await axios.get(getServerFuncURL("auth", ep));
+                console.log(response)
+                if (response.data.hasOwnProperty("error")) {
+                   
+                    state.loginFailure = true
+                } else {
+                    
+                    state.loginFailure = false
+                    state.UID = response.data[0]
+                    router.push("/calendar")
+                    router.go(0)
+                }
+               
             } catch (error) {
                 console.error(error);
             }
-            state.authed = true
+           
         }
     }
 })

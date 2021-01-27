@@ -2,6 +2,7 @@
   <div id="login">
     <div class="inf-header">Infinity Scheduler</div>
     <div class="login-container">
+        <p v-if="loginFailure">Incorrect username or password</p>
         <form>
             <p>Username</p>
             <input type="text" id="uname" v-model="uname">
@@ -29,18 +30,19 @@
             return {
                 //attributes for the vue go here (local)
                 uname: "",
-                pword: ""
+                pword: "",
+                loginFailure: this.$store.state.loginFailure
             }
         },
         methods: {
             //local methods go here
             tryLogin() {
-                console.log(this.pword)
-
+               
                 this.$store.dispatch("auth", {
                     "uname": this.uname,
                     "pword": this.pword
                 })
+              
                
                 
             }
