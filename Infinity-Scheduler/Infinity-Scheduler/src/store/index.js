@@ -98,10 +98,10 @@ export default new Vuex.Store({
         //can be async, called with $store.dispatch("<name>", args, options)
 
         async auth(state, ep) {
-            console.log(ep.uname)
+            
             try {
                 const response = await axios.get(getServerFuncURL("auth", ep));
-                console.log(response)
+                
                 if (response.data.hasOwnProperty("error")) {
                    
                     state.loginFailure = true
@@ -117,6 +117,23 @@ export default new Vuex.Store({
                 console.error(error);
             }
            
+        },
+
+        async getTasks(state) {
+            try {
+                const response = await axios.get(getServerFuncURL("getEvents" { "UID": state.UID }));
+
+                if (response.data.hasOwnProperty("error")) {
+
+                    console.log("Failed to retreive tasks")
+                } else {
+                    events = response.data
+                    
+                }
+
+            } catch (error) {
+                console.error(error);
+            }
         }
     }
 })

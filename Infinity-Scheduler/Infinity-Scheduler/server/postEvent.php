@@ -1,5 +1,5 @@
 <?php
-	
+	TODO
 	if(isset($_GET["args"]) && !empty(trim($_GET["args"]))){
 		require_once "config.php";
 
