@@ -3,16 +3,18 @@
     <div class="login-header">Infinity Scheduler</div>
 `    <div >
       <div class="login-container">
-          <p v-if="loginFailure">Incorrect username or password</p>
+         
           <form>
+            
               <p>Username</p>
+
               <input type="text" id="uname" v-model="uname">
               <p>Password</p>
               <input type="password" id="pword" v-model="pword">
               <p></p>
-              <button class = "login-botton" v-on:click="tryLogin">Log In</button>
-              <div class = "regis">
-                <router-link to="/register">Register</router-link>
+              <button class="login-botton" v-on:click="tryLogin">Log In</button>
+              <div class="regis">
+                  <router-link to="/register">Register</router-link>
               </div>
           </form>
       </div>
@@ -45,7 +47,7 @@
     }
 </script>
 
-<style>
+<style scoped>
 
     #login {
         height: 950px;
@@ -69,14 +71,14 @@
         display: flex;
         border: 2px solid black;
         width:20%;
-        hight:40%;
+        height:40%;
         margin-left: 300px;
         margin-right: 500px;
         margin-top: 300px;
         justify-content: center;
         background-color: #0670bf;
         color: #ffffff;
-        opacity: 0.;
+        opacity: 0.9;
         padding-top: 15px;
         padding-bottom: 30px;
         border-radius: 8px;

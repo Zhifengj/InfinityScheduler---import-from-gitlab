@@ -19,7 +19,16 @@ function getServerFuncURL(name, args = {}) {
 }
 
 
- 
+function getEventIdxById(events, id) {
+    for (let e in events) {
+       
+        if (events[e].id === id) {
+            return e
+        }
+    }
+    return null
+}
+
 
 export default new Vuex.Store({
     state: {
@@ -84,14 +93,18 @@ export default new Vuex.Store({
 
         },
 
+       
+
         updateEvent(state, e) {
 
-            state.events[state.events.indexOf(e)].start = e.changes.start
-            state.events[state.events.indexOf(e)].end = e.changes.end
+            let ev = getEventIdxById(state.events, e.schedule.id)
+           
+            state.events[ev].start = e.changes.start
+            state.events[ev].end = e.changes.end
 
         },
         deleteEvent(state, e) {
-            state.events.splice(state.events.indexOf(e), 1)
+            state.events.splice(getEventIdxById(state.events, e.schedule.id), 1)
         }
     },
     actions: {
@@ -109,7 +122,7 @@ export default new Vuex.Store({
                     
                     state.loginFailure = false
                     state.UID = response.data[0]
-                    router.push("/calendar")
+                    router.push("/navigation")
                     router.go(0)
                 }
                

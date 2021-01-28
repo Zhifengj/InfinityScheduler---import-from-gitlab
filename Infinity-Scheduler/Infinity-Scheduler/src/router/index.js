@@ -34,7 +34,7 @@ export default new Router({
         ,
         {
             path: '/navigation',
-            name: 'navigation',
+            name: 'Navigation',
             component: Navigation
         }
     ]
