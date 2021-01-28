@@ -5,17 +5,6 @@ VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Infinity-Scheduler", "Infinity-Scheduler\Infinity-Scheduler.njsproj", "{9920175A-041F-489C-B1E5-B5BA0CB89DD1}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{49F1663B-55BD-41F6-95E2-7B55DE125A48}"
-	ProjectSection(SolutionItems) = preProject
-		Server\config.php = Server\config.php
-		Server\index.php = Server\index.php
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "r", "r", "{CC8CD569-3FCD-48A9-89AA-F1D239328792}"
-	ProjectSection(SolutionItems) = preProject
-		getTasks.php = getTasks.php
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,9 +30,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{CC8CD569-3FCD-48A9-89AA-F1D239328792} = {49F1663B-55BD-41F6-95E2-7B55DE125A48}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7F459BD4-AC10-4830-AF63-42504C964687}
