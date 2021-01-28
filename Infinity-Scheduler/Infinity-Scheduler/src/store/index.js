@@ -121,7 +121,7 @@ export default new Vuex.Store({
 
         async getTasks(state) {
             try {
-                const response = await axios.get(getServerFuncURL("getEvents" { "UID": state.UID }));
+                const response = await axios.get(getServerFuncURL("getEvents", { "UID": state.UID }));
 
                 if (response.data.hasOwnProperty("error")) {
 
