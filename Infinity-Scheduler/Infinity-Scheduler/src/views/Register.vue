@@ -16,7 +16,7 @@
                 <p>Confirm Password</p>
                 <input type="text" id="conf_word" v-model="conf_word">
                 <p></p>
-                <button v-on:click="tryRegister">Register</button>
+                <button class="reg-button" v-on:click="tryRegister">Register</button>
             </form>
 
         </div>
@@ -25,7 +25,7 @@
 
 <script>
 
-    
+
 
     export default {
         name: 'register',
@@ -43,7 +43,7 @@
         methods: {
             //local methods go here
             async tryRegister() {
-               
+
             }
 
         }
@@ -83,8 +83,9 @@
         text-align: left;
         background-color: #0670bf;
         color: #ffffff;
-        padding-bottom: 30px;
+        padding-bottom: 50px;
         padding-right: 30px;
+        padding-top:30px;
     }
 
     form {
@@ -101,17 +102,19 @@
         width: 120%;
     }
 
-    button {
+    .reg-button {
         background-color: #042269;
         color: white;
         width: 125%;
         border: 3px solid black;
         transition: 0.5s ease-in-out;
+        font-size: 15px;
     }
 
-        button:hover {
-            background-color: #ffffff;
-            color: black;
-            transition: 0.5s ease-in-out;
-        }
+    .reg-button:hover {
+        background-color: #ffffff;
+        color: black;
+        transition: 0.5s ease-in-out;
+        font-size: 15px;
+    }
 </style>

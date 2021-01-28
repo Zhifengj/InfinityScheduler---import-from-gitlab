@@ -7,11 +7,11 @@
       </div>
 
       <Tabs>
-        <Tab title="Home"><NavHome /></Tab>
-        <Tab title="Calendar"><Calendar/></Tab>
-        <Tab title="Notification">Hello From Notification</Tab>
-        <Tab title="Setting">Hello From Setting</Tab>
-        <Tab title="User">Hello From User</Tab>
+        <Tab title="home-solid.svg"><NavHome /></Tab>
+        <Tab title="calendar-alt-regular.svg"><Calendar/></Tab>
+        <Tab title="bell-solid.svg"></Tab>
+        <Tab title="cogs-solid.svg"></Tab>
+        <Tab title="user-circle-regular.svg"></Tab>
       </Tabs>
   </div>
 
@@ -48,6 +48,9 @@ import NavHome from './nav_home'
 <style scoped>
   .header {
     background-color: #0670bf;
+    border: 2px solid black;
+    border-radius: 5px;
+    border-bottom: none;
   }
 
   .title {
