@@ -2,11 +2,11 @@
   <div class="body">
     <div class="menu_container">
         <div>
-          <button>Lists</button>
+          <button class="menu-botton">Lists</button>
         </div>
 
         <div>
-          <button>Tasks</button>
+          <button class="menu-botton">Tasks</button>
         </div>
     </div>
 
@@ -14,12 +14,12 @@
       <div class="notes">
         <div class="note">
           <div>Remainning time: </div>
-          <div>To be added...</div>
+          <div class="time">5 Hours 30 mins</div>
         </div>
 
       <div class="note">
-        <div>The next thing is: </div>
-        <div>To be called from database</div>
+        <div>The next thing: </div>
+        <div class="thing"> CS 46X meeting at zoom </div>
      </div>
     </div>
   </div>
@@ -53,6 +53,7 @@ export default {
 
   .menu_container{
       display:inline-block;
+      float:left;
       color: #000000;
       padding-bottom: 30px;
       padding-right: 30px;
@@ -61,8 +62,7 @@ export default {
 
   .main_container {
       display:inline-block;
-      float:right;
-      margin-right: 80px;
+      float:left;
       background-color: #a1d5f0;
       color: #000000;
       width:1700px;
@@ -80,10 +80,18 @@ export default {
   .note{
     margin-top: 100px;
     margin-bottom: 100px;
-    font-size:25px;
+    font-size:20px;
   }
 
-  button {
+  .time{
+    font-size:40px;
+  }
+
+  .thing{
+    font-size:40px;
+  }
+
+  .menu-botton {
       background-color: #a1d5f0;
       color: black;
       width:220px;
@@ -98,7 +106,7 @@ export default {
 
   }
 
-  button:hover {
+  .menu-button:hover {
       background-color: #ffffff;
       color: black;
       transition: 0.5s ease-in-out;

@@ -2,12 +2,11 @@
   <div class='navigation'>
     <div class='tabs'>
       <ul class='tabs__header'>
-        <li v-for='(tab, index) in tabs'
+        <img v-for='(tab, index) in tabs'
           :key='tab.title'
           @click='selectTab(index)'
-          :class='{"tabs__selected": (index == selectedIndex)}'>
-          {{ tab.title }}
-        </li>
+          :class='{"tabs__selected": (index == selectedIndex)}'
+          :src='tab.title' width="35" height="35">
       </ul>
       <slot></slot>
     </div>
@@ -45,17 +44,22 @@ export default {
 
   .tabs__header{
     padding-left: 60%;
+    border: 2px solid black;
+    border-radius: 5px;
+    border-top: none;
+    margin: 0;
   }
 
-  li {
-    list-style-type: none;
-    margin-right: 12%;
+  img {
+    margin-left: 120px;
+    margin-top: 10px;
+    margin-bottom: 10px;
     cursor: pointer;
     display:inline-block;
   }
 
  .tabs__selected {
-     color: #0670bf;
+     margin-bottom: 15px;
   }
 
 </style>
