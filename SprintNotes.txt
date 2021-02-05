@@ -89,3 +89,6 @@ Sprint 7 Update 2: 2/3/21
 - Went over what we need have been doing and what we are going to work on
 - Talked about Alpha Functionality
 - Week/Day/Month timeline of optional activites that have to happen in that timeline
+
+Sprint 7 Update 3: 2/5/21
+- Went over what we've been doing with our TA  
