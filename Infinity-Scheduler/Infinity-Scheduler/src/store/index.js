@@ -11,11 +11,12 @@ Vue.use(Vuex)
 
 
 const SERVER_URL = "http://localhost:80"
+const PROD_SERVER_URL = "http://infinityscheduler.com"
 
 
 function getServerFuncURL(name, args = {}) {
     
-    return `${SERVER_URL}/server/${name}.php?args=${encodeURIComponent(JSON.stringify(args))}`
+    return `${PROD_SERVER_URL}/server/${name}.php?args=${encodeURIComponent(JSON.stringify(args))}`
 }
 
 
