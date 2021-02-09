@@ -10,7 +10,7 @@
         <Tab title="home-solid.svg"><NavHome /></Tab>
         <Tab title="calendar-alt-regular.svg"><Calendar/></Tab>
         <Tab title="bell-solid.svg"></Tab>
-        <Tab title="cogs-solid.svg"></Tab>
+        <Tab title="cogs-solid.svg"><Setting /></Tab>
         <Tab title="user-circle-regular.svg"></Tab>
       </Tabs>
   </div>
@@ -23,6 +23,7 @@ import Calendar from './Calendar'
 import Tab from './Tab'
 import Tabs from './Tabs'
 import NavHome from './nav_home'
+import Setting from './Setting'
 
     export default {
         name: 'navigate',
@@ -39,7 +40,8 @@ import NavHome from './nav_home'
            Calendar,
            Tab,
            Tabs,
-           NavHome
+           NavHome,
+           Setting
         }
     }
 </script>

@@ -16,18 +16,18 @@
           <div>Remainning time: </div>
           <div class="time">5 Hours 30 mins</div>
         </div>
-
-      <div class="note">
-        <div>The next thing: </div>
-        <div class="thing"> CS 46X meeting at zoom </div>
-     </div>
+        <div class="note">
+          <div>The next thing: </div>
+          <div class="thing"> CS 46X meeting at zoom </div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
 
 </template>
 
 <script>
+
 export default {
     name: 'nav_home',
     data(){
@@ -40,9 +40,8 @@ export default {
     components: {
 
     }
-
-
 }
+
 </script>
 
 <style>
