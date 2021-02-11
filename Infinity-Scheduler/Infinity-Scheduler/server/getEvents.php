@@ -1,7 +1,7 @@
 <?php
-	
+	require_once "config.php";
 	if(isset($_GET["args"]) && !empty(trim($_GET["args"]))){
-		require_once "config.php";
+		
 
 		$args = urldecode($_GET['args']);
 		
