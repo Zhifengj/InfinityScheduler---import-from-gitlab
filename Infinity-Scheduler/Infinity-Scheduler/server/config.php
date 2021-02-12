@@ -14,4 +14,9 @@ if($link === false){
 function formatError($errorMessage) {
 	return json_encode(array("error" => $errorMessage));
 }
+
+function formatSuccess($msg){
+	return json_encode(array("success" => $msg));
+}
+
 ?>

@@ -45,7 +45,7 @@ function datePad(s) {
 function toDBDate(date) {
     console.log(date)
    
-    return `${date.getUTCFullYear()}-${datePad(date.getUTCMonth() + 1)}-${datePad(date.getUTCDate())} ${datePad(date.getUTCHours())}:${datePad(date.getUTCMinutes())}:${datePad(date.getUTCSeconds())}`
+    return `${date.getUTCFullYear()}-${datePad(date.getUTCMonth() + 1)}-${datePad(date.getUTCDate()-1)} ${datePad(date.getUTCHours())}:${datePad(date.getUTCMinutes())}:${datePad(date.getUTCSeconds())}`
 }
 
 //executes a database function and returns the result. Console.logs the error if there is one
@@ -114,6 +114,8 @@ export default new Vuex.Store({
         //functions that modify state should go here, and are called with $store.commit("<name>", <arg1>, etc...)
         //syncronous
 
+
+
         //adds an event e to the calendar
         addEvent(state, e) {
            console.log(e)
@@ -147,7 +149,7 @@ export default new Vuex.Store({
             
         },
         deleteEvent(state, e) {
-            state.events.splice(getEventIdxById(state.events, e.schedule.id), 1)
+            state.events.splice(getEventIdxById(state.events, e.id), 1)
         },
 
         auth(state, UID) {
@@ -163,7 +165,7 @@ export default new Vuex.Store({
                 events[e].end = new Date(events[e].End).getTime()
                 events[e].lastUpdated = new Date(events[e].LastUpdated).getTime()
                 events[e].created = new Date(events[e].Created).getTime()
-                events[e].id = events[e].TID
+                events[e].id = `${events[e].TID}`
                 events[e].category = 'time'
                 events[e].title = events[e].Title
             }
@@ -184,6 +186,7 @@ export default new Vuex.Store({
 
                 store.state.loginFailure = false
                 store.commit("auth", res.UID)
+                store.dispatch("getEvents")
                 //router.push("/navigation")
                 //router.go(0)
 
@@ -244,6 +247,20 @@ export default new Vuex.Store({
                 } 
             } catch (error) {
                 console.error(error);
+            }
+        },
+
+        async deleteEvent(store, event) {
+            
+            const res = await execDB("deleteEvent", { "UID": store.state.UID, "TID": event.id })
+            if (res.hasOwnProperty("error")) {
+
+                console.log("Failed to delete event")
+            } else {
+                console.log(res)
+                store.commit("deleteEvent", event)
+
+
             }
         }
     }

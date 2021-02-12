@@ -43,9 +43,7 @@ import Setting from './Setting'
            NavHome,
            Setting
         },
-        beforeMount() {
-            this.$store.dispatch("getEvents")
-        }
+        
     }
 </script>
 

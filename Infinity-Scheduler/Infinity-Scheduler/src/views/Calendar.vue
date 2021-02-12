@@ -27,6 +27,7 @@
                  @beforeDeleteSchedule="onBeforeDeleteSchedule"
                  ref="calref" />
         </div>
+       
     </div>
 </template>
 
@@ -81,9 +82,11 @@
             },
             onBeforeDeleteSchedule(e) {
                 //update the store too
-                this.$store.commit("deleteEvent", e)
+                this.$store.dispatch("deleteEvent", e.schedule)
                 this.$refs.calref.invoke("deleteSchedule", e.schedule.id, e.schedule.calendarId)
-            }
+            },
+            
+
         },
         components: {
             'cal': Calendar

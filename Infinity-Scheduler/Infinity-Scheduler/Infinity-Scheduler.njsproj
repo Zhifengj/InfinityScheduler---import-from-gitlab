@@ -37,6 +37,9 @@
     <Content Include="public\index.html" />
     <Content Include="server\auth.php" />
     <Content Include="server\config.php" />
+    <Content Include="server\deleteEvent.php">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="server\getEvents.php" />
     <Content Include="server\postEvent.php">
       <SubType>Code</SubType>
