@@ -40,6 +40,9 @@ import NavHome from './nav_home'
            Tab,
            Tabs,
            NavHome
+        },
+        beforeMount(){
+            this.$store.dispatch("getEvents")
         }
     }
 </script>

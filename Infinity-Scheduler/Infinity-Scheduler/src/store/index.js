@@ -48,6 +48,20 @@ function toDBDate(date) {
     return `${date.getUTCFullYear()}-${datePad(date.getUTCMonth() + 1)}-${datePad(date.getUTCDate())} ${datePad(date.getUTCHours())}:${datePad(date.getUTCMinutes())}:${datePad(date.getUTCSeconds())}`
 }
 
+//executes a database function and returns the result. Console.logs the error if there is one
+async function execDB(func, args) {
+    try {
+
+        const response = await axios.get(getServerFuncURL(func, args));
+        console.log(response)
+        return response.data
+
+    } catch (error) {
+        console.error(error);
+        return error
+    }
+}
+
 
 export default new Vuex.Store({
     state: {
@@ -142,7 +156,7 @@ export default new Vuex.Store({
         },
 
         setEvents(state, events) {
-            console.log("Set events to before: ", events)
+           
             for (let e = 0; e < events.length; e++) {
                 //local event names need to be in lowercase
                 events[e].start = new Date(events[e].Start).getTime()
@@ -153,7 +167,7 @@ export default new Vuex.Store({
                 events[e].category = 'time'
                 events[e].title = events[e].Title
             }
-            console.log("Set events to: ", events)
+            console.log(events)
             state.events = events
         }
     },
@@ -161,48 +175,35 @@ export default new Vuex.Store({
         //can be async, called with $store.dispatch("<name>", args, options)
 
         async auth(store, ep) {
-            
-            try {
-               
-                const response = await axios.get(getServerFuncURL("auth", ep));
-               
-                if (response.data.hasOwnProperty("error")) {
-                   
-                    store.state.loginFailure = true
-                } else {
-                    
-                    store.state.loginFailure = false
-                    store.commit("auth",  response.data.UID)
-                    
-                   
-                    store.dispatch("getEvents")
-                    //router.push("/navigation")
-                    //router.go(0)
-                }
-               
-            } catch (error) {
-                console.error(error);
+            const res = await execDB("auth", ep);
+            console.log(res)
+            if (res.hasOwnProperty("error")) {
+
+                store.state.loginFailure = true
+            } else {
+
+                store.state.loginFailure = false
+                store.commit("auth", res.UID)
+                //router.push("/navigation")
+                //router.go(0)
+
             }
+           
            
         },
 
-        async getEvents(store) {
-            try {
-                const response = await axios.get(getServerFuncURL("getEvents", { "UID": store.state.UID }));
-                console.log(response)
-                if (response.data.hasOwnProperty("error")) {
+        async getEvents(store) {    
+            const res = await execDB("getEvents", { "UID": store.state.UID })
+            if (res.hasOwnProperty("error")) {
 
-                    console.log("Failed to retreive events")
-                } else {
-                    console.log(response.data)
-                    store.commit("setEvents", response.data)
-                    
-                    
-                }
+                console.log("Failed to retreive events")
+            } else {
+                console.log(res)
+                store.commit("setEvents", res)
 
-            } catch (error) {
-                console.error(error);
+
             }
+           
         },
   
         //DO NOT USE THIS TO ADD AN EVENT use addEvent instead
@@ -236,7 +237,7 @@ export default new Vuex.Store({
 
             try {
                 const response = await axios.get(getServerFuncURL("postEvent", payload));
-               
+                console.log(response)
                 if (response.data.hasOwnProperty("error")) {
 
                     console.log("Failed to post event")
