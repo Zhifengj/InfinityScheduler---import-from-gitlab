@@ -3,11 +3,14 @@ import Vuex from 'vuex'
 import process from 'process'
 import axios from 'axios'
 import router from './../router'
+import { Date as TZDate } from './../../node_modules/tui-calendar/src/js/common/timezone.js'
+
 process.version = 'v14.0.1'
 //import mariadb from 'mariadb'
 
 
 Vue.use(Vuex)
+console.log("TZDate:", TZDate)
 
 
 const SERVER_URL = "http://localhost:80"
@@ -16,7 +19,7 @@ const PROD_SERVER_URL = "http://infinityscheduler.com"
 
 function getServerFuncURL(name, args = {}) {
     
-    return `${PROD_SERVER_URL}/server/${name}.php?args=${encodeURIComponent(JSON.stringify(args))}`
+    return `${SERVER_URL}/server/${name}.php?args=${encodeURIComponent(JSON.stringify(args))}`
 }
 
 
@@ -28,6 +31,35 @@ function getEventIdxById(events, id) {
         }
     }
     return null
+}
+
+//adds the 0 in front of 1 digit numbers
+function datePad(s) {
+    let ps = `${s}`
+    if (ps.length == 1) {
+        ps = `0${ps}`
+    }
+    return ps
+}
+
+function toDBDate(date) {
+    console.log(date)
+   
+    return `${date.getUTCFullYear()}-${datePad(date.getUTCMonth() + 1)}-${datePad(date.getUTCDate())} ${datePad(date.getUTCHours())}:${datePad(date.getUTCMinutes())}:${datePad(date.getUTCSeconds())}`
+}
+
+//executes a database function and returns the result. Console.logs the error if there is one
+async function execDB(func, args) {
+    try {
+
+        const response = await axios.get(getServerFuncURL(func, args));
+        console.log(response)
+        return response.data
+
+    } catch (error) {
+        console.error(error);
+        return error
+    }
 }
 
 
@@ -84,14 +116,23 @@ export default new Vuex.Store({
 
         //adds an event e to the calendar
         addEvent(state, e) {
-
+           console.log(e)
             e.calendarId = '0'
             e.id = `${state.nextEventId}`
             //might have to change this later
             e.category = 'time'
+            e.lastUpdated = new TZDate(Date.now())
+            e.created = new TZDate(Date.now())
+            e.completed = false
+            //update with actual state
+            e.state = 0
+            //update with actual body text
+            e.body = ""
+            
+
             state.events.push(e)
             state.nextEventId += 1
-
+            this.dispatch("postEvent", e)
         },
 
        
@@ -102,49 +143,105 @@ export default new Vuex.Store({
            
             state.events[ev].start = e.changes.start
             state.events[ev].end = e.changes.end
-
+            state.events[ev].lastUpdated = new Date(Date.now())
+            
         },
         deleteEvent(state, e) {
             state.events.splice(getEventIdxById(state.events, e.schedule.id), 1)
+        },
+
+        auth(state, UID) {
+            console.log(`Authed! ${UID}`)
+            state.UID = UID
+        },
+
+        setEvents(state, events) {
+           
+            for (let e = 0; e < events.length; e++) {
+                //local event names need to be in lowercase
+                events[e].start = new Date(events[e].Start).getTime()
+                events[e].end = new Date(events[e].End).getTime()
+                events[e].lastUpdated = new Date(events[e].LastUpdated).getTime()
+                events[e].created = new Date(events[e].Created).getTime()
+                events[e].id = events[e].TID
+                events[e].category = 'time'
+                events[e].title = events[e].Title
+            }
+            console.log(events)
+            state.events = events
         }
     },
     actions: {
         //can be async, called with $store.dispatch("<name>", args, options)
 
-        async auth(state, ep) {
-            
-            try {
-                const response = await axios.get(getServerFuncURL("auth", ep));
-                
-                if (response.data.hasOwnProperty("error")) {
-                   
-                    state.loginFailure = true
-                } else {
-                    
-                    state.loginFailure = false
-                    state.UID = response.data[0]
-                    router.push("/navigation")
-                    router.go(0)
-                }
-               
-            } catch (error) {
-                console.error(error);
+        async auth(store, ep) {
+            const res = await execDB("auth", ep);
+            console.log(res)
+            if (res.hasOwnProperty("error")) {
+
+                store.state.loginFailure = true
+            } else {
+
+                store.state.loginFailure = false
+                store.commit("auth", res.UID)
+                //router.push("/navigation")
+                //router.go(0)
+
             }
+           
            
         },
 
-        async getTasks(state) {
-            try {
-                const response = await axios.get(getServerFuncURL("getEvents", { "UID": state.UID }));
+        async getEvents(store) {    
+            const res = await execDB("getEvents", { "UID": store.state.UID })
+            if (res.hasOwnProperty("error")) {
 
+                console.log("Failed to retreive events")
+            } else {
+                console.log(res)
+                store.commit("setEvents", res)
+
+
+            }
+           
+        },
+  
+        //DO NOT USE THIS TO ADD AN EVENT use addEvent instead
+        async postEvent(store, e) {
+            
+            let payload = {
+                id: e.id,
+                calendarid: e.calendarId,
+                title: e.title,
+                body: e.body,
+                UID: store.state.UID,
+                LID: 0,
+                completed: e.completed ? 1 : 0,
+                state: e.state
+
+
+            }
+            if (typeof e.start !== "string") {
+                payload.start = toDBDate(e.start.toDate())
+            }
+            if (typeof e.end !== "string") {
+                payload.end = toDBDate(e.end.toDate())
+            }
+            if (typeof e.lastUpdated !== "string") {
+                payload.lastupdated = toDBDate(e.lastUpdated.toDate())
+            }
+            if (typeof e.created !== "string") {
+                payload.created = toDBDate(e.created.toDate())
+            }
+           
+
+            try {
+                const response = await axios.get(getServerFuncURL("postEvent", payload));
+                console.log(response)
                 if (response.data.hasOwnProperty("error")) {
 
-                    console.log("Failed to retreive tasks")
-                } else {
-                    events = response.data
-                    
-                }
-
+                    console.log("Failed to post event")
+                } 
             } catch (error) {
                 console.error(error);
             }
