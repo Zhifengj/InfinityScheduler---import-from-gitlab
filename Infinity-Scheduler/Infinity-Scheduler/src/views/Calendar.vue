@@ -82,7 +82,7 @@
             },
             onBeforeDeleteSchedule(e) {
                 //update the store too
-                this.$store.dispatch("deleteEvent", e.schedule)
+                this.$store.commit("deleteEvent", e.schedule)
                 this.$refs.calref.invoke("deleteSchedule", e.schedule.id, e.schedule.calendarId)
             },
             

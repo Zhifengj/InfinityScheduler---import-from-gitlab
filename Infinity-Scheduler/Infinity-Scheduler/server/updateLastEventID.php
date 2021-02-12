@@ -1,7 +1,7 @@
 <?php
-	
+	require_once "config.php";
 	if(isset($_GET["args"]) && !empty(trim($_GET["args"]))){
-		require_once "config.php";
+		
 
 		$args = urldecode($_GET['args']);
 		
@@ -10,20 +10,24 @@
 		
 		
 		$stmt = mysqli_stmt_init($link);
-		if (mysqli_stmt_prepare($stmt, "SELECT UID, NextTID FROM User WHERE Username=? AND Password=?")) {
+		if (mysqli_stmt_prepare($stmt, "UPDATE User SET NextTID = ? WHERE UID = ?")) {
 
 			/* bind parameters for markers */
-			mysqli_stmt_bind_param($stmt, "ss", $args["uname"], $args["pword"]);
+			mysqli_stmt_bind_param($stmt, "ii", $args["nextTID"], $args["UID"]);
 
 			/* execute query */
 			mysqli_stmt_execute($stmt);
-			$result = mysqli_stmt_get_result($stmt);
-
-			if(mysqli_num_rows($result) > 0){
-				echo json_encode(mysqli_fetch_all($result, MYSQLI_ASSOC)[0]);
+			if (mysqli_stmt_affected_rows($stmt) == 1){
+				echo formatSuccess("updated");
 			} else {
-				echo formatError("failure: empty result");
+				echo formatError("nothing updated");
 			}
+			
+			
+			
+			
+			
+			
 
 			
 			  

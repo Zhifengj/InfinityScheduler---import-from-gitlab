@@ -44,6 +44,9 @@
     <Content Include="server\postEvent.php">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="server\updateLastEventID.php">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="src\App.vue" />
     <Content Include="package.json" />
     <Content Include="README.md" />
