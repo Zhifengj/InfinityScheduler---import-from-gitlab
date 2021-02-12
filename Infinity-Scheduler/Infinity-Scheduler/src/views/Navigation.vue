@@ -42,6 +42,9 @@ import Setting from './Setting'
            Tabs,
            NavHome,
            Setting
+        },
+        beforeMount() {
+            this.$store.dispatch("getEvents")
         }
     }
 </script>
