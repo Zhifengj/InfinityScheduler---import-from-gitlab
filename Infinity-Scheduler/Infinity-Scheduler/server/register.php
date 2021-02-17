@@ -1,64 +1,63 @@
 <?php
-	require_once "session.php";
-	if (startOrResumeSession()){
-		require_once "config.php";
-		if(isset($_GET["args"]) && !empty(trim($_GET["args"]))){
+	
+	require_once "config.php";
+	if(isset($_GET["args"]) && !empty(trim($_GET["args"]))){
 		
 
-			$args = urldecode($_GET['args']);
+		$args = urldecode($_GET['args']);
 		
-			$args = json_decode($args, true);
+		$args = json_decode($args, true);
 		
 
 			
-			if ($nextUidResult = mysqli_query($link, "SELECT MAX(UID) AS NextUID FROM User")){
-				$nextUID = mysqli_fetch_all($nextUidResult, MYSQLI_ASSOC)[0]["NextUID"] + 1;
+		if ($nextUidResult = mysqli_query($link, "SELECT MAX(UID) AS NextUID FROM User")){
+			$nextUID = mysqli_fetch_all($nextUidResult, MYSQLI_ASSOC)[0]["NextUID"] + 1;
 
-				$stmt = mysqli_stmt_init($link);
-				if (mysqli_stmt_prepare($stmt, 
-				"INSERT INTO User (Username, Password, UID, Name, NextTID)
-					VALUES (?, ?, ?, ?, 0)
-				")) {
+			$stmt = mysqli_stmt_init($link);
+			if (mysqli_stmt_prepare($stmt, 
+			"INSERT INTO User (Username, Password, UID, Name, NextTID)
+				VALUES (?, ?, ?, ?, 0)
+			")) {
 
-					/* bind parameters for markers */
-					mysqli_stmt_bind_param($stmt, "ssis", 
-					$args["username"], 
-					$args["password"],
-					$nextUID,
-					$args["name"]
-					);
+				/* bind parameters for markers */
+				mysqli_stmt_bind_param($stmt, "ssis", 
+				$args["username"], 
+				$args["password"],
+				$nextUID,
+				$args["name"]
+				);
 
-					/* execute query */
-					mysqli_stmt_execute($stmt);
+				/* execute query */
+				mysqli_stmt_execute($stmt);
 					
-					if (mysqli_stmt_affected_rows($stmt) == 1){
-						echo formatSuccess("registered");
-					} else {
-						echo formatError("failure: could not register");
-					}
+				if (mysqli_stmt_affected_rows($stmt) == 1){
+					echo formatSuccess("registered");
+				} else {
+					echo formatError("failure: could not register");
+				}
 			
 					
 			
 
 			
 			  
-					/* close statement */
-					mysqli_stmt_close($stmt);
+				/* close statement */
+				mysqli_stmt_close($stmt);
 
-				} else {
-					echo formatError("failure: bad query");
-				}
 			} else {
-				echo formatError("failure: couldn't get next UID");
+				echo formatError("failure: bad query");
 			}
+		} else {
+			echo formatError("failure: couldn't get next UID");
+		}
 		
 		
 			
 
-		} else {
-			echo formatError("failure: no args");
-		}
-
+	} else {
+		echo formatError("failure: no args");
 	}
+
 	
+
 ?>

@@ -50,7 +50,7 @@
                         "password": this.pas_word,
                         "name": `${this.first_name} ${this.last_name}`
                     }
-                    this.$store.commit("register", data)
+                    this.$store.dispatch("register", data)
                 } else {
                     this.failed = true
                 }

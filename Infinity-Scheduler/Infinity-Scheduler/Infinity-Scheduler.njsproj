@@ -50,6 +50,7 @@
     <Content Include="server\postEvent.php">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="server\register.php" />
     <Content Include="server\session.php" />
     <Content Include="server\updateLastEventID.php">
       <SubType>Code</SubType>
