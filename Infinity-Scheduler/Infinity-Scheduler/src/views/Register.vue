@@ -1,6 +1,6 @@
 <template>
     <div id="registation">
-        <div class="registate">Infinity Scheduler</div>
+        <div class="registate">Infinity Scheduler (Alpha)</div>
         <div class="registation_container">
             <form>
                 <p>Username</p>
@@ -16,14 +16,18 @@
                 <p>Confirm Password</p>
                 <input type="text" id="conf_word" v-model="conf_word">
                 <p></p>
-                <button v-on:click="tryRegister">Register</button>
+                <button class="reg-button" v-on:click="tryRegister">Register</button>
             </form>
 
         </div>
+        <div>Note: Passwords are currently NOT stored securely</div>
     </div>
 </template>
 
 <script>
+
+
+
     export default {
         name: 'register',
         data() {
@@ -34,15 +38,24 @@
                 last_name: "",
                 email: "",
                 pas_word: "",
-                conf_word: ""
+                conf_word: "",
+                failed: false
             }
         },
         methods: {
             //local methods go here
             tryRegister() {
-                alert(`${this.user_name} Register > m < !!!!!!!!!!!!`)
-
-
+                if (this.pas_word == this.conf_word) {
+                    let data = {
+                        "username": this.user_name,
+                        "password": this.pas_word,
+                        "name": `${this.first_name} ${this.last_name}`
+                    }
+                    this.$store.dispatch("register", data)
+                } else {
+                    this.failed = true
+                }
+                
             }
 
         }
@@ -82,8 +95,9 @@
         text-align: left;
         background-color: #0670bf;
         color: #ffffff;
-        padding-bottom: 30px;
+        padding-bottom: 50px;
         padding-right: 30px;
+        padding-top:30px;
     }
 
     form {
@@ -100,17 +114,19 @@
         width: 120%;
     }
 
-    button {
+    .reg-button {
         background-color: #042269;
         color: white;
         width: 125%;
         border: 3px solid black;
         transition: 0.5s ease-in-out;
+        font-size: 15px;
     }
 
-        button:hover {
-            background-color: #ffffff;
-            color: black;
-            transition: 0.5s ease-in-out;
-        }
+    .reg-button:hover {
+        background-color: #ffffff;
+        color: black;
+        transition: 0.5s ease-in-out;
+        font-size: 15px;
+    }
 </style>

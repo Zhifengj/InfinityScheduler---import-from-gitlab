@@ -66,7 +66,32 @@ Sprint 3 Update 2: 12/8/2020
 Sprint 3 Update 3: 12/15/2020
 - just caught up with partner
 
-Sprint 4 Update 1 : 1/6/2021
+Sprint 4:
+- off for holidays
+
+Sprint 5 Update 1 : 1/6/2021
 - went over plan for new term/sprint finishing this week
 - deploy a construction page
 - talk about how to push features 
+
+Sprint 6 Update 1: 1/13/21
+- went over plans for this sprint
+- talked about what we did on previous sprint 
+- made a "under construction" page, website is up on server
+
+Sprint 6 Update 2: 1/15/21
+- updated our TA on our progress and where we are at
+
+Sprint 7 Update 1: 1/27/21
+- Everyone went over what they had accomplished in the last week and what they plan on doing for this sprint.
+
+Sprint 7 Update 2: 2/3/21
+- Went over what we need have been doing and what we are going to work on
+- Talked about Alpha Functionality
+- Week/Day/Month timeline of optional activites that have to happen in that timeline
+
+Sprint 7 Update 3: 2/5/21
+- Went over what we've been doing with our TA  
+
+Sprint 8 Update 1: 2/17/21
+- Went through a demo of alpha functionality with partner

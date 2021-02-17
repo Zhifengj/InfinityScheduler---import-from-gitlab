@@ -1,14 +1,16 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Construction from '@/views/Construction'
-
+import Login from '@/views/Login'
+import About from '@/views/About'
+import Calendar from '@/views/Calendar'
+import Register from '@/views/Register'
+import Navigation from '@/views/Navigation'
 
 
 Vue.use(Router)
 
 export default new Router({
     routes: [
-        /*
         {
             path: '/',
             name: 'Login',
@@ -32,15 +34,8 @@ export default new Router({
         ,
         {
             path: '/navigation',
-            name: 'navigation',
+            name: 'Navigation',
             component: Navigation
         }
-        */
-        {
-            path: '/',
-            name: 'Construction',
-            component: Construction
-        }
-
     ]
 })
