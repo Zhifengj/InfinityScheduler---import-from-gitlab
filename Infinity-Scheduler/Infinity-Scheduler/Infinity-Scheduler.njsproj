@@ -41,9 +41,16 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="server\getEvents.php" />
+    <Content Include="server\isLoggedIn.php">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="server\logout.php">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="server\postEvent.php">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="server\session.php" />
     <Content Include="server\updateLastEventID.php">
       <SubType>Code</SubType>
     </Content>

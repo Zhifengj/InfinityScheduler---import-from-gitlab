@@ -3,8 +3,9 @@ import Vuex from 'vuex'
 import process from 'process'
 import axios from 'axios'
 import router from './../router'
+
 import { Date as TZDate } from './../../node_modules/tui-calendar/src/js/common/timezone.js'
-import { exec } from 'child_process'
+
 
 process.version = 'v14.0.1'
 //import mariadb from 'mariadb'
@@ -20,9 +21,13 @@ const PROD_SERVER_URL = "http://infinityscheduler.com"
 
 
 
-function getServerFuncURL(name, args = {}) {
-    
-    return `${SERVER_URL}/server/${name}.php?args=${encodeURIComponent(JSON.stringify(args))}`
+function getServerFuncURL(name, args = false) {
+    if (args != false) {
+        return `${SERVER_URL}/server/${name}.php?args=${encodeURIComponent(JSON.stringify(args))}`
+    } else {
+        return `${SERVER_URL}/server/${name}.php`
+    }
+     
 }
 
 
@@ -80,7 +85,11 @@ async function execDB(func, args) {
     try {
 
         const response = await axios.get(getServerFuncURL(func, args));
-        console.log(response)
+      
+        if (response.data.hasOwnProperty("redirect")){
+            window.location.href = response.data["redirect"]
+            
+        }
         return response.data
 
     } catch (error) {
@@ -170,7 +179,7 @@ export default new Vuex.Store({
 
 
         ],
-        UID: -1,
+       
         loginFailure: false
       
 
@@ -186,10 +195,10 @@ export default new Vuex.Store({
         //adds an event e to the calendar
         addEvent(state, e) {
             let id = getNextEventID(state)
-           console.log(e)
-            e.calendarId = '0'
+          
+            e.calendarid = '0'
             e.id = `${id}`
-            console.log(state)
+            
             //might have to change this later
             e.category = 'time'
             e.lastupdated = new Date(Date.now())
@@ -231,17 +240,16 @@ export default new Vuex.Store({
         },
 
         auth(state, data) {
-            console.log(`Authed! ${data.UID}`)
-            state.UID = data.UID
+           
             state._nextEventId = data.NextTID
            
         },
 
         setEvents(state, events) {
-            console.log("before", events)
+           
             for (let e = 0; e < events.length; e++) {
                 //local event names need to be in lowercase
-                console.log("comp: ", events[e].start, fromDBDate(events[e].start))
+               
                 events[e].start = fromDBDate(events[e].start).getTime()
                 events[e].end = fromDBDate(events[e].end).getTime()
                 events[e].lastupdated = fromDBDate(events[e].lastupdated)
@@ -250,7 +258,7 @@ export default new Vuex.Store({
                 events[e].category = 'time'
   
             }
-            console.log(events)
+            
             state.events = events
         }
     },
@@ -259,17 +267,17 @@ export default new Vuex.Store({
 
         async auth(store, ep) {
             const res = await execDB("auth", ep);
-            console.log(res)
+            
             if (res.hasOwnProperty("error")) {
-
+                console.log("invalid login")
                 store.state.loginFailure = true
             } else {
 
                 store.state.loginFailure = false
                 store.commit("auth", res)
                 store.dispatch("getEvents")
-                //router.push("/navigation")
-                //router.go(0)
+                router.push("/navigation")
+                router.go(0)
 
             }
            
@@ -277,12 +285,12 @@ export default new Vuex.Store({
         },
 
         async getEvents(store) {    
-            const res = await execDB("getEvents", { "UID": store.state.UID })
+            const res = await execDB("getEvents");
             if (res.hasOwnProperty("error")) {
-
-                console.log("Failed to retreive events")
+                console.log("Error: failed to get events")
+                
             } else {
-                console.log(res)
+                
                 //convert events from db to local
                 for (let i = 0; i < res.length; i++) {
                     res[i] = fromDBEvent(res[i])
@@ -304,7 +312,6 @@ export default new Vuex.Store({
                 calendarid: e.calendarId ? e.calendarId : 0,
                 title: e.title,
                 body: e.body,
-                UID: store.state.UID,
                 LID: 0,
                 completed: e.completed ? 1 : 0,
                 state: e.state
@@ -324,11 +331,11 @@ export default new Vuex.Store({
             if (typeof e.created !== "string") {
                 payload.created = toDBDate(e.created)
             }
-            console.log("start", payload.start)
+           
 
             try {
                 const response = await axios.get(getServerFuncURL("postEvent", payload));
-                console.log(response)
+               
                 if (response.data.hasOwnProperty("error")) {
 
                     console.log("Failed to post event")
@@ -340,7 +347,7 @@ export default new Vuex.Store({
 
         async deleteEvent(store, event) {
             
-            const res = await execDB("deleteEvent", { "UID": store.state.UID, "TID": event.id })
+            const res = await execDB("deleteEvent", {"TID": event.id })
             if (res.hasOwnProperty("error")) {
 
                 console.log("Failed to delete event")
@@ -360,7 +367,7 @@ export default new Vuex.Store({
         },
 
         async updateLastEventID(store, id) {
-            const res = await execDB("updateLastEventID", { "nextTID": id, "UID": store.state.UID })
+            const res = await execDB("updateLastEventID", { "nextTID": id })
             if (res.hasOwnProperty("error")) {
 
                 console.log("Failed to delete event")
@@ -370,6 +377,23 @@ export default new Vuex.Store({
 
 
             }
+        },
+
+        async register(store, data) {
+            const res = await execDB("register", data);
+            if (res.hasOwnProperty("error")) {
+                console.log("Error: failed to get events")
+
+            } else {
+
+                store.commit("auth", {"uname": data["username"], "pword": data["password"]})
+
+
+            }
+        },
+        async logout(store) {
+            await execDB("logout");
         }
+
     }
 })

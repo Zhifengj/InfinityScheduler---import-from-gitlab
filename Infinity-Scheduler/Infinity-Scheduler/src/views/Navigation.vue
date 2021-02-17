@@ -2,8 +2,9 @@
   <div>
       <div class="header">
           <div class="title">
-            Infinity Scheduler
+              Infinity Scheduler
           </div>
+          <button v-on:click="logout()">Logout</button>
       </div>
 
       <Tabs>
@@ -34,7 +35,9 @@ import Setting from './Setting'
         },
         methods: {
             //local methods go here
-
+            logout() {
+                this.$store.dispatch("logout");
+            }
         },
         components: {
            Calendar,
@@ -43,6 +46,9 @@ import Setting from './Setting'
            NavHome,
            Setting
         },
+        mounted() {
+            this.$store.dispatch("getEvents");
+        }
         
     }
 </script>

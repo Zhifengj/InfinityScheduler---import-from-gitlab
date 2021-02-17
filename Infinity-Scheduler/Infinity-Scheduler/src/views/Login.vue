@@ -43,6 +43,11 @@
                     "pword": this.pword
                 })
             }
+        },
+        mounted() {
+            this.$store.dispatch("auth");
+            
+
         }
     }
 </script>

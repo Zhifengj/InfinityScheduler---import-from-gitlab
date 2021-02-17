@@ -9,7 +9,7 @@
         </select>
         <div class="calContainer">
             <cal style="height: 800px;"
-                 :schedules="events"
+                 :schedules="this.$store.state.events"
                  :view="view"
                  :taskView="taskView"
                  :scheduleView="scheduleView"
@@ -27,7 +27,7 @@
                  @beforeDeleteSchedule="onBeforeDeleteSchedule"
                  ref="calref" />
         </div>
-       
+  
     </div>
 </template>
 

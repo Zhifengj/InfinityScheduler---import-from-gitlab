@@ -1,19 +1,14 @@
 <?php
-	require_once "config.php";
-	if(isset($_GET["args"]) && !empty(trim($_GET["args"]))){
-		
-
-		$args = urldecode($_GET['args']);
-		
-		$args = json_decode($args, true);
-		
-		
+	require_once "session.php";
+	if (startOrResumeSession()){
+		require_once "config.php";
+	
 		
 		$stmt = mysqli_stmt_init($link);
 		if (mysqli_stmt_prepare($stmt, "SELECT * FROM TaskEvent WHERE UID=?")) {
 
 			/* bind parameters for markers */
-			mysqli_stmt_bind_param($stmt, "i", $args["UID"]);
+			mysqli_stmt_bind_param($stmt, "i", $_SESSION["UID"]);
 
 			/* execute query */
 			mysqli_stmt_execute($stmt);
@@ -31,9 +26,9 @@
 		} else {
 			echo formatError("failure: bad query");
 		}
-
-	} else {
-		echo formatError("failure: no args");
 	}
+	
+
+	
 
 ?>

@@ -37,13 +37,24 @@
                 last_name: "",
                 email: "",
                 pas_word: "",
-                conf_word: ""
+                conf_word: "",
+                failed: false
             }
         },
         methods: {
             //local methods go here
-            async tryRegister() {
-
+            tryRegister() {
+                if (this.pas_word == this.conf_word) {
+                    let data = {
+                        "username": this.user_name,
+                        "password": this.pas_word,
+                        "name": `${this.first_name} ${this.last_name}`
+                    }
+                    this.$store.commit("register", data)
+                } else {
+                    this.failed = true
+                }
+                
             }
 
         }
