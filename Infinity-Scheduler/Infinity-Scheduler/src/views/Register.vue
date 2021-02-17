@@ -1,6 +1,6 @@
 <template>
     <div id="registation">
-        <div class="registate">Infinity Scheduler</div>
+        <div class="registate">Infinity Scheduler (Alpha)</div>
         <div class="registation_container">
             <form>
                 <p>Username</p>
@@ -20,6 +20,7 @@
             </form>
 
         </div>
+        <div>Note: Passwords are currently NOT stored securely</div>
     </div>
 </template>
 

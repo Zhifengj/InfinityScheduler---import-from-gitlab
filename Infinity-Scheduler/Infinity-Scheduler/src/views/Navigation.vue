@@ -2,7 +2,7 @@
   <div>
       <div class="header">
           <div class="title">
-              Infinity Scheduler
+              Infinity Scheduler (Alpha)
           </div>
           <button v-on:click="logout()">Logout</button>
       </div>
