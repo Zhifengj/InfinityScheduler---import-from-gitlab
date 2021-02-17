@@ -47,6 +47,7 @@ import Setting from './Setting'
            Setting
         },
         mounted() {
+            this.$store.dispatch("getNextTID");
             this.$store.dispatch("getEvents");
         }
         

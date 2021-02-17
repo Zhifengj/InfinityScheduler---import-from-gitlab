@@ -5,6 +5,7 @@ import axios from 'axios'
 import router from './../router'
 
 import { Date as TZDate } from './../../node_modules/tui-calendar/src/js/common/timezone.js'
+import { exec } from 'child_process'
 
 
 process.version = 'v14.0.1'
@@ -120,7 +121,7 @@ export default new Vuex.Store({
     state: {
         //-1 means that the next id is a new one
         availableEventIds: [-1],
-        _nextEventId: -1,
+        _nextEventId: 0,
         events: [],
         calView: "month",
         weekOptions: {
@@ -194,7 +195,8 @@ export default new Vuex.Store({
 
         //adds an event e to the calendar
         addEvent(state, e) {
-            let id = getNextEventID(state)
+           
+            let id = state._nextEventId
           
             e.calendarid = '0'
             e.id = `${id}`
@@ -211,12 +213,10 @@ export default new Vuex.Store({
             
 
             state.events.push(e)
-            state.nextEventId += 1
+            state._nextEventId += 1
             //update the database id if the id is new
-            if (id == state._nextEventId) {
-                this.dispatch("updateLastEventID", id)
-            }
             
+            this.dispatch("updateLastEventID", id + 1)
             //post the event
             this.dispatch("postEvent", e)
         },
@@ -240,8 +240,9 @@ export default new Vuex.Store({
         },
 
         auth(state, data) {
-           
+         
             state._nextEventId = data.NextTID
+          
            
         },
 
@@ -367,10 +368,12 @@ export default new Vuex.Store({
         },
 
         async updateLastEventID(store, id) {
+            
             const res = await execDB("updateLastEventID", { "nextTID": id })
+            
             if (res.hasOwnProperty("error")) {
 
-                console.log("Failed to delete event")
+                console.log("Failed to update event")
             } else {
                 console.log(res)
                 
@@ -386,14 +389,20 @@ export default new Vuex.Store({
 
             } else {
 
-                store.commit("auth", {"uname": data["username"], "pword": data["password"]})
+                store.dispatch("auth", {"uname": data["username"], "pword": data["password"]})
 
 
             }
         },
         async logout(store) {
             await execDB("logout");
-        }
+        },
 
+        async getNextTID(store) {
+           
+            const res = await execDB("getNextTID")
+           
+            store.commit("auth", res)
+        }
     }
 })

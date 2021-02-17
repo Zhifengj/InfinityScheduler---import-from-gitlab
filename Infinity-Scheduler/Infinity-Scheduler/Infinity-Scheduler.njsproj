@@ -41,6 +41,9 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="server\getEvents.php" />
+    <Content Include="server\getNextTID.php">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="server\isLoggedIn.php">
       <SubType>Code</SubType>
     </Content>
