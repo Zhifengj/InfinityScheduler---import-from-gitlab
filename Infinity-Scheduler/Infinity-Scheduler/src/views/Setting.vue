@@ -3,7 +3,7 @@
       <div class="setting">
         <h2> Setting </h2>
         <form >
-          <label>Language:</label>
+          <label>Language: </label>
           <select>
             <option value="Chinese">Chinese</option>
             <option value="English">English</option>
@@ -16,7 +16,7 @@
             <option value="Italian">Italian</option>
           </select>
           <br><br>
-          <label>Time Zone:</label>
+          <label>Time Zone: </label>
           <select>
             <option value="-00">UTC-00:00</option>
             <option value="-01">UTC-01:00</option>
@@ -45,7 +45,7 @@
             <option value="+01">UTC+01:00</option>
           </select>
           <br><br>
-          <label>Background Color:</label>
+          <label>Background Color: </label>
           <select>
             <option value="#F0F8FF">AliceBlue</option>
             <option value="#00FFFF">Aqua</option>
@@ -54,25 +54,51 @@
             <option value="#00BFFF">DeepSkyBlue</option>
             <option value="#D3D3D3">LightGray</option>
           </select>
+          <br><br>
         </form>
       </div>
+
+      <div class="text">
+          Reminder for Today
+          <br>
+          <br>
+          Reminder for Tomorrow
+          <br>
+          <br>
+          Friend Search Allowed
+      </div>
+
+      <div class="toggles">
+          <Toggle id="first" />
+          <br>
+          <br>
+          <Toggle id="second" />
+          <br>
+          <br>
+          <Toggle id="third" />
+      </div>
+
+
   </div>
 
 </template>
 
 <script>
 
+import Toggle from './Toggle.vue'
+
 export default {
     name: 'Setting',
     data(){
         return {
+          currentState: false
         }
     },
     methods: {
 
     },
     components: {
-
+      Toggle
     }
 }
 
@@ -92,7 +118,27 @@ export default {
   }
 
   .setting {
-    font-size: 24px;
+    margin-left: 30%;
+    font-size: 22px;
+    padding-left: 50px;
+    font-family: vidaloka;
+    margin-top: 100px;
   }
 
+  .text {
+    display: inline-block;
+    float: left;
+    padding-left: 50px;
+    margin-left: 30%;
+    font-family:  vidaloka;
+    font-size: 22px;
+  }
+
+  .toggles {
+    display: inline-block;
+    float: left;
+    margin-left: 10%;
+    font-family:  vidaloka;
+    font-size: 22px;
+  }
 </style>
