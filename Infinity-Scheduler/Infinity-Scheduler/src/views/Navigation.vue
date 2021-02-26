@@ -10,7 +10,7 @@
       <Tabs>
         <Tab title="home-solid.svg"><NavHome /></Tab>
         <Tab title="calendar-alt-regular.svg"><Calendar/></Tab>
-        <Tab title="bell-solid.svg"></Tab>
+        <Tab title="bell-solid.svg"><Notification></Tab>
         <Tab title="cogs-solid.svg"><Setting /></Tab>
         <Tab title="user-circle-regular.svg"></Tab>
       </Tabs>
@@ -24,13 +24,14 @@ import Calendar from './Calendar'
 import Tab from './Tab'
 import Tabs from './Tabs'
 import NavHome from './nav_home'
-import Setting from './Setting'
+    import Setting from './Setting'
+    import Notification from './Notification'
 
     export default {
         name: 'navigate',
         data() {
             return{
-
+                checkEventMissedInterval: () => { }
             }
         },
         methods: {
@@ -44,11 +45,17 @@ import Setting from './Setting'
            Tab,
            Tabs,
            NavHome,
-           Setting
+            Setting,
+            Notification
         },
         mounted() {
+            this.$store.dispatch("getNotifications")
             this.$store.dispatch("getNextTID");
             this.$store.dispatch("getEvents");
+            
+            this.checkEventMissedInterval = setInterval(() => {
+                this.$store.commit("checkMissedEvent")
+            }, 3000);
         }
         
     }
