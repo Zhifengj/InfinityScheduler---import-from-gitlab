@@ -403,6 +403,12 @@ export default new Vuex.Store({
             const res = await execDB("getNextTID")
            
             store.commit("auth", res)
-        }
+        },
+
+        async getUpcomingEvent(store) {
+            const res = await execDB("getNextEvent");
+            return res;
+        },
+        
     }
 })
