@@ -35,13 +35,25 @@
     </Content>
     <Content Include="public\favicon.ico" />
     <Content Include="public\index.html" />
+    <Content Include="server\addNotification.php">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="server\auth.php" />
     <Content Include="server\config.php" />
     <Content Include="server\deleteEvent.php">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="server\deleteNotification.php">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="server\getEvents.php" />
+    <Content Include="server\getNextEvent.php">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="server\getNextTID.php">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="server\getNotifications.php">
       <SubType>Code</SubType>
     </Content>
     <Content Include="server\isLoggedIn.php">
@@ -73,9 +85,13 @@
     </Content>
     <Content Include="src\views\Login.vue" />
     <Content Include="src\views\Navigation.vue" />
+    <Content Include="src\views\nav_home.vue" />
+    <Content Include="src\views\Notification.vue" />
     <Content Include="src\views\Register.vue">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="src\views\Tab.vue" />
+    <Content Include="src\views\Tabs.vue" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="dist\" />

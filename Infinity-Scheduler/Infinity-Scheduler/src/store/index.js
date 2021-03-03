@@ -181,7 +181,8 @@ export default new Vuex.Store({
 
         ],
        
-        loginFailure: false
+        loginFailure: false,
+        notifs: []
       
 
 
@@ -261,14 +262,62 @@ export default new Vuex.Store({
             }
             
             state.events = events
+        },
+        setNotifications(state, notifs) {
+            state.notifs = notifs
+            console.log(state.notifs)
+        },
+        deleteNotification(state, id) {
+            let idx = 0
+            for (let i = 0; i < state.notifs.length; i++) {
+                if (state.notifs[i].eventID == id) {
+                    idx = i
+                }
+            }
+            state.notifs.splice(idx, 1)
+            this.dispatch("deleteNotification", {"TID": id})
+        },
+        addNotification(state, event) {
+            state.notifs.push({ "eventID": event.id, "lastDate": event.start })
+            //this.dispatch("postNotification", {"TID": event.id, "lastDate": toDBDate(new Date(event.start))})
+        },
+
+        checkMissedEvent(state) {
+            let now = Date.now()
+            for (let i = 0; i < state.events.length; i++) {
+                if (!state.events.completed && state.events[i].start < now) {
+                    this.commit("addNotification", state.events[i])
+                    this.commit("reschedule", state.events[i])
+                }
+            }
+        },
+
+        reschedule(state, ev) {
+            //TODO: INTEGRATE WITH AI
+            let week = 1000 * 60 * 60 * 24 * 7
+            let e = {
+                changes: {
+                    start: toDBDate(new Date(ev.start + week)),
+                    end: toDBDate(new Date(ev.end + week))
+
+                },
+                schedule: {
+                    id : ev.id
+                }
+            }
+          
+           
+
+            this.commit("updateEvent", e)
         }
     },
     actions: {
         //can be async, called with $store.dispatch("<name>", args, options)
 
         async auth(store, ep) {
+           
             const res = await execDB("auth", ep);
-            
+         
             if (res.hasOwnProperty("error")) {
                 console.log("invalid login")
                 store.state.loginFailure = true
@@ -315,7 +364,11 @@ export default new Vuex.Store({
                 body: e.body,
                 LID: 0,
                 completed: e.completed ? 1 : 0,
-                state: e.state
+                state: e.state,
+                start: e.start,
+                end: e.end,
+                lastUpdated: e.lastupdated,
+                created: e.created
 
 
             }
@@ -333,10 +386,10 @@ export default new Vuex.Store({
                 payload.created = toDBDate(e.created)
             }
            
-
+            console.log(e)
             try {
                 const response = await axios.get(getServerFuncURL("postEvent", payload));
-               
+                console.log(response)
                 if (response.data.hasOwnProperty("error")) {
 
                     console.log("Failed to post event")
@@ -363,7 +416,17 @@ export default new Vuex.Store({
 
 
         async updateEvent(store, event) {
-            store.dispatch("deleteEvent", event)
+            const res = await execDB("deleteEvent", { "TID": event.id })
+            console.log("del:", res)
+            if (res.hasOwnProperty("error")) {
+
+                console.log("Failed to delete event")
+            } else {
+                console.log(res)
+
+
+
+            }
             store.dispatch("postEvent", event)
         },
 
@@ -384,6 +447,7 @@ export default new Vuex.Store({
 
         async register(store, data) {
             const res = await execDB("register", data);
+           
             if (res.hasOwnProperty("error")) {
                 console.log("Error: failed to get events")
 
@@ -403,6 +467,57 @@ export default new Vuex.Store({
             const res = await execDB("getNextTID")
            
             store.commit("auth", res)
+        },
+
+        async getNotifications(store) {
+            console.log("RUN!")
+            const res = await execDB("getNotifications");
+            console.log(res)
+            if (res.hasOwnProperty("error")) {
+                console.log("Error: failed to get notifications")
+
+            } else {
+
+                //convert events from db to local
+                for (let i = 0; i < res.length; i++) {
+                    res[i] = {
+                        "eventID": res[i]["TID"],
+                        "lastDate" : res[i]["LastDate"]
+                    }
+                }
+
+
+                store.commit("setNotifications", res)
+
+
+            }
+        },
+
+        async postNotification(store, notif) {
+            const res = await execDB("addNotification", notif)
+            console.log(res)
+            if (res.hasOwnProperty("error")) {
+
+                console.log("Failed to update notification")
+            } else {
+                console.log(res)
+
+
+
+            }
+        },
+
+        async deleteNotification(store, notif) {
+            const res = await execDB("deleteNotification", notif)
+            if (res.hasOwnProperty("error")) {
+
+                console.log("Failed to delete notification")
+            } else {
+                console.log(res)
+
+
+
+            }
         }
     }
 })
