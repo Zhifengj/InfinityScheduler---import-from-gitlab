@@ -8,6 +8,7 @@ function formatRedir($dest){
 
 
 function checkSesh(){
+
 	if (isset($_SESSION["UID"]) && $_SESSION["UID"] != -1){
 		return true;
 	} else {

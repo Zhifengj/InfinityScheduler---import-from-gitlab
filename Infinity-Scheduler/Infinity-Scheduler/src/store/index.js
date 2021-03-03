@@ -315,8 +315,9 @@ export default new Vuex.Store({
         //can be async, called with $store.dispatch("<name>", args, options)
 
         async auth(store, ep) {
+           
             const res = await execDB("auth", ep);
-            
+         
             if (res.hasOwnProperty("error")) {
                 console.log("invalid login")
                 store.state.loginFailure = true
@@ -446,6 +447,7 @@ export default new Vuex.Store({
 
         async register(store, data) {
             const res = await execDB("register", data);
+           
             if (res.hasOwnProperty("error")) {
                 console.log("Error: failed to get events")
 

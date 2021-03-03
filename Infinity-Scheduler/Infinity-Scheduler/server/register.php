@@ -15,14 +15,18 @@
 
 			$stmt = mysqli_stmt_init($link);
 			if (mysqli_stmt_prepare($stmt, 
-			"INSERT INTO User (Username, Password, UID, Name, NextTID)
-				VALUES (?, ?, ?, ?, 0)
+			"INSERT INTO User (Username, Password, Salt, UID, Name, NextTID)
+				VALUES (?, ?, ?, ?, ?, 0)
 			")) {
+				$salt = bin2hex(random_bytes('20'));
+				$passhash = hash("sha256", $args["password"] . $salt);
+				
 
 				/* bind parameters for markers */
-				mysqli_stmt_bind_param($stmt, "ssis", 
+				mysqli_stmt_bind_param($stmt, "sssis", 
 				$args["username"], 
-				$args["password"],
+				$passhash,
+				$salt,
 				$nextUID,
 				$args["name"]
 				);
