@@ -64,18 +64,54 @@ export default {
 
 
   .container {
+      margin-left: 10%;
+      margin-right: 10%;
+      width: auto;
+      min-width: 80%;
       display:inline-block;
       float:left;
       background-color: #a1d5f0;
       color: #000000;
-      width:1700px;
       height:700px;
       font-family: Verdana;
+      border: 2px groove #329ea8;
+      border-radius: 5px;
   }
 
-  .notif {
-      background-color:aqua;
-
+  .read {
+    margin: 5px;
+    padding: 5px;
+    margin-left: 22%;
+    display: block;
+    float: left;
+    border: 2px groove #329ea8;
+    border-bottom: none;
+    border-radius: 5px;
   }
+
+  .unread {
+    margin: 5px;
+    padding: 5px;
+    display: block;
+    float: left;
+    margin-left: 44%;
+    border: 2px groove #329ea8;
+    border-bottom: none;
+    border-radius: 5px;
+  }
+
+  .message {
+    margin-left: 1%;
+    width: 48%;
+    height: 600px;
+    display:inline-block;
+    float:left;
+    background-color: #a1d5f0;
+    color: #000000;
+    font-family: Verdana;
+    border: 2px groove #329ea8;
+    border-radius: 5px;
+  }
+
 
 </style>

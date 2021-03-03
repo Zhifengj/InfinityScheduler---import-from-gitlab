@@ -8,8 +8,8 @@
           :class='{"tabs__selected": (index == selectedIndex)}'
           :src='tab.title' width="35" height="35">
       </ul>
-      <slot></slot>
     </div>
+    <slot></slot>
   </div>
 </template>
 
@@ -43,7 +43,8 @@ export default {
 <style scoped>
 
   .tabs__header{
-    padding-left: 60%;
+    padding-left: 30%;
+    padding-right: 30%;
     border: 2px solid black;
     border-radius: 5px;
     border-top: none;
@@ -51,7 +52,8 @@ export default {
   }
 
   img {
-    margin-left: 120px;
+    margin-left: 7.5%;
+    margin-right: 7.5%;
     margin-top: 10px;
     margin-bottom: 10px;
     cursor: pointer;
