@@ -98,3 +98,6 @@ Sprint 8 Update 1: 2/17/21
 
 Sprint 8 Update 2: 2/24/21
 - Went over what we've been working on and stuff to start working on for Beta release
+
+Sprint 9 Update 1: 3/3/21
+- Went over video setup for beta and what needs to be done for beta with our partner
