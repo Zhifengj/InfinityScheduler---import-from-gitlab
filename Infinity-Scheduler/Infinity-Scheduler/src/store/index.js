@@ -182,6 +182,7 @@ export default new Vuex.Store({
         ],
        
         loginFailure: false,
+        registerFailure: false,
         notifs: []
       
 
@@ -449,7 +450,8 @@ export default new Vuex.Store({
             const res = await execDB("register", data);
            
             if (res.hasOwnProperty("error")) {
-                console.log("Error: failed to get events")
+                console.log("Error: failed to register")
+                store.state.registerFailure = true
 
             } else {
 
