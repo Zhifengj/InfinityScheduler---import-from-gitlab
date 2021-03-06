@@ -35,7 +35,7 @@ function getServerFuncURL(name, args = false) {
 function getEventIdxById(events, id) {
     for (let e in events) {
        
-        if (events[e].id === id) {
+        if (events[e].id == id) {
             return e
         }
     }
@@ -206,7 +206,7 @@ export default new Vuex.Store({
             e.category = 'time'
             e.lastupdated = new Date(Date.now())
             e.created = new Date(Date.now())
-            e.completed = false
+            
             //update with actual state
             e.state = 0
             //update with actual body text
@@ -231,6 +231,7 @@ export default new Vuex.Store({
             state.events[ev].start = e.changes.start
             state.events[ev].end = e.changes.end
             state.events[ev].lastupdated = new Date(Date.now())
+            state.events[ev].completed = e.changes.completed
             this.dispatch("updateEvent", state.events[ev])
             
         },

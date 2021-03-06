@@ -5,7 +5,7 @@
 	
 		
 		$stmt = mysqli_stmt_init($link);
-		if (mysqli_stmt_prepare($stmt, "SELECT Title, Body, Start, End FROM TaskEvent WHERE UID=? ORDER BY Start ASC")) {
+		if (mysqli_stmt_prepare($stmt, "SELECT Title, Body, Start, End, Completed FROM TaskEvent WHERE UID=? ORDER BY Start ASC")) {
 
 			/* bind parameters for markers */
 			mysqli_stmt_bind_param($stmt, "i", $_SESSION["UID"]);
