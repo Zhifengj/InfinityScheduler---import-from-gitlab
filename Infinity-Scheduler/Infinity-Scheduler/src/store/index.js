@@ -35,7 +35,7 @@ function getServerFuncURL(name, args = false) {
 function getEventIdxById(events, id) {
     for (let e in events) {
        
-        if (events[e].id === id) {
+        if (events[e].id == id) {
             return e
         }
     }
@@ -207,7 +207,7 @@ export default new Vuex.Store({
             e.category = 'time'
             e.lastupdated = new Date(Date.now())
             e.created = new Date(Date.now())
-            e.completed = false
+            
             //update with actual state
             e.state = 0
             //update with actual body text
@@ -232,6 +232,7 @@ export default new Vuex.Store({
             state.events[ev].start = e.changes.start
             state.events[ev].end = e.changes.end
             state.events[ev].lastupdated = new Date(Date.now())
+            state.events[ev].completed = e.changes.completed
             this.dispatch("updateEvent", state.events[ev])
             
         },
@@ -288,32 +289,51 @@ export default new Vuex.Store({
             for (let i = 0; i < state.events.length; i++) {
                 if (!state.events.completed && state.events[i].start < now) {
                     this.commit("addNotification", state.events[i])
-                    this.commit("reschedule", state.events[i])
+                    this.dispatch("reschedule", state.events[i])
                 }
             }
         },
 
-        reschedule(state, ev) {
-            //TODO: INTEGRATE WITH AI
-            let week = 1000 * 60 * 60 * 24 * 7
-            let e = {
-                changes: {
-                    start: toDBDate(new Date(ev.start + week)),
-                    end: toDBDate(new Date(ev.end + week))
-
-                },
-                schedule: {
-                    id : ev.id
-                }
-            }
-          
-           
-
-            this.commit("updateEvent", e)
-        }
     },
     actions: {
         //can be async, called with $store.dispatch("<name>", args, options)
+
+        async reschedule(state, ev) {
+            //TODO: make AI better lmao
+            let nextDay = 1000 * 60 * 60 * 24
+            nextDay = nextDay - 28800000 //nextDay scheduled 1 day + 8hrs ahead so this fixes it to make full 24hrs
+
+            const result = await execDB("getEventsByDate", { date: new Date(toDBDate(new Date(ev.start + nextDay)).split(" ")[0]).getTime(), date2: (new Date(toDBDate(new Date(ev.start + nextDay)).split(" ")[0]).getTime()) + (1000 * 60 * 60 * 24 - 1) })
+            let newStart = 0
+            let newEnd = 0
+
+           // console.log(result)
+
+            for (let i = 0; i < result.length; i++) { 
+
+                if (((ev.start).getTime() + nextDay) == result[i].start) { //currently will never hit this statment
+                    newStart = result[i].end
+                    newEnd = newStart + ev.end + newDay
+                }
+                else {
+                    newStart = ev.start + nextDay
+                    newEnd = ev.end + nextDay
+                }
+            }
+
+            let e = {
+                changes: {
+                    start: toDBDate(new Date(newStart)),
+                    end: toDBDate(new Date(newEnd))
+
+                },
+                schedule: {
+                    id: ev.id
+                }
+            }
+
+            this.commit("updateEvent", e)
+        },
 
         async auth(store, ep) {
            
