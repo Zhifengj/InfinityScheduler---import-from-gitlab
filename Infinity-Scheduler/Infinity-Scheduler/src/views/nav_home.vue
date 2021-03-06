@@ -37,14 +37,19 @@
                                 <tr>
                                     <th>Title</th>
                                     <th>Body</th>
+                                    <th>Location</th>
                                     <th>Start</th>
                                     <th>End</th>
+                                    <th>Completed</th>
                                 </tr>
                                 <tr v-for="event in eventData">
                                     <th>{{event.Title}}</th>
                                     <th>{{event.Body}}</th>
+                                    <th>{{event.Location}}</th>
                                     <th>{{event.Start}}</th>
                                     <th>{{event.End}}</th>
+                                    <th>{{event.Completed}}</th>
+
                                 </tr>
 
                             </table>
