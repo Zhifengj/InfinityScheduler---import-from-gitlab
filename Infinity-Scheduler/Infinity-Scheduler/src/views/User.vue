@@ -42,20 +42,37 @@
         </div>
       </div>
 
+      <div class="change_pass" v-show='change_profile'>
+        <div class="pass_container">
+          <form class="upload">
+            <input type="file" name="Profile" accept=".bmp,.jpg,.jpeg,.png">
+            <button type="submit" @click='change_profile = false'> Submit </button>
+          </form>
+          <button @click='change_profile = false' class="sec_but"> Cancel </button>
+        </div>
+      </div>
+
       <div class="pro">
         <img id = "profile" src="user_temp.png" alt="icon" />
         <br>
-        <button class = "change_profile_button">Change Profile</button>
+        <button class = "change_profile_button" @click='change_profile = true'>Change Profile</button>
         <br>
         <button class = "out" v-on:click="logout()">Logout</button>
       </div>
       <div class = "vertical_line"></div>
-        <div class = "name_container">Tom</div>
-        <form class = "func">
-          <button class = "change_pass_button" @click='change_pas = true'>Change Password</button>
-          <br>
-          <button class = "change_pass_button" @click='change_email = true'>Change Email Address</button>
+      <div class = "name_container">Tom</div>
+      <form class = "func">
+        <button class = "change_pass_button" @click='change_pas = true'>Change Password</button>
+        <br>
+        <button class = "change_pass_button" @click='change_email = true'>Change Email Address</button>
+      </form>
+      <div class= "search_friend">
+         Search Your Friend
+         <form >
+          <input type="text" placeholder="Search.." >
+          <button> <img src="search.png" alt="search"/> </button>
         </form>
+       </div>
   </div>
 
 </template>
@@ -67,7 +84,8 @@ export default {
     data(){
         return {
           change_pas: false,
-          change_email: false
+          change_email: false,
+          change_profile: false
         }
     },
     methods: {
@@ -100,6 +118,7 @@ export default {
 
 
   .pro {
+    margin-left: 15%;
     display: inline-block;
     float: left;
   }
@@ -110,6 +129,7 @@ export default {
     border-left: 3px solid #bdbfbe;
     height: 500px;
     margin-left: 50px;
+    margin-right: 80px;
     margin-top: 100px;
   }
 
@@ -212,6 +232,43 @@ export default {
 
  .change_pass .sec_but {
    float: right;
+ }
+
+ .search_friend {
+   font-size: 20px;
+   font-family: Noto Serif;
+ }
+
+ .search_friend input {
+   width: 10%;
+   height: 15px;
+   border-top-left-radius: 5px;
+   border-bottom-left-radius: 5px;
+   margin-top: 5px;
+ }
+
+ .search_friend img {
+   height: 25px;
+ }
+
+ .search_friend button {
+   width: 50px;
+   height: 35px;
+   margin-top: 5px;
+   border-top-right-radius: 5px;
+   border-bottom-right-radius: 5px;
+   border: none;
+   cursor: pointer;
+   background-color: white;
+   outline: none;
+ }
+
+ .search_friend button:hover {
+   background-color: grey;
+ }
+
+ .upload {
+   margin-top: 60px;
  }
 
 </style>
