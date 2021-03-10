@@ -2,7 +2,7 @@
   <div class = "all">
       <div class="header">
           <div class="title">
-              Infinity Scheduler (Alpha)
+              Infinity Scheduler (Beta 1)
           </div>
       </div>
 

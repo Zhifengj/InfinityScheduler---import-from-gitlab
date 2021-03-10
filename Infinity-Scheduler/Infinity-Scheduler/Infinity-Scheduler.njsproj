@@ -92,6 +92,7 @@
     </Content>
     <Content Include="src\views\Tab.vue" />
     <Content Include="src\views\Tabs.vue" />
+    <Content Include="src\views\User.vue" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="dist\" />

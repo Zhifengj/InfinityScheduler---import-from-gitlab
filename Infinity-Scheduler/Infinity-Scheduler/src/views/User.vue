@@ -73,7 +73,7 @@ export default {
     methods: {
       //local methods go here
       logout() {
-          this.$router.push({name: 'Login'});
+          this.$store.dispatch("logout")
       }
     },
     components: {

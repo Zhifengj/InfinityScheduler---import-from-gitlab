@@ -1,6 +1,6 @@
 <template>
   <div id="login" :style="{'background-image':'url(login_background.jpg)'}">
-     <div class="login-header">Infinity Scheduler Infinity Scheduler (Alpha)</div>
+     <div class="login-header">Infinity Scheduler (Beta)</div>
 `    <div >
          <div class="login-container">
              <div v-if="this.$store.state.loginFailure">Invalid username or password</div>
