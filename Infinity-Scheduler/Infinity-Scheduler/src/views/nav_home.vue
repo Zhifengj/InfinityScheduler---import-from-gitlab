@@ -23,16 +23,37 @@
             <div class="main_container">
                 <div class="notes">
                     <div class="note">
-                        <div>Remainning time: </div>
+                        <div>Countdown to upcoming event: </div>
                         <div class="time">
-                            <meta name="viewport" content="width=device-width, initial-scale=1">
-                            <p id="timer"></p>
+                            
+                            <p id="timer"> until next event</p>
                         </div>
 
                     </div>
                     <div class="note">
-                        <div>The next thing: </div>
-                        <div id="upcoming-events"></div>
+                        <div>Upcoming Events: </div>
+                        <div id="upcoming-events">
+                            <table border='1' width='80%' style='border-collapse: collapse;'>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Body</th>
+                                    <th>Location</th>
+                                    <th>Start</th>
+                                    <th>End</th>
+                                    <th>Completed</th>
+                                </tr>
+                                <tr v-for="event in eventData">
+                                    <th>{{event.Title}}</th>
+                                    <th>{{event.Body}}</th>
+                                    <th>{{event.Location}}</th>
+                                    <th>{{event.Start}}</th>
+                                    <th>{{event.End}}</th>
+                                    <th>{{event.Completed}}</th>
+
+                                </tr>
+
+                            </table>
+                        </div>
 
 
 
@@ -49,15 +70,34 @@
 </template>
 
 <script>
-
     
+    import axios from 'axios'
     //document.getElementById("defaultTab").click();
+
+    const SERVER_URL = "http://localhost:80"
+    function getServerFuncURL(name, args = false) {
+        if (args != false) {
+            return `${SERVER_URL}/server/${name}.php?args=${encodeURIComponent(JSON.stringify(args))}`
+        } else {
+            return `${SERVER_URL}/server/${name}.php`
+        }
+
+    }
     
 export default {
     name: 'nav_home',
     data(){
         return {
+            eventData: null
         }
+    },
+    mounted() {
+        
+        axios
+            .get(getServerFuncURL("getNextEvent"))
+            .then(response => (this.eventData = response.data))
+         
+       //this.eventData = this.$store.dispatch("getUpcomingEvent");
     },
     methods: {
         openTab: function(evt, tabID) {
@@ -124,21 +164,11 @@ export default {
             }
         }, false);
     }
-
-    // Add a "checked" symbol when clicking on a list item
-    /*
-    var list = document.querySelector('ul');
-    list.addEventListener('click', function (ev) {
-        if (ev.target.tagName === 'LI') {
-            ev.target.classList.toggle('checked');
-        }
-    }, false);
-    */
     
 
     //this will be time of next event
     
-    var countDownDate = new Date("Feb 25, 2021 15:37:25").getTime();
+    var countDownDate = new Date("Feb 30, 2021 15:37:25").getTime();
 
     var x = setInterval(function () {
 

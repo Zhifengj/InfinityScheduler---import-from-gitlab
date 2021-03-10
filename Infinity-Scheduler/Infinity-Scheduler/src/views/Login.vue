@@ -1,25 +1,26 @@
 <template>
   <div id="login" :style="{'background-image':'url(login_background.jpg)'}">
-     <div class="login-header">Infinity Scheduler Infinity Scheduler (Alpha)</div>
+     <div class="login-header">Infinity Scheduler (Beta)</div>
 `    <div >
-      <div class="login-container">
-         
-          <form>
-            
-              <p>Username</p>
+         <div class="login-container">
+             <div v-if="this.$store.state.loginFailure">Invalid username or password</div>
+             
+             <form>
 
-              <input type="text" id="uname" v-model="uname">
-              <p>Password</p>
-              <input type="password" id="pword" v-model="pword">
-              <p></p>
-              <button class="login-botton" v-on:click="tryLogin">Log In</button>
-              <div class="regis">
-                  <router-link to="/register">Register</router-link>
-              </div>
-          </form>
-      </div>
+                 <p>Username</p>
 
-    </div>`
+                 <input type="text" id="uname" v-model="uname">
+                 <p>Password</p>
+                 <input type="password" id="pword" v-model="pword">
+                 <p></p>
+                 <button class="login-botton" v-on:click="tryLogin">Log In</button>
+                 <div class="regis">
+                     <router-link to="/register">Register</router-link>
+                 </div>
+             </form>
+         </div>
+
+    </div>
   </div>
 </template>
 
@@ -73,7 +74,7 @@
     }
 
     .login-container {
-        display: flex;
+       
         border: 2px solid black;
         width:20%;
         height:40%;
@@ -87,6 +88,7 @@
         padding-top: 15px;
         padding-bottom: 30px;
         border-radius: 8px;
+        padding: 5px;
     }
 
     form {

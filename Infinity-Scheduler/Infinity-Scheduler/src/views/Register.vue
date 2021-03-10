@@ -1,7 +1,9 @@
 <template>
     <div id="registation">
-        <div class="registate">Infinity Scheduler (Alpha)</div>
+        <div class="registate">Infinity Scheduler (Beta 1)</div>
         <div class="registation_container">
+            <div v-if="this.$store.state.registerFailure">Your username is already in use</div>
+            <div v-if="failed">Passwords do not match</div>
             <form>
                 <p>Username</p>
                 <input type="text" id="user_name" v-model="user_name">
@@ -20,7 +22,7 @@
             </form>
 
         </div>
-        <div>Note: Passwords are currently NOT stored securely</div>
+      
     </div>
 </template>
 

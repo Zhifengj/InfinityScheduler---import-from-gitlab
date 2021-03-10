@@ -22,14 +22,28 @@
 			$args = urldecode($_GET['args']);
 		
 			$args = json_decode($args, true);
-		
-		
+			
+
+
+			$salt = "";
 		
 			$stmt = mysqli_stmt_init($link);
-			if (mysqli_stmt_prepare($stmt, "SELECT UID, NextTID FROM User WHERE Username=? AND Password=?")) {
+			if (mysqli_stmt_prepare($stmt, "SELECT Salt FROM User WHERE Username=?")) {
+				mysqli_stmt_bind_param($stmt, "s", $args["uname"]);
+				mysqli_stmt_execute($stmt);
+				$result = mysqli_stmt_get_result($stmt);
+				$res = mysqli_fetch_all($result, MYSQLI_ASSOC)[0];
+				$salt = $res["Salt"];
 
+			}
+			if (mysqli_stmt_prepare($stmt, "SELECT UID, NextTID FROM User WHERE Username=? AND Password=?")) {
+				
+
+				$passhash = hash("sha256", $args["pword"] . $salt);
+		
+				
 				/* bind parameters for markers */
-				mysqli_stmt_bind_param($stmt, "ss", $args["uname"], $args["pword"]);
+				mysqli_stmt_bind_param($stmt, "ss", $args["uname"], $passhash);
 
 				/* execute query */
 				mysqli_stmt_execute($stmt);

@@ -7,6 +7,7 @@
             <option value="week">Week</option>
             <option value="day">Day</option>
         </select>
+        <button class="button_add" v-on:click="toggle = !toggle">Add an event</button>
         <div class="calContainer">
             <cal style="height: 800px;"
                  :schedules="this.$store.state.events"
@@ -25,10 +26,57 @@
                  @beforeCreateSchedule="onBeforeCreateSchedule"
                  @beforeUpdateSchedule="onBeforeUpdateSchedule"
                  @beforeDeleteSchedule="onBeforeDeleteSchedule"
+                 @clickSchedule="onClickSchedule"
                  ref="calref" />
         </div>
-  
+        <transition name="modal">
+            <div v-show="toggle" id="popup">
+                <div class="overlay">
+                    <div class="modal">
+                        <h4>Enter Title</h4>
+                        <input type="text" v-model="title" placeholder="Enter event title here..." required><br />
+                        <h4>Enter Location</h4>
+                        <input v-model="location" placeholder="Enter event location here..."><br />
+                        <h4>Start Time</h4>
+                        <input type="date" v-model="sdate"><br /><br />
+                        <h4>End Time</h4>
+                        <input type="date" v-model="edate"><br /><br />
+                        <h4>Mark Completed</h4>
+                        <input type="checkbox" id="checkbox" v-model="completed">
+                        <label for="checkbox">{{ completed }}</label><br /><br />
+                        <button type="submit" v-on:click="saveEvent">Save event</button>
+                        <button class="button_close_popup" v-on:click="closePopUp">Close </button>
+
+                    </div>
+                </div>
+            </div>
+        </transition>
+        <transition name="modal">
+            <div v-show="editToggle" id="epopup">
+                <div class="overlay">
+                    <div class="modal">
+                        <h4>Edit Title</h4>
+                        <input type="text" v-model="edittitle" placeholder="Enter event title here..." required><br />
+                        <h4>Edit Location</h4>
+                        <input v-model="location" placeholder="Enter event location here..."><br />
+                        <h4>Start Time</h4>
+                        <input type="date" v-model="sdate"><br /><br />
+                        <h4>End Time</h4>
+                        <input type="date" v-model="edate"><br /><br />
+                        <h4>Mark Completed</h4>
+                        <input type="checkbox" id="checkbox" v-model="completed">
+                        <label for="checkbox">{{ completed }}</label><br /><br />
+                        <button type="submit" v-on:click="editEvent">Edit event</button>
+                        <button class="button_close_popup" v-on:click="closeEPopUp">Close </button>
+
+                    </div>
+                </div>
+            </div>
+        </transition>
     </div>
+
+    
+
 </template>
 
 <script>
@@ -64,15 +112,130 @@
                         return 'MILESTONE';
                     },
                 },
-                useCreationPopup: true,
-                useDetailPopup: true,
-                monthName: this.$store.state.monthNames[(new Date).getUTCMonth()]
+                useCreationPopup: false,
+                useDetailPopup: false,
+                monthName: this.$store.state.monthNames[(new Date).getUTCMonth()],
+                title: "",
+                location: "",
+                sdate: '',
+                edate: '',
+                completed: false,
+                toggle: false,
+                editToggle: false,
+                edittitle: "",
+                editEventID: -1,
+             
+
 
             }
         },
         methods: {
+            saveEvent: function (e) {
+                const title = this.title;
+                const location = this.location;
+                const sdate = this.sdate;
+                const edate = this.edate;
+                const com = this.completed;
+                var schedule = {
+                    id: +new Date(),
+                    title: title,
+                    location: location,
+                    isAllDay: true,
+                    start: sdate,
+                    end: edate,
+                    category: 'allday',
+                    completed: com
+                };
+                console.log(schedule.start)
+                this.$store.commit("addEvent", schedule)
+                this.toggle = false;
+            },
+            editEvent: function (e) {
+                const edittitle = this.edittitle;
+                const location = this.location;
+                const sdate = this.sdate;
+                const edate = this.edate;
+                const com = this.completed;
+                const evntID = this.editEventID;
+
+                this.$store.commit("deleteEvent", {"id":evntID});
+                
+                var schedule = {
+                    id: evntID,
+                    title: edittitle,
+                    location: location,
+                    isAllDay: true,
+                    start: sdate,
+                    end: edate,
+                    category: 'allday',
+                    completed: com
+                };
+                this.$store.commit("addEvent", schedule);
+                //this.$store.commit("updateEvent", e)
+                //this.$refs.calref.invoke("updateSchedule", e.schedule.id, e.schedule.calendarId, e.changes)
+                this.closeEPopUp();
+            },
+            openPopUp() {
+                this.toggle = true;
+            },
+            closePopUp: function() {
+                this.toggle = false;
+            },
+            openEditPopUp(e) {
+                this.editEventID = e.schedule.id
+                this.editToggle = true;
+            },
+            closeEPopUp: function () {
+                this.editToggle = false;
+            },
+
+            
+            onClickSchedule(e) {
+                console.log('clickSchedule', e);
+                console.log(this.$store.state.events)
+                let eventObj = {};
+                for (let i = 0; i < this.$store.state.events.length; i++) {
+                    if (this.$store.state.events[i].id == e.schedule.id) {
+                        eventObj = this.$store.state.events[i];
+                    }
+                }
+                console.log("obejjjjjj", eventObj)
+                const willModify = confirm(`id: ${e.schedule.id} \n title: ${e.schedule.title}\n when: ${(new Date(e.schedule.start))} \n to ${(new Date(e.schedule.end))} \n status: ${eventObj.completed}\n location: ${e.schedule.location}\n Will you update schedule?`);
+
+                if (willModify) { 
+                    this.openEditPopUp(e)
+                    //e.schedule.title = prompt('Schedule', e.schedule.title);
+                    //e.schedule.start = prompt('enter time', e.schedule.start);
+                    //console.log(e.schedule.title);
+                    //this.$store.commit("updateEvent", e)
+                    //this.$refs.calref.invoke("updateSchedule", e.schedule.id, e.schedule.calendarId, e.changes)
+                    //console.log(e.schedule.start);
+                    //e.events.start = prompt('enter time', e.events.start);
+                    //console.log("events.start", e.events.start);
+                    //this.$store.commit("updateEvent", e)
+                    //this.$refs.calref.invoke("updateSchedule", e.schedule.id, e.schedule.calendarId, e.changes)
+                    //calendar.updateSchedule(e.schedule.id, e.schedule.calendarId, e.schedule);
+                    //e.schedule.start = e.start;
+                    //e.schedule.end = e.schedule.end;
+                    //e.schedule.start = prompt('Schedule.start', e.schedule.start);
+                    //console.log(e.schedule.start)
+                    //console.log(e.schedule.end)
+                    
+                    
+                }
+            },
+            
             onBeforeCreateSchedule(e) {
-                this.$store.commit("addEvent", e)
+                //console.log('beforeCreateSchedule', e)
+                this.openPopUp()
+                //const title = prompt('Schedule', 'Enter Title');
+                
+                //calendar.createSchedules([schedule]);
+                //this.saveEvent(e)
+                
+                //console.log("aaaaaaaaaaaaaaaaa")
+                e.guide.clearGuideElement();
+                //this.$store.commit("addEvent", e)
                 //this.$refs.calref.invoke("createSchedules", [e])
             },
             onBeforeUpdateSchedule(e) {
@@ -84,7 +247,8 @@
                 //update the store too
                 this.$store.commit("deleteEvent", e.schedule)
                 this.$refs.calref.invoke("deleteSchedule", e.schedule.id, e.schedule.calendarId)
-            },
+            }
+            
             
 
         },
@@ -124,6 +288,51 @@
         text-align: center;
         padding: 20px;
         font-size: large;
+    }
+
+    .button_add {
+        float: right
+    }
+
+    .button_add {
+        float: right
+    }
+
+    .modal {
+        width: 500px;
+        margin: 0px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 2px;
+        box-shadow: 0 2px 8px 3px;
+        transition: all 0.2s ease-in;
+        font-family: Helvetica, Arial, sans-serif;
+    }
+    .fadeIn-enter {
+        opacity: 0;
+    }
+
+    .fadeIn-leave-active {
+        opacity: 0;
+        transition: all 0.2s step-end;
+    }
+
+        .fadeIn-enter .modal,
+        .fadeIn-leave-active.modal {
+            transform: scale(1.1);
+        }
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        background: #00000094;
+        z-index: 999;
+        transition: opacity 0.2s ease;
     }
 
 </style>
