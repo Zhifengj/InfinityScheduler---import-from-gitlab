@@ -1,35 +1,21 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import process from 'process'
-import axios from 'axios'
+
 import router from './../router'
 
+//if we ever need to use TZdates, this is how to import it
 import { Date as TZDate } from './../../node_modules/tui-calendar/src/js/common/timezone.js'
-import { exec } from 'child_process'
+import  DBUtil  from './../DBUtil'
 
 
 process.version = 'v14.0.1'
-//import mariadb from 'mariadb'
+
+
 
 
 Vue.use(Vuex)
-console.log("TZDate:", TZDate)
 
-
-const SERVER_URL = "http://localhost:80"
-const PROD_SERVER_URL = "http://infinityscheduler.com"
-
-
-
-
-function getServerFuncURL(name, args = false) {
-    if (args != false) {
-        return `${SERVER_URL}/server/${name}.php?args=${encodeURIComponent(JSON.stringify(args))}`
-    } else {
-        return `${SERVER_URL}/server/${name}.php`
-    }
-     
-}
 
 
 function getEventIdxById(events, id) {
@@ -42,33 +28,10 @@ function getEventIdxById(events, id) {
     return null
 }
 
-//adds the 0 in front of 1 digit numbers
-function datePad(s) {
-    let ps = `${s}`
-    if (ps.length == 1) {
-        ps = `0${ps}`
-    }
-    return ps
-}
 
-function toDBDate(date) {
-    
-   
-    return `${date.getUTCFullYear()}-${datePad(date.getUTCMonth()+1)}-${datePad(date.getUTCDate())} ${datePad(date.getUTCHours())}:${datePad(date.getUTCMinutes())}:${datePad(date.getUTCSeconds())}`
-}
 
-function fromDBDate(date) {
-    let year = parseInt(date.substring(0, 4))
-    let month = parseInt(date.substring(5,7))-1
-    let day = parseInt(date.substring(8, 10))
-    let hour = parseInt(date.substring(11, 13))
-    let minute = parseInt(date.substring(14, 16))
-    let d = new Date(Date.UTC(year, month, day, hour, minute))
-   
-    return d
 
-}
-
+//unused function for reusing event ids.
 function getNextEventID(state) {
     if (state.availableEventIds[state.availableEventIds.length-1] != -1) {
         let id = state.availableEventIds[state.availableEventIds.length - 1]
@@ -81,35 +44,9 @@ function getNextEventID(state) {
     return 0
 }
 
-//executes a database function and returns the result. Console.logs the error if there is one
-async function execDB(func, args) {
-    try {
 
-        const response = await axios.get(getServerFuncURL(func, args));
-      
-        if (response.data.hasOwnProperty("redirect")){
-            window.location.href = response.data["redirect"]
-            
-        }
-        return response.data
 
-    } catch (error) {
-        console.error(error);
-        return error
-    }
-}
 
-//converts a dbevent to a local event
-function fromDBEvent(event) {
-    let keys = Object.keys(event);
-    let n = keys.length;
-    let nevent = {}
-    while (n--) {
-
-        nevent[keys[n].toLowerCase()] = event[keys[n]];
-    }
-    return nevent
-}
 
 function convertToTimezone(date) {
     let formatter = new Intl.DateTimeFormat("en-US", { timeZone: "America/Los_Angeles" })
@@ -254,10 +191,10 @@ export default new Vuex.Store({
             for (let e = 0; e < events.length; e++) {
                 //local event names need to be in lowercase
                
-                events[e].start = fromDBDate(events[e].start).getTime()
-                events[e].end = fromDBDate(events[e].end).getTime()
-                events[e].lastupdated = fromDBDate(events[e].lastupdated)
-                events[e].created = fromDBDate(events[e].created)
+                events[e].start = DBUtil.fromDBDate(events[e].start).getTime()
+                events[e].end = DBUtil.fromDBDate(events[e].end).getTime()
+                events[e].lastupdated = DBUtil.fromDBDate(events[e].lastupdated)
+                events[e].created = DBUtil.fromDBDate(events[e].created)
                 events[e].id = `${events[e].tid}`
                 events[e].category = 'time'
   
@@ -303,7 +240,7 @@ export default new Vuex.Store({
             let nextDay = 1000 * 60 * 60 * 24
             nextDay = nextDay - 28800000 //nextDay scheduled 1 day + 8hrs ahead so this fixes it to make full 24hrs
 
-            const result = await execDB("getEventsByDate", { date: new Date(toDBDate(new Date(ev.start + nextDay)).split(" ")[0]).getTime(), date2: (new Date(toDBDate(new Date(ev.start + nextDay)).split(" ")[0]).getTime()) + (1000 * 60 * 60 * 24 - 1) })
+            const result = await DBUtil.execDB("getEventsByDate", { date: new Date(DBUtil.toDBDate(new Date(ev.start + nextDay)).split(" ")[0]).getTime(), date2: (new Date(DBUtil.toDBDate(new Date(ev.start + nextDay)).split(" ")[0]).getTime()) + (1000 * 60 * 60 * 24 - 1) })
             let newStart = 0
             let newEnd = 0
 
@@ -323,8 +260,8 @@ export default new Vuex.Store({
 
             let e = {
                 changes: {
-                    start: toDBDate(new Date(newStart)),
-                    end: toDBDate(new Date(newEnd))
+                    start: DBUtil.toDBDate(new Date(newStart)),
+                    end: DBUtil.toDBDate(new Date(newEnd))
 
                 },
                 schedule: {
@@ -337,7 +274,7 @@ export default new Vuex.Store({
 
         async auth(store, ep) {
            
-            const res = await execDB("auth", ep);
+            const res = await DBUtil.execDB("auth", ep);
          
             if (res.hasOwnProperty("error")) {
                 console.log("invalid login")
@@ -356,7 +293,7 @@ export default new Vuex.Store({
         },
 
         async getEvents(store) {    
-            const res = await execDB("getEvents");
+            const res = await DBUtil.execDB("getEvents");
             if (res.hasOwnProperty("error")) {
                 console.log("Error: failed to get events")
                 
@@ -364,7 +301,7 @@ export default new Vuex.Store({
                 
                 //convert events from db to local
                 for (let i = 0; i < res.length; i++) {
-                    res[i] = fromDBEvent(res[i])
+                    res[i] = DBUtil.fromDBEvent(res[i])
                 }
 
 
@@ -395,16 +332,16 @@ export default new Vuex.Store({
             }
            
             if (typeof e.start !== "string") {
-                payload.start = toDBDate(e.start.toDate())
+                payload.start = DBUtil.toDBDate(e.start.toDate())
             }
             if (typeof e.end !== "string") {
-                payload.end = toDBDate(e.end.toDate())
+                payload.end = DBUtil.toDBDate(e.end.toDate())
             }
             if (typeof e.lastUpdated !== "string") {
-                payload.lastupdated = toDBDate(e.lastupdated)
+                payload.lastupdated = DBUtil.toDBDate(e.lastupdated)
             }
             if (typeof e.created !== "string") {
-                payload.created = toDBDate(e.created)
+                payload.created = DBUtil.toDBDate(e.created)
             }
            
             console.log(e)
@@ -422,7 +359,7 @@ export default new Vuex.Store({
 
         async deleteEvent(store, event) {
             
-            const res = await execDB("deleteEvent", {"TID": event.id })
+            const res = await DBUtil.execDB("deleteEvent", {"TID": event.id })
             if (res.hasOwnProperty("error")) {
 
                 console.log("Failed to delete event")
@@ -437,7 +374,7 @@ export default new Vuex.Store({
 
 
         async updateEvent(store, event) {
-            const res = await execDB("deleteEvent", { "TID": event.id })
+            const res = await DBUtil.execDB("deleteEvent", { "TID": event.id })
             console.log("del:", res)
             if (res.hasOwnProperty("error")) {
 
@@ -453,7 +390,7 @@ export default new Vuex.Store({
 
         async updateLastEventID(store, id) {
             
-            const res = await execDB("updateLastEventID", { "nextTID": id })
+            const res = await DBUtil.execDB("updateLastEventID", { "nextTID": id })
             
             if (res.hasOwnProperty("error")) {
 
@@ -467,7 +404,7 @@ export default new Vuex.Store({
         },
 
         async register(store, data) {
-            const res = await execDB("register", data);
+            const res = await DBUtil.execDB("register", data);
            
             if (res.hasOwnProperty("error")) {
                 console.log("Error: failed to register")
@@ -481,19 +418,19 @@ export default new Vuex.Store({
             }
         },
         async logout(store) {
-            await execDB("logout");
+            await DBUtil.execDB("logout");
         },
 
         async getNextTID(store) {
            
-            const res = await execDB("getNextTID")
+            const res = await DBUtil.execDB("getNextTID")
            
             store.commit("auth", res)
         },
 
         async getNotifications(store) {
-            console.log("RUN!")
-            const res = await execDB("getNotifications");
+           
+            const res = await DBUtil.execDB("getNotifications");
             console.log(res)
             if (res.hasOwnProperty("error")) {
                 console.log("Error: failed to get notifications")
@@ -516,7 +453,7 @@ export default new Vuex.Store({
         },
 
         async postNotification(store, notif) {
-            const res = await execDB("addNotification", notif)
+            const res = await DBUtil.execDB("addNotification", notif)
             console.log(res)
             if (res.hasOwnProperty("error")) {
 
@@ -530,7 +467,7 @@ export default new Vuex.Store({
         },
 
         async deleteNotification(store, notif) {
-            const res = await execDB("deleteNotification", notif)
+            const res = await DBUtil.execDB("deleteNotification", notif)
             if (res.hasOwnProperty("error")) {
 
                 console.log("Failed to delete notification")
