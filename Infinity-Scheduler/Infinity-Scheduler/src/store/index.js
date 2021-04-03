@@ -24,9 +24,9 @@ const PROD_SERVER_URL = "http://infinityscheduler.com"
 
 function getServerFuncURL(name, args = false) {
     if (args != false) {
-        return `${SERVER_URL}/server/${name}.php?args=${encodeURIComponent(JSON.stringify(args))}`
+        return `${PROD_SERVER_URL}/server/${name}.php?args=${encodeURIComponent(JSON.stringify(args))}`
     } else {
-        return `${SERVER_URL}/server/${name}.php`
+        return `${PROD_SERVER_URL}/server/${name}.php`
     }
      
 }

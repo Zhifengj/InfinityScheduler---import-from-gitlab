@@ -1,6 +1,6 @@
 <?php
 
-define('ISPROD', false);
+define('ISPROD', true);
 
 function formatRedir($dest){
 	return json_encode(array("redirect" => $dest));
