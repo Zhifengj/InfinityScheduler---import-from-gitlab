@@ -38,7 +38,25 @@
     <Content Include="server\addNotification.php">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="server\ai\getNthBestDayTimeslot.php">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="server\ai\getNthBestHourTimeslot.php">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="server\ai\updateOccurrence.php">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="server\auth.php" />
+    <Content Include="server\category\addCategory.php">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="server\category\deleteCategory.php">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="server\category\getCategories.php">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="server\config.php" />
     <Content Include="server\deleteEvent.php">
       <SubType>Code</SubType>
@@ -101,6 +119,9 @@
     <Folder Include="dist\" />
     <Folder Include="server\" />
     <Folder Include="public\" />
+    <Folder Include="server\ai\" />
+    <Folder Include="server\event\" />
+    <Folder Include="server\category\" />
     <Folder Include="src\" />
     <Folder Include="src\assets\" />
     <Folder Include="src\store\" />
