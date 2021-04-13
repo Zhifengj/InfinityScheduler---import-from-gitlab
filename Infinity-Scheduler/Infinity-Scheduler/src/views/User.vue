@@ -5,18 +5,18 @@
           <label> New Password: </label>
           <br>
           <br>
-          <input type="text" placeholder="New Password..." />
+          <input type="text" id="new_pass" v-model="new_pass" placeholder="New Password..." />
           <br>
           <br>
           <label> Comfirm New Password: </label>
           <br>
           <br>
-          <input type="text" placeholder="Comfirm New Password..." />
+          <input type="text" id="comfirm_new_pass" v-model="comfirm_new_pass" placeholder="Comfirm New Password..." />
           <br>
           <br>
           <br>
           <br>
-          <button @click='change_pas = false'> Submit </button>
+          <button v-on:click="tryChangePassword"> Submit </button>
           <button @click='change_pas = false' class="sec_but"> Cancel </button>
         </div>
       </div>
@@ -83,6 +83,8 @@ export default {
     name: 'User',
     data(){
         return {
+          new_pass: "",
+          comfirm_new_pass: "",
           change_pas: false,
           change_email: false,
           change_profile: false
@@ -92,6 +94,16 @@ export default {
       //local methods go here
       logout() {
           this.$store.dispatch("logout")
+      },
+      tryChangePassword() {
+        if (this.new_pass == this.comfirm_new_pass)
+        {
+          let data = {
+            "new_pass": this.new_pass
+          }
+          this.$store.dispatch("updateUserPassword", data)
+          this.change_pas = false
+        }
       }
     },
     components: {

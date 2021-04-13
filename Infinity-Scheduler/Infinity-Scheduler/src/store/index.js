@@ -20,7 +20,7 @@ Vue.use(Vuex)
 
 function getEventIdxById(events, id) {
     for (let e in events) {
-       
+
         if (events[e].id == id) {
             return e
         }
@@ -100,7 +100,7 @@ export default new Vuex.Store({
                 return 0
             },
         },
-             
+
         monthNames: [
             "January",
             "February",
@@ -117,11 +117,11 @@ export default new Vuex.Store({
 
 
         ],
-       
+
         loginFailure: false,
         registerFailure: false,
         notifs: []
-      
+
 
 
 
@@ -129,49 +129,49 @@ export default new Vuex.Store({
     mutations:{
         //functions that modify state should go here, and are called with $store.commit("<name>", <arg1>, etc...)
         //syncronous
-       
+
 
 
         //adds an event e to the calendar
         addEvent(state, e) {
-           
+
             let id = state._nextEventId
-          
+
             e.calendarid = '0'
             e.id = `${id}`
-            
+
             //might have to change this later
             e.category = 'time'
             e.lastupdated = new Date(Date.now())
             e.created = new Date(Date.now())
-            
+
             //update with actual state
             e.state = 0
             //update with actual body text
             e.body = ""
-            
+
 
             state.events.push(e)
             state._nextEventId += 1
             //update the database id if the id is new
-            
+
             this.dispatch("updateLastEventID", id + 1)
             //post the event
             this.dispatch("postEvent", e)
         },
 
-       
+
 
         updateEvent(state, e) {
 
             let ev = getEventIdxById(state.events, e.schedule.id)
-           
+
             state.events[ev].start = e.changes.start
             state.events[ev].end = e.changes.end
             state.events[ev].lastupdated = new Date(Date.now())
             state.events[ev].completed = e.changes.completed
             this.dispatch("updateEvent", state.events[ev])
-            
+
         },
         deleteEvent(state, e) {
             state.availableEventIds.push(e.id)
@@ -180,26 +180,26 @@ export default new Vuex.Store({
         },
 
         auth(state, data) {
-         
+
             state._nextEventId = data.NextTID
-          
-           
+
+
         },
 
         setEvents(state, events) {
-           
+
             for (let e = 0; e < events.length; e++) {
                 //local event names need to be in lowercase
-               
+
                 events[e].start = DBUtil.fromDBDate(events[e].start).getTime()
                 events[e].end = DBUtil.fromDBDate(events[e].end).getTime()
                 events[e].lastupdated = DBUtil.fromDBDate(events[e].lastupdated)
                 events[e].created = DBUtil.fromDBDate(events[e].created)
                 events[e].id = `${events[e].tid}`
                 events[e].category = 'time'
-  
+
             }
-            
+
             state.events = events
         },
         setNotifications(state, notifs) {
@@ -246,7 +246,7 @@ export default new Vuex.Store({
 
            // console.log(result)
 
-            for (let i = 0; i < result.length; i++) { 
+            for (let i = 0; i < result.length; i++) {
 
                 if (((ev.start).getTime() + nextDay) == result[i].start) { //currently will never hit this statment
                     newStart = result[i].end
@@ -273,9 +273,9 @@ export default new Vuex.Store({
         },
 
         async auth(store, ep) {
-           
+
             const res = await DBUtil.execDB("auth", ep);
-         
+
             if (res.hasOwnProperty("error")) {
                 console.log("invalid login")
                 store.state.loginFailure = true
@@ -288,17 +288,17 @@ export default new Vuex.Store({
                 router.go(0)
 
             }
-           
-           
+
+
         },
 
-        async getEvents(store) {    
+        async getEvents(store) {
             const res = await DBUtil.execDB("getEvents");
             if (res.hasOwnProperty("error")) {
                 console.log("Error: failed to get events")
-                
+
             } else {
-                
+
                 //convert events from db to local
                 for (let i = 0; i < res.length; i++) {
                     res[i] = DBUtil.fromDBEvent(res[i])
@@ -309,12 +309,12 @@ export default new Vuex.Store({
 
 
             }
-           
+
         },
-  
+
         //DO NOT USE THIS TO ADD AN EVENT use addEvent instead
         async postEvent(store, e) {
-            
+
             let payload = {
                 id: e.id,
                 calendarid: e.calendarId ? e.calendarId : 0,
@@ -330,7 +330,7 @@ export default new Vuex.Store({
 
 
             }
-           
+
             if (typeof e.start !== "string") {
                 payload.start = DBUtil.toDBDate(e.start.toDate())
             }
@@ -343,7 +343,7 @@ export default new Vuex.Store({
             if (typeof e.created !== "string") {
                 payload.created = DBUtil.toDBDate(e.created)
             }
-           
+
             console.log(e)
             try {
                 const response = await axios.get(getServerFuncURL("postEvent", payload));
@@ -351,21 +351,21 @@ export default new Vuex.Store({
                 if (response.data.hasOwnProperty("error")) {
 
                     console.log("Failed to post event")
-                } 
+                }
             } catch (error) {
                 console.error(error);
             }
         },
 
         async deleteEvent(store, event) {
-            
+
             const res = await DBUtil.execDB("deleteEvent", {"TID": event.id })
             if (res.hasOwnProperty("error")) {
 
                 console.log("Failed to delete event")
             } else {
                 console.log(res)
-               
+
 
 
             }
@@ -389,15 +389,15 @@ export default new Vuex.Store({
         },
 
         async updateLastEventID(store, id) {
-            
+
             const res = await DBUtil.execDB("updateLastEventID", { "nextTID": id })
-            
+
             if (res.hasOwnProperty("error")) {
 
                 console.log("Failed to update event")
             } else {
                 console.log(res)
-                
+
 
 
             }
@@ -405,7 +405,7 @@ export default new Vuex.Store({
 
         async register(store, data) {
             const res = await DBUtil.execDB("register", data);
-           
+
             if (res.hasOwnProperty("error")) {
                 console.log("Error: failed to register")
                 store.state.registerFailure = true
@@ -417,19 +417,31 @@ export default new Vuex.Store({
 
             }
         },
+
+        async updateUserPassword(store, data) {
+          const res = await DBUtil.execDB("updateUserPassword", data);
+
+          if (res.hasOwnProperty("error"))
+          {
+              console.log("Failed to update event")
+          }
+
+        },
+
+
         async logout(store) {
             await DBUtil.execDB("logout");
         },
 
         async getNextTID(store) {
-           
+
             const res = await DBUtil.execDB("getNextTID")
-           
+
             store.commit("auth", res)
         },
 
         async getNotifications(store) {
-           
+
             const res = await DBUtil.execDB("getNotifications");
             console.log(res)
             if (res.hasOwnProperty("error")) {
