@@ -50,9 +50,11 @@ import Notification from './Notification'
             this.$store.dispatch("getNotifications")
             this.$store.dispatch("getNextTID");
             this.$store.dispatch("getEvents");
-            
+            this.$store.dispatch("getUserName");
+            this.$store.dispatch("getUserProfileLink");
             this.checkEventMissedInterval = setInterval(() => {
-                this.$store.commit("checkMissedEvent")
+                this.$store.commit("checkMissedEvent"),
+                this.$store.dispatch("getUserProfileLink");
             }, 3000);
         }
 

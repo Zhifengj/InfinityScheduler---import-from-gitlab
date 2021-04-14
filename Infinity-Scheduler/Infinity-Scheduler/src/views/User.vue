@@ -44,23 +44,26 @@
 
       <div class="change_pass" v-show='change_profile'>
         <div class="pass_container">
-          <form class="upload">
-            <input type="file" name="Profile" accept=".bmp,.jpg,.jpeg,.png">
-            <button type="submit" @click='change_profile = false'> Submit </button>
-          </form>
+          <label>Link to the Profile Image: </label>
+          <br>
+          <br>
+          <input type="text" id="image_link" v-model="image_link" placeholder="Link..." />
+          <br>
+          <br>
+          <button v-on:click="uploadProfileLink"> Submit </button>
           <button @click='change_profile = false' class="sec_but"> Cancel </button>
         </div>
       </div>
 
       <div class="pro">
-        <img id = "profile" src="user_temp.png" alt="icon" />
+        <img id = "profile" v-bind:src="profile_link" alt="icon" />
         <br>
         <button class = "change_profile_button" @click='change_profile = true'>Change Profile</button>
         <br>
         <button class = "out" v-on:click="logout()">Logout</button>
       </div>
       <div class = "vertical_line"></div>
-      <div class = "name_container">Tom</div>
+      <div class = "name_container"> {{ username }} </div>
       <form class = "func">
         <button class = "change_pass_button" @click='change_pas = true'>Change Password</button>
         <br>
@@ -83,11 +86,14 @@ export default {
     name: 'User',
     data(){
         return {
+          username: this.$store.state.user_info.username,
+          profile_link: this.$store.state.user_info.profile_link,
           new_pass: "",
           comfirm_new_pass: "",
           change_pas: false,
           change_email: false,
-          change_profile: false
+          change_profile: false,
+          image_link: "",
         }
     },
     methods: {
@@ -96,7 +102,7 @@ export default {
           this.$store.dispatch("logout")
       },
       tryChangePassword() {
-        if (this.new_pass == this.comfirm_new_pass)
+        if (this.new_pass === this.comfirm_new_pass)
         {
           let data = {
             "new_pass": this.new_pass
@@ -104,10 +110,33 @@ export default {
           this.$store.dispatch("updateUserPassword", data)
           this.change_pas = false
         }
+      },
+      uploadProfileLink() {
+        if (this.image_link)
+        {
+          let data = {
+            "image_link": this.image_link
+          }
+          this.$store.dispatch("uploadProfileLink", data);
+          this.change_profile = false;
+        }
       }
     },
     components: {
 
+    },
+    mounted() {
+        setInterval( () => {
+          this.username = this.$store.state.user_info.username;
+          if (this.$store.state.user_info.profile_link)
+          {
+            this.profile_link = this.$store.state.user_info.profile_link;
+          }
+          else
+          {
+            this.profile_link = "user_temp.png";
+          }
+        }, 1000);
     }
 
 }
@@ -173,7 +202,7 @@ export default {
     font-size: 35px;
     font-family: Noto Serif;
     margin-bottom: 20px;
-    width: 400px;
+    width: 800px;
   }
 
   .func {

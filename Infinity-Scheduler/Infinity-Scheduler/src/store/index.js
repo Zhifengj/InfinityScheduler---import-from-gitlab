@@ -61,6 +61,10 @@ export default new Vuex.Store({
         _nextEventId: 0,
         events: [],
         calView: "month",
+        user_info: {
+          username: '',
+          profile_link: ''
+        },
         weekOptions: {
             narrowWeekend: true,
             showTimezoneCollapseButton: true,
@@ -230,6 +234,14 @@ export default new Vuex.Store({
                 }
             }
         },
+
+        updateUserName(state, username) {
+          state.user_info.username = username;
+        },
+
+        updateUserProfileLink(state, profile_link) {
+          state.user_info.profile_link = profile_link;
+        }
 
     },
     actions: {
@@ -428,6 +440,11 @@ export default new Vuex.Store({
 
         },
 
+        async uploadProfileLink(store, data) {
+          const res = await DBUtil.execDB("uploadProfileLink", data);
+
+          console.log(res.data);
+        },
 
         async logout(store) {
             await DBUtil.execDB("logout");
@@ -459,9 +476,24 @@ export default new Vuex.Store({
 
 
                 store.commit("setNotifications", res)
-
-
             }
+        },
+
+        async getUserName(store) {
+          const res = await DBUtil.execDB("getUserName");
+          store.commit("updateUserName", res.Name);
+        },
+
+        async getUserProfileLink(store) {
+          const res = await DBUtil.execDB("getUserProfileLink");
+          if(res.imagelink)
+          {
+            store.commit("updateUserProfileLink", res.imagelink);
+          }
+          else
+          {
+            store.commit("updateUserProfileLink", "");
+          }
         },
 
         async postNotification(store, notif) {
@@ -472,9 +504,6 @@ export default new Vuex.Store({
                 console.log("Failed to update notification")
             } else {
                 console.log(res)
-
-
-
             }
         },
 
