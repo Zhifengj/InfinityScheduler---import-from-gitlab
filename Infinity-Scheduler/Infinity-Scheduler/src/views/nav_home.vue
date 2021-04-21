@@ -1,80 +1,84 @@
 <template>
-    
-    <div class="body">
-        <div class="tab">
-            <button class="tablinks" v-on:click="openTab($event, 'TodoList')">TodoList</button>
-            <button class="tablinks" v-on:click="openTab($event, 'Events')" >Events</button>
-            <button class="tablinks" v-on:click="openTab($event, 'Tasks')">Tasks</button>
-        </div>
-
-        <div id="TodoList" class="tabcontent">
-            <div id="myDIV" class="header">
-                <h2 style="margin:5px">My To Do List</h2>
-                <input type="text" id="myInput" placeholder="Add some todos...">
-                <span v-on:click="newElement" class="addBtn">Add</span>
+    <body onload="document.getElementById('defaultOpen').click();">
+        <div class="body">
+            <div class="tab">
+                <button class="tablinks" v-on:click="openTab($event, 'TodoList')">TodoList</button>
+                <button class="tablinks active" style="display:block" v-on:click="openTab($event, 'Events')" id="defaultOpen">Events</button>
+                <button class="tablinks" v-on:click="openTab($event, 'Tasks')">Tasks</button>
             </div>
 
-            <ul id="myUL">
-               
-            </ul>
-        </div>
+            <div id="TodoList" class="tabcontent">
+                <div id="myDIV" class="header">
+                    <h2 style="margin:5px">My To Do List</h2>
+                    <input type="text" id="myInput" placeholder="Add some todos...">
+                    <span v-on:click="newElement" class="addBtn">Add</span>
+                </div>
 
-        <div id="Events" class="tabcontent">
-            <div class="main_container">
-                <div class="notes">
-                    <div class="note">
-                        <div>Countdown to upcoming event: </div>
-                        <div class="time">
-                            
-                            <p id="timer"> until next event</p>
+                <ul id="myUL">
+                </ul>
+            </div>
+
+            <div id="Events" class="tabcontent">
+                <div class="main_container">
+                    <div class="notes">
+                        <div class="note">
+                            <div id="clock">
+                                <p id="date" class="date"></p>
+                                <p id="time" class="time"></p>
+
+                            </div>
+                            <!-- countdown timer 
+                            <div>Countdown to upcoming event: </div>
+                            <div class="cdtime">
+                                <p id="timer"> until next event</p>
+                            </div>
+                                -->
                         </div>
+                        <div class="note">
+                            <div>Upcoming Events: </div>
+                            <div id="upcoming-events">
+                                <table border='1' width='80%' style='border-collapse: collapse;'>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Body</th>
+                                        <th>Location</th>
+                                        <th>Start</th>
+                                        <th>End</th>
+                                        <th>Completed</th>
+                                    </tr>
+                                    <tr v-for="event in eventData">
+                                        <th>{{event.Title}}</th>
+                                        <th>{{event.Body}}</th>
+                                        <th>{{event.Location}}</th>
+                                        <th>{{event.Start}}</th>
+                                        <th>{{event.End}}</th>
+                                        <th>{{event.Completed}}</th>
 
-                    </div>
-                    <div class="note">
-                        <div>Upcoming Events: </div>
-                        <div id="upcoming-events">
-                            <table border='1' width='80%' style='border-collapse: collapse;'>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Body</th>
-                                    <th>Location</th>
-                                    <th>Start</th>
-                                    <th>End</th>
-                                    <th>Completed</th>
-                                </tr>
-                                <tr v-for="event in eventData">
-                                    <th>{{event.Title}}</th>
-                                    <th>{{event.Body}}</th>
-                                    <th>{{event.Location}}</th>
-                                    <th>{{event.Start}}</th>
-                                    <th>{{event.End}}</th>
-                                    <th>{{event.Completed}}</th>
+                                    </tr>
 
-                                </tr>
+                                </table>
+                            </div>
 
-                            </table>
+
+
                         </div>
-
-
-
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div id="Tasks" class="tabcontent">
-            <h3>tasks</h3>
+            <div id="Tasks" class="tabcontent">
+                <h3>Tasks function coming soon...</h3>
+            </div>
         </div>
-    </div>
-
+    </body>
 </template>
 
 <script>
     
     import axios from 'axios'
-    //document.getElementById("defaultTab").click();
 
     const SERVER_URL = "http://localhost:80"
+    const PROD_SERVER_URL = "http://infinityscheduler.com"
     function getServerFuncURL(name, args = false) {
         if (args != false) {
             return `${SERVER_URL}/server/${name}.php?args=${encodeURIComponent(JSON.stringify(args))}`
@@ -84,11 +88,15 @@
 
     }
     
-export default {
+var v = {
     name: 'nav_home',
     data(){
         return {
-            eventData: null
+            eventData: null,
+            time: '',
+            date: '',
+            week: ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'],
+          
         }
     },
     mounted() {
@@ -96,7 +104,8 @@ export default {
         axios
             .get(getServerFuncURL("getNextEvent"))
             .then(response => (this.eventData = response.data))
-         
+       setInterval(this.updateTime(), 1000);
+       this.updateTime()
        //this.eventData = this.$store.dispatch("getUpcomingEvent");
     },
     methods: {
@@ -140,11 +149,26 @@ export default {
             }
 
         },
+        zeroPadding: function (num, digit) {
+            var zero = '';
+            for (var i = 0; i < digit; i++) {
+                zero += '0';
+            }
+            return (zero + num).slice(-digit);
+        },
+        updateTime: function () {
+            var cd = new Date();
+            this.time = this.zeroPadding(cd.getHours(), 2) + ':' + this.zeroPadding(cd.getMinutes(), 2) + ':' + this.zeroPadding(cd.getSeconds(), 2);
+            this.date = this.zeroPadding(cd.getFullYear(), 4) + '-' + this.zeroPadding(cd.getMonth() + 1, 2) + '-' + this.zeroPadding(cd.getDate(), 2) + ' ' + this.week[cd.getDay()];
+        },
+        
     },
     components: {
 
     }
     }
+
+    
 
     
     var close = document.getElementsByClassName("close");
@@ -164,11 +188,36 @@ export default {
             }
         }, false);
     }
-    
 
-    //this will be time of next event
+    //clock
+    window.onload = setInterval(function () {
+        var d = new Date();
+
+        var date = d.getDate();
+
+        var month = d.getMonth();
+        var montharr = ["Jan", "Feb", "Mar", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        month = montharr[month];
+
+        var year = d.getFullYear();
+
+        var day = d.getDay();
+        var dayarr = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
+        day = dayarr[day];
+
+        var hour = d.getHours();
+        var min = d.getMinutes();
+        var sec = d.getSeconds();
+
+        document.getElementById("date").innerHTML = month + " " + date + " " + year + " " + day;
+        document.getElementById("time").innerHTML = hour + ":" + min + ":" + sec;
+    }, 1000);
+
     
-    var countDownDate = new Date("Feb 30, 2021 15:37:25").getTime();
+    /*
+     * countdown timer code
+    //this will be time of next event
+    var countDownDate = new Date("May 30, 2021 15:37:25").getTime();
 
     var x = setInterval(function () {
 
@@ -194,8 +243,8 @@ export default {
             document.getElementById("timer").innerHTML = "EXPIRED";
         }
     }, 1000);
-    
-    
+    */
+    export default v;
 
 </script>
 
@@ -311,6 +360,46 @@ export default {
     .addBtn:hover {
       background-color: #bbb;
     }
+
+    p {
+        margin: 0;
+        padding: 0;
+    }
+
+    #clock {
+        font-family: 'Share Tech Mono', monospace;
+        color: #1E90FF;
+        text-align: center;
+        position: relative;
+        margin-top: 100px;
+        left: 50%;
+        top: 75%;
+        transform: translate(-50%, -50%);
+        color: #1E90FF;
+        text-shadow: 0 0 20px rgba(10, 175, 230, 1), 0 0 20px rgba(10, 175, 230, 0);
+    }
+    .time
+     {
+        letter-spacing: 0.05em;
+        font-size: 80px;
+        padding: 5px 0;
+    }
+
+    .date {
+        letter-spacing: 0.1em;
+        font-size: 24px;
+    }
+
+    .text {
+        letter-spacing: 0.1em;
+        font-size: 12px;
+        padding: 20px 0 0;
+    }
+
+    .cdtime {
+        position:relative;
+    }
+    
 
     
 </style>
