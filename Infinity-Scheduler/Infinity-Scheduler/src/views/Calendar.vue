@@ -120,6 +120,7 @@
                 sdate: '',
                 edate: '',
                 completed: false,
+                timesChanged: 0,
                 toggle: false,
                 editToggle: false,
                 edittitle: "",
@@ -136,6 +137,7 @@
                 const sdate = this.sdate;
                 const edate = this.edate;
                 const com = this.completed;
+                const timesChanged = this.timesChanged;
                 var schedule = {
                     id: +new Date(),
                     title: title,
@@ -144,7 +146,8 @@
                     start: sdate,
                     end: edate,
                     category: 'allday',
-                    completed: com
+                    completed: com,
+                    timesChanged: timesChanged
                 };
                 console.log(schedule.start)
                 this.$store.commit("addEvent", schedule)
@@ -156,6 +159,7 @@
                 const sdate = this.sdate;
                 const edate = this.edate;
                 const com = this.completed;
+                const timesChanged = this.timesChanged;
                 const evntID = this.editEventID;
 
                 this.$store.commit("deleteEvent", {"id":evntID});
@@ -168,7 +172,8 @@
                     start: sdate,
                     end: edate,
                     category: 'allday',
-                    completed: com
+                    completed: com,
+                    timesChanged: timesChanged
                 };
                 this.$store.commit("addEvent", schedule);
                 //this.$store.commit("updateEvent", e)
@@ -191,15 +196,15 @@
 
             
             onClickSchedule(e) {
-                console.log('clickSchedule', e);
-                console.log(this.$store.state.events)
+                //console.log('clickSchedule', e);
+                //console.log(this.$store.state.events)
                 let eventObj = {};
                 for (let i = 0; i < this.$store.state.events.length; i++) {
                     if (this.$store.state.events[i].id == e.schedule.id) {
                         eventObj = this.$store.state.events[i];
                     }
                 }
-                console.log("obejjjjjj", eventObj)
+                //console.log("obejjjjjj", eventObj)
                 const willModify = confirm(`id: ${e.schedule.id} \n title: ${e.schedule.title}\n when: ${(new Date(e.schedule.start))} \n to ${(new Date(e.schedule.end))} \n status: ${eventObj.completed}\n location: ${e.schedule.location}\n Will you update schedule?`);
 
                 if (willModify) { 
