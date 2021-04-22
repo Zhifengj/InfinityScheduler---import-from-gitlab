@@ -1,7 +1,7 @@
 <?php
-	require_once "session.php";
+	require_once "./../session.php";
 	if (startOrResumeSession()){
-		require_once "config.php";
+		require_once "./../config.php";
 		if(isset($_GET["args"]) && !empty(trim($_GET["args"]))){
 		
 
@@ -10,10 +10,10 @@
 			$args = json_decode($args, true);
 		
 			$stmt = mysqli_stmt_init($link);
-			if (mysqli_stmt_prepare($stmt, "SELECT Day FROM DayTimeslot ORDER BY Occurrances DESC LIMIT ?,1 WHERE UID = ? AND CID = ?")) {
+			if (mysqli_stmt_prepare($stmt, "SELECT Day FROM DayTimeslot WHERE UID = ? AND CID = ? ORDER BY Occurrences DESC LIMIT ?,1")) {
 
 				/* bind parameters for markers */
-				mysqli_stmt_bind_param($stmt, "iii", $args["N"], $_SESSION["UID"], $args["CID"]);
+				mysqli_stmt_bind_param($stmt, "iii", $_SESSION["UID"], $args["CID"], $args["N"]);
 
 				/* execute query */
 				mysqli_stmt_execute($stmt);

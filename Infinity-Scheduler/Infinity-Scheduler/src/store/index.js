@@ -346,7 +346,7 @@ export default new Vuex.Store({
            
             console.log(e)
             try {
-                const response = await axios.get(getServerFuncURL("postEvent", payload));
+                const response = await DBUtil.execDB("postEvent", payload);
                 console.log(response)
                 if (response.data.hasOwnProperty("error")) {
 

@@ -1,7 +1,7 @@
 <?php
-	require_once "session.php";
+	require_once "./../session.php";
 	if (startOrResumeSession()){
-		require_once "config.php";
+		require_once "./../config.php";
 		if(isset($_GET["args"]) && !empty(trim($_GET["args"]))){
 		
 
@@ -13,10 +13,10 @@
 		
 			$stmt = mysqli_stmt_init($link);
 			/*Insert if DNE */
-			if (mysqli_stmt_prepare($stmt, "INSERT INTO HourTimeslot (UID, CID, Time) VALUES SELECT ?, ?, ? EXECPT SELECT ?, ?, ? FROM HoursTimeslot")) {
+			if (mysqli_stmt_prepare($stmt, "INSERT INTO HourTimeslot (UID, CID, Time) VALUES (?, ?, ?)")) {
 
 				/* bind parameters for markers */
-				mysqli_stmt_bind_param($stmt, "siisii",  $_SESSION["UID"], $args["CID"], $args["Time"], $_SESSION["UID"], $args["CID"], $args["Time"]);
+				mysqli_stmt_bind_param($stmt, "sis",  $_SESSION["UID"], $args["CID"], $args["Time"]);
 
 				/* execute query */
 				mysqli_stmt_execute($stmt);
@@ -34,7 +34,7 @@
 			}
 
 			$stmt = mysqli_stmt_init($link);
-			if (mysqli_stmt_prepare($stmt, "UPDATE HourTimeslot SET Time = ? WHERE UID = ? AND CID = ?")) {
+			if (mysqli_stmt_prepare($stmt, "UPDATE HourTimeslot SET Occurrences = Occurrences + 1 WHERE Time = ? AND UID = ? AND CID = ?")) {
 
 				/* bind parameters for markers */
 				mysqli_stmt_bind_param($stmt, "sii", $args["Time"], $_SESSION["UID"], $args["CID"]);
@@ -57,10 +57,10 @@
 			/*------------------------------------------DAYS---------------------------------*/
 			$stmt = mysqli_stmt_init($link);
 			/*Insert if DNE */
-			if (mysqli_stmt_prepare($stmt, "INSERT INTO DayTimeslot (UID, CID, Day) VALUES SELECT ?, ?, ? EXECPT SELECT ?, ?, ? FROM DayTimeslot")) {
+			if (mysqli_stmt_prepare($stmt, "INSERT INTO DayTimeslot (UID, CID, Day) VALUES (?, ?, ?)")) {
 
 				/* bind parameters for markers */
-				mysqli_stmt_bind_param($stmt, "siisii",  $_SESSION["UID"], $args["CID"], $args["Day"], $_SESSION["UID"], $args["CID"], $args["Day"]);
+				mysqli_stmt_bind_param($stmt, "sii",  $_SESSION["UID"], $args["CID"], $args["Day"]);
 
 				/* execute query */
 				mysqli_stmt_execute($stmt);
@@ -78,7 +78,7 @@
 			}
 
 			$stmt = mysqli_stmt_init($link);
-			if (mysqli_stmt_prepare($stmt, "UPDATE DayTimeslot SET Day = ? WHERE UID = ? AND CID = ?")) {
+			if (mysqli_stmt_prepare($stmt, "UPDATE DayTimeslot SET Occurrences = Occurrences + 1 WHERE Day = ? AND UID = ? AND CID = ?")) {
 
 				/* bind parameters for markers */
 				mysqli_stmt_bind_param($stmt, "sii", $args["Day"], $_SESSION["UID"], $args["CID"]);
