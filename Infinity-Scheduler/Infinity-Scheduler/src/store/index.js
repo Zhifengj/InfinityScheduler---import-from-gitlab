@@ -435,9 +435,18 @@ export default new Vuex.Store({
 
           if (res.hasOwnProperty("error"))
           {
-              console.log("Failed to update event")
+              console.log("Failed to update password")
           }
 
+        },
+
+        async updateEmail(store, data) {
+          const res = await DBUtil.execDB("updateEmail", data);
+
+          if (res.hasOwnProperty("error"))
+          {
+              console.log("Failed to update email")
+          }
         },
 
         async uploadProfileLink(store, data) {
