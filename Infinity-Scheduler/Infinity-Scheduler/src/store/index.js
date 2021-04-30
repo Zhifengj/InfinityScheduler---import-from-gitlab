@@ -59,6 +59,7 @@ export default new Vuex.Store({
         //-1 means that the next id is a new one
         availableEventIds: [-1],
         _nextEventId: 0,
+        timeOffSet: 0,
         events: [],
         calView: "month",
         user_info: {
@@ -164,7 +165,9 @@ export default new Vuex.Store({
             this.dispatch("postEvent", e)
         },
 
-
+        setTimeOffSet(state, offSet) {
+          state.timeOffSet = offSet
+        },
 
         updateEvent(state, e) {
 

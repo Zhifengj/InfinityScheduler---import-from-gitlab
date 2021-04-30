@@ -23,11 +23,11 @@
                     <div class="notes">
                         <div class="note">
                             <div id="clock">
-                                <p id="date" class="date"></p>
-                                <p id="time" class="time"></p>
+                                <p id="date" class="date">{{this.date}}</p>
+                                <p id="time" class="time">{{this.time}}</p>
 
                             </div>
-                            <!-- countdown timer 
+                            <!-- countdown timer
                             <div>Countdown to upcoming event: </div>
                             <div class="cdtime">
                                 <p id="timer"> until next event</p>
@@ -74,7 +74,7 @@
 </template>
 
 <script>
-    
+
     import axios from 'axios'
 
     const SERVER_URL = "http://localhost:80"
@@ -87,7 +87,7 @@
         }
 
     }
-    
+
 var v = {
     name: 'nav_home',
     data(){
@@ -96,16 +96,18 @@ var v = {
             time: '',
             date: '',
             week: ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'],
-          
         }
     },
     mounted() {
-        
+
         axios
             .get(getServerFuncURL("getNextEvent"))
             .then(response => (this.eventData = response.data))
-       setInterval(this.updateTime(), 1000);
        this.updateTime()
+       setInterval( () => {
+         this.updateTime()
+       }, 1000);
+
        //this.eventData = this.$store.dispatch("getUpcomingEvent");
     },
     methods: {
@@ -123,7 +125,7 @@ var v = {
             evt.currentTarget.className += " active";
         },
         newElement: function () {
-         
+
             var li = document.createElement("li");
             var inputValue = document.getElementById("myInput").value;
             var t = document.createTextNode(inputValue);
@@ -158,19 +160,20 @@ var v = {
         },
         updateTime: function () {
             var cd = new Date();
+            cd.setTime(cd.getTime() + (this.$store.state.timeOffSet*60*60*1000))
             this.time = this.zeroPadding(cd.getHours(), 2) + ':' + this.zeroPadding(cd.getMinutes(), 2) + ':' + this.zeroPadding(cd.getSeconds(), 2);
             this.date = this.zeroPadding(cd.getFullYear(), 4) + '-' + this.zeroPadding(cd.getMonth() + 1, 2) + '-' + this.zeroPadding(cd.getDate(), 2) + ' ' + this.week[cd.getDay()];
         },
-        
+
     },
     components: {
 
     }
     }
 
-    
 
-    
+
+
     var close = document.getElementsByClassName("close");
     var i;
     for (i = 0; i < close.length; i++) {
@@ -190,30 +193,30 @@ var v = {
     }
 
     //clock
-    window.onload = setInterval(function () {
-        var d = new Date();
+    // window.onload = setInterval(function () {
+    //     var d = new Date();
+    //
+    //     var date = d.getDate();
+    //
+    //     var month = d.getMonth();
+    //     var montharr = ["Jan", "Feb", "Mar", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    //     month = montharr[month];
+    //
+    //     var year = d.getFullYear();
+    //
+    //     var day = d.getDay();
+    //     var dayarr = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
+    //     day = dayarr[day];
+    //
+    //     var hour = d.getHours();
+    //     var min = d.getMinutes();
+    //     var sec = d.getSeconds();
+    //
+    //     document.getElementById("date").innerHTML = month + " " + date + " " + year + " " + day;
+    //     document.getElementById("time").innerHTML = hour + ":" + min + ":" + sec;
+    // }, 1000);
 
-        var date = d.getDate();
 
-        var month = d.getMonth();
-        var montharr = ["Jan", "Feb", "Mar", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        month = montharr[month];
-
-        var year = d.getFullYear();
-
-        var day = d.getDay();
-        var dayarr = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
-        day = dayarr[day];
-
-        var hour = d.getHours();
-        var min = d.getMinutes();
-        var sec = d.getSeconds();
-
-        document.getElementById("date").innerHTML = month + " " + date + " " + year + " " + day;
-        document.getElementById("time").innerHTML = hour + ":" + min + ":" + sec;
-    }, 1000);
-
-    
     /*
      * countdown timer code
     //this will be time of next event
@@ -237,7 +240,7 @@ var v = {
         document.getElementById("timer").innerHTML = days + "d " + hours + "h "
             + minutes + "m " + seconds + "s ";
 
-        // If the count down is over, write some text 
+        // If the count down is over, write some text
         if (distance < 0) {
             clearInterval(x);
             document.getElementById("timer").innerHTML = "EXPIRED";
@@ -268,7 +271,7 @@ var v = {
       background-color: #ddd;
     }
 
-    
+
     .tab button.active {
       background-color: #9cf466;
     }
@@ -294,7 +297,7 @@ var v = {
       background: #eee;
       font-size: 18px;
       transition: 0.2s;
-  
+
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
@@ -399,7 +402,7 @@ var v = {
     .cdtime {
         position:relative;
     }
-    
 
-    
+
+
 </style>
