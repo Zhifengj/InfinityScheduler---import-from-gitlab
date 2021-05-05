@@ -11,7 +11,7 @@
                 <div id="myDIV" class="header">
                     <h2 style="margin:5px">My To Do List</h2>
                     <input type="text" id="myInput" placeholder="Add some todos...">
-                    <span v-on:click="newElement" class="addBtn">Add</span>
+                    <span v-on:click="addTodo(); newElement();" class="addBtn">Add</span>
                 </div>
 
                 <ul id="myUL">
@@ -25,14 +25,8 @@
                             <div id="clock">
                                 <p id="date" class="date"></p>
                                 <p id="time" class="time"></p>
+                            </div>
 
-                            </div>
-                            <!-- countdown timer 
-                            <div>Countdown to upcoming event: </div>
-                            <div class="cdtime">
-                                <p id="timer"> until next event</p>
-                            </div>
-                                -->
                         </div>
                         <div class="note">
                             <div>Upcoming Events: </div>
@@ -67,18 +61,19 @@
             </div>
 
             <div id="Tasks" class="tabcontent">
-                <h3>Tasks function coming soon...</h3>
+                <h3>tasks function coming soon...</h3>
             </div>
         </div>
-    </body>
+        </body>
 </template>
 
 <script>
-    
-    import axios from 'axios'
 
-    const SERVER_URL = "http://localhost:80"
-    const PROD_SERVER_URL = "http://infinityscheduler.com"
+    import axios from 'axios'
+    //document.getElementById("defaultTab").click();
+
+    const SERVER_URL = "http://localhost:80";
+    const PROD_SERVER_URL = "http://infinityscheduler.com";
     function getServerFuncURL(name, args = false) {
         if (args != false) {
             return `${SERVER_URL}/server/${name}.php?args=${encodeURIComponent(JSON.stringify(args))}`
@@ -87,90 +82,82 @@
         }
 
     }
-    
-var v = {
-    name: 'nav_home',
-    data(){
-        return {
-            eventData: null,
-            time: '',
-            date: '',
-            week: ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'],
-          
-        }
-    },
-    mounted() {
-        
-        axios
-            .get(getServerFuncURL("getNextEvent"))
-            .then(response => (this.eventData = response.data))
-       setInterval(this.updateTime(), 1000);
-       this.updateTime()
-       //this.eventData = this.$store.dispatch("getUpcomingEvent");
-    },
-    methods: {
-        openTab: function(evt, tabID) {
-            var i, tabcontent, tablinks;
-            tabcontent = document.getElementsByClassName("tabcontent");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
-            }
-            tablinks = document.getElementsByClassName("tablinks");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
-            }
-            document.getElementById(tabID).style.display = "block";
-            evt.currentTarget.className += " active";
-        },
-        newElement: function () {
-         
-            var li = document.createElement("li");
-            var inputValue = document.getElementById("myInput").value;
-            var t = document.createTextNode(inputValue);
-            li.appendChild(t);
-            if (inputValue === '') {
-                alert("You must write something!");
-            } else {
-                document.getElementById("myUL").appendChild(li);
-            }
-            document.getElementById("myInput").value = "";
 
-            var span = document.createElement("SPAN");
-            var txt = document.createTextNode("\u00D7");
-            span.className = "close";
-            span.appendChild(txt);
-            li.appendChild(span);
-            var i;
-            for (i = 0; i < close.length; i++) {
-                close[i].onclick = function () {
-                    var div = this.parentElement;
-                    div.style.display = "none";
+    export default {
+        name: 'nav_home',
+        data() {
+            return {
+                eventData: null,
+                time: '',
+                date: '',
+                week: ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'],
+                todoList: this.$store.state.todoList,
+
+            }
+        },
+        mounted() {
+
+            axios
+                .get(getServerFuncURL("getNextEvent"))
+                .then(response => (this.eventData = response.data))
+
+            //this.eventData = this.$store.dispatch("getUpcomingEvent");
+        },
+        methods: {
+            openTab: function (evt, tabID) {
+                var i, tabcontent, tablinks;
+                tabcontent = document.getElementsByClassName("tabcontent");
+                for (i = 0; i < tabcontent.length; i++) {
+                    tabcontent[i].style.display = "none";
                 }
+                tablinks = document.getElementsByClassName("tablinks");
+                for (i = 0; i < tablinks.length; i++) {
+                    tablinks[i].className = tablinks[i].className.replace(" active", "");
+                }
+                document.getElementById(tabID).style.display = "block";
+                evt.currentTarget.className += " active";
+            },
+            newElement: function () {
+
+                var li = document.createElement("li");
+                var inputValue = document.getElementById("myInput").value;
+                var t = document.createTextNode(inputValue);
+                li.appendChild(t);
+                if (inputValue === '') {
+                    alert("You must write something!");
+                } else {
+                    document.getElementById("myUL").appendChild(li);
+                }
+                console.log(inputValue);
+                document.getElementById("myInput").value = "";
+
+                var span = document.createElement("SPAN");
+                var txt = document.createTextNode("\u00D7");
+                span.className = "close";
+                span.appendChild(txt);
+                li.appendChild(span);
+                var i;
+                for (i = 0; i < close.length; i++) {
+                    close[i].onclick = function () {
+                        var div = this.parentElement;
+                        div.style.display = "none";
+                    }
+                }
+
+            },
+            addTodo: function () {
+                var input = document.getElementById("myInput").value;
+                console.log(input);
+                //this.$store.commit("addTodo", input);
+                
             }
+        },
+        components: {
 
-        },
-        zeroPadding: function (num, digit) {
-            var zero = '';
-            for (var i = 0; i < digit; i++) {
-                zero += '0';
-            }
-            return (zero + num).slice(-digit);
-        },
-        updateTime: function () {
-            var cd = new Date();
-            this.time = this.zeroPadding(cd.getHours(), 2) + ':' + this.zeroPadding(cd.getMinutes(), 2) + ':' + this.zeroPadding(cd.getSeconds(), 2);
-            this.date = this.zeroPadding(cd.getFullYear(), 4) + '-' + this.zeroPadding(cd.getMonth() + 1, 2) + '-' + this.zeroPadding(cd.getDate(), 2) + ' ' + this.week[cd.getDay()];
-        },
-        
-    },
-    components: {
-
-    }
+        }
     }
 
-    
 
-    
     var close = document.getElementsByClassName("close");
     var i;
     for (i = 0; i < close.length; i++) {
@@ -213,11 +200,10 @@ var v = {
         document.getElementById("time").innerHTML = hour + ":" + min + ":" + sec;
     }, 1000);
 
-    
     /*
-     * countdown timer code
     //this will be time of next event
-    var countDownDate = new Date("May 30, 2021 15:37:25").getTime();
+
+    var countDownDate = new Date("Feb 30, 2021 15:37:25").getTime();
 
     var x = setInterval(function () {
 
@@ -237,14 +223,15 @@ var v = {
         document.getElementById("timer").innerHTML = days + "d " + hours + "h "
             + minutes + "m " + seconds + "s ";
 
-        // If the count down is over, write some text 
+        // If the count down is over, write some text
         if (distance < 0) {
             clearInterval(x);
             document.getElementById("timer").innerHTML = "EXPIRED";
         }
     }, 1000);
     */
-    export default v;
+
+
 
 </script>
 
@@ -254,24 +241,26 @@ var v = {
         border: 1px solid #ccc;
         background-color: #66bef4;
     }
-    .tab button {
-      background-color: inherit;
-      float: left;
-      border: none;
-      outline: none;
-      cursor: pointer;
-      padding: 14px 16px;
-      transition: 0.3s;
-      font-size: 17px;
-    }
-    .tab button:hover {
-      background-color: #ddd;
-    }
 
-    
-    .tab button.active {
-      background-color: #9cf466;
-    }
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+
+            .tab button:hover {
+                background-color: #ddd;
+            }
+
+
+            .tab button.active {
+                background-color: #9cf466;
+            }
 
 
     .tabcontent {
@@ -282,44 +271,43 @@ var v = {
     }
 
     ul {
-      margin: 0;
-      padding: 0;
+        margin: 0;
+        padding: 0;
     }
 
-    ul li {
-      cursor: pointer;
-      position: relative;
-      padding: 12px 8px 12px 40px;
-      list-style-type: none;
-      background: #eee;
-      font-size: 18px;
-      transition: 0.2s;
-  
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-    }
+        ul li {
+            cursor: pointer;
+            position: relative;
+            padding: 12px 8px 12px 40px;
+            list-style-type: none;
+            background: #eee;
+            font-size: 18px;
+            transition: 0.2s;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
 
-    ul li:nth-child(odd) {
-      background: #f9f9f9;
-    }
+            ul li:nth-child(odd) {
+                background: #f9f9f9;
+            }
 
-    ul li:hover {
-      background: #ddd;
-    }
+            ul li:hover {
+                background: #ddd;
+            }
 
     .close {
-      position: absolute;
-      right: 0;
-      top: 0;
-      padding: 12px 16px 12px 16px;
+        position: absolute;
+        right: 0;
+        top: 0;
+        padding: 12px 16px 12px 16px;
     }
 
-    .close:hover {
-      background-color: #f44336;
-      color: white;
-    }
+        .close:hover {
+            background-color: #f44336;
+            color: white;
+        }
 
     .header {
         background-color: #98AFC7;
@@ -328,38 +316,38 @@ var v = {
         text-align: center;
     }
 
-    .header:after {
-      content: "";
-      display: table;
-      clear: both;
-    }
+        .header:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
 
     input {
-      margin: 0;
-      border: none;
-      border-radius: 0;
-      width: 50%;
-      padding: 10px;
-      float: left;
-      font-size: 16px;
+        margin: 0;
+        border: none;
+        border-radius: 0;
+        width: 50%;
+        padding: 10px;
+        float: left;
+        font-size: 16px;
     }
 
     .addBtn {
-      padding: 10px;
-      width: 10%;
-      background: #d9d9d9;
-      color: #555;
-      float: left;
-      text-align: center;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.3s;
-      border-radius: 0;
+        padding: 10px;
+        width: 10%;
+        background: #d9d9d9;
+        color: #555;
+        float: left;
+        text-align: center;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+        border-radius: 0;
     }
 
-    .addBtn:hover {
-      background-color: #bbb;
-    }
+        .addBtn:hover {
+            background-color: #bbb;
+        }
 
     p {
         margin: 0;
@@ -378,8 +366,8 @@ var v = {
         color: #1E90FF;
         text-shadow: 0 0 20px rgba(10, 175, 230, 1), 0 0 20px rgba(10, 175, 230, 0);
     }
-    .time
-     {
+
+    .time {
         letter-spacing: 0.05em;
         font-size: 80px;
         padding: 5px 0;
@@ -397,9 +385,6 @@ var v = {
     }
 
     .cdtime {
-        position:relative;
+        position: relative;
     }
-    
-
-    
 </style>

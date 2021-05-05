@@ -205,29 +205,10 @@
                         eventObj = this.$store.state.events[i];
                     }
                 }
-                //console.log("obejjjjjj", eventObj)
-                const willModify = confirm(`id: ${e.schedule.id} \n title: ${e.schedule.title}\n when: ${(new Date(e.schedule.start))} \n to ${(new Date(e.schedule.end))} \n status: ${eventObj.completed}\n location: ${e.schedule.location}\n Will you update schedule?`);
+                const willModify = confirm(`Title of event: ${e.schedule.title}\n When: ${(new Date(e.schedule.start))} \n to ${(new Date(e.schedule.end))} \n Completion Status: ${eventObj.completed}\n Location: ${e.schedule.location}\n Will you update schedule?`);
 
                 if (willModify) { 
-                    this.openEditPopUp(e)
-                    //e.schedule.title = prompt('Schedule', e.schedule.title);
-                    //e.schedule.start = prompt('enter time', e.schedule.start);
-                    //console.log(e.schedule.title);
-                    //this.$store.commit("updateEvent", e)
-                    //this.$refs.calref.invoke("updateSchedule", e.schedule.id, e.schedule.calendarId, e.changes)
-                    //console.log(e.schedule.start);
-                    //e.events.start = prompt('enter time', e.events.start);
-                    //console.log("events.start", e.events.start);
-                    //this.$store.commit("updateEvent", e)
-                    //this.$refs.calref.invoke("updateSchedule", e.schedule.id, e.schedule.calendarId, e.changes)
-                    //calendar.updateSchedule(e.schedule.id, e.schedule.calendarId, e.schedule);
-                    //e.schedule.start = e.start;
-                    //e.schedule.end = e.schedule.end;
-                    //e.schedule.start = prompt('Schedule.start', e.schedule.start);
-                    //console.log(e.schedule.start)
-                    //console.log(e.schedule.end)
-                    
-                    
+                    this.openEditPopUp(e)    
                 }
             },
             

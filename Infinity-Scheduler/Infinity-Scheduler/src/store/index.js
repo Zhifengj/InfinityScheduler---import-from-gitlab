@@ -8,7 +8,7 @@ import router from './../router'
 import { Date as TZDate } from './../../node_modules/tui-calendar/src/js/common/timezone.js'
 import  DBUtil  from './../DBUtil'
 
-
+import axios from 'axios'
 process.version = 'v14.0.1'
 
 
@@ -124,7 +124,8 @@ export default new Vuex.Store({
 
         loginFailure: false,
         registerFailure: false,
-        notifs: []
+        notifs: [],
+        todoList: [],
 
 
 
@@ -241,7 +242,25 @@ export default new Vuex.Store({
 
         updateUserProfileLink(state, profile_link) {
           state.user_info.profile_link = profile_link;
-        }
+        },
+
+        setTodo(state, todoList) {
+            state.todoList = todoList;
+        },
+
+        addTodo(state, todoList) {
+            state.todoList.push({ "Title": todoList })
+        },
+
+        deleteTodo(state, id) {
+            let idx = 0
+            for (let i = 0; i < state.todoList.length; i++) {
+                if (state.todoList[i].todoID == id) {
+                    idx = i
+                }
+            }
+            this.dispatch("deleteTodo", { "TID": id })
+        },
 
     },
     actions: {
@@ -358,7 +377,7 @@ export default new Vuex.Store({
 
             console.log(e)
             try {
-                const response = await axios.get(getServerFuncURL("postEvent", payload));
+                const response = await axios.get(DBUtil.getServerFuncURL("postEvent", payload));
                 console.log(response)
                 if (response.data.hasOwnProperty("error")) {
 
@@ -518,6 +537,41 @@ export default new Vuex.Store({
 
 
             }
-        }
+        },
+        async getTodo(store) {
+            const res = await DBUtil.execDB("getTodo");
+            if (res.hasOwnProperty("error")) {
+                console.log("Error: failed to get events")
+
+            } else {
+
+                //convert events from db to local
+                for (let i = 0; i < res.length; i++) {
+                    res[i] = DBUtil.fromDBEvent(res[i])
+                }
+            }
+
+        },
+        async postTodo(store, todoList) {
+            const res = await DBUtil.execDB("addToDo", todoList)
+            console.log(res)
+            if (res.hasOwnProperty("error")) {
+
+                console.log("Failed to update todo")
+            } else {
+                console.log(res)
+            }
+        },
+
+        async deleteTodo(store, todoList) {
+
+            const res = await DBUtil.execDB("deleteToDo", { "TID": todoList.id })
+            if (res.hasOwnProperty("error")) {
+
+                console.log("Failed to delete todo")
+            } else {
+                console.log(res)
+            }
+        },
     }
 })
