@@ -59,6 +59,7 @@ export default new Vuex.Store({
         //-1 means that the next id is a new one
         availableEventIds: [-1],
         _nextEventId: 0,
+        timeOffSet: 0,
         events: [],
         calView: "month",
         user_info: {
@@ -165,7 +166,9 @@ export default new Vuex.Store({
             this.dispatch("postEvent", e)
         },
 
-
+        setTimeOffSet(state, offSet) {
+          state.timeOffSet = offSet
+        },
 
         updateEvent(state, e) {
 
@@ -454,9 +457,18 @@ export default new Vuex.Store({
 
           if (res.hasOwnProperty("error"))
           {
-              console.log("Failed to update event")
+              console.log("Failed to update password")
           }
 
+        },
+
+        async updateEmail(store, data) {
+          const res = await DBUtil.execDB("updateEmail", data);
+
+          if (res.hasOwnProperty("error"))
+          {
+              console.log("Failed to update email")
+          }
         },
 
         async uploadProfileLink(store, data) {

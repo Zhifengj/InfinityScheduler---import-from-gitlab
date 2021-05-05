@@ -26,18 +26,18 @@
           <label> Current Password: </label>
           <br>
           <br>
-          <input type="text" placeholder="Current Password..." />
+          <input type="text" id="pword" v-model="pword" placeholder="Current Password..." />
           <br>
           <br>
           <label> New Email Address: </label>
           <br>
           <br>
-          <input type="text" placeholder="New Email Address..." />
+          <input type="text" id="new_email" v-model="new_email" placeholder="New Email Address..." />
           <br>
           <br>
           <br>
           <br>
-          <button @click='change_email = false'> Submit </button>
+          <button v-on:click="tryUpdateEmail"> Submit </button>
           <button @click='change_email = false' class="sec_but"> Cancel </button>
         </div>
       </div>
@@ -94,6 +94,8 @@ export default {
           change_email: false,
           change_profile: false,
           image_link: "",
+          pword: "",
+          new_email: "",
         }
     },
     methods: {
@@ -110,6 +112,14 @@ export default {
           this.$store.dispatch("updateUserPassword", data)
           this.change_pas = false
         }
+      },
+      tryUpdateEmail() {
+        let data = {
+          "pword": this.pword,
+          "new_email": this.new_email
+        }
+        this.$store.dispatch("updateEmail", data)
+        this.change_email = false
       },
       uploadProfileLink() {
         if (this.image_link)
