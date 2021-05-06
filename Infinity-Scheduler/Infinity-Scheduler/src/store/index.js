@@ -16,6 +16,23 @@ process.version = 'v14.0.1'
 
 Vue.use(Vuex)
 
+function sendNotification(title, body, onclick) {
+    if (!('Notification' in window)) {
+        console.log("This browser does not support notifications.");
+    } else {
+        if (Notification.permission === 'default' || Notification.permission === 'denied') {
+            Notification.requestPermission(function (permission) {
+                
+            });
+        } else {
+            let n = new Notification(title, { "body": body })
+            n.onclick = onclick
+        }
+       
+        
+    }
+}
+
 
 
 function getEventIdxById(events, id) {

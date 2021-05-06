@@ -32,9 +32,10 @@
 				mysqli_stmt_bind_param($stmt, "s", $args["uname"]);
 				mysqli_stmt_execute($stmt);
 				$result = mysqli_stmt_get_result($stmt);
-				$res = mysqli_fetch_all($result, MYSQLI_ASSOC)[0];
-				$salt = $res["Salt"];
-
+				if(mysqli_num_rows($result) > 0){
+					$res = mysqli_fetch_all($result, MYSQLI_ASSOC)[0];
+					$salt = $res["Salt"];
+				}
 			}
 			if (mysqli_stmt_prepare($stmt, "SELECT UID, NextTID FROM User WHERE Username=? AND Password=?")) {
 				

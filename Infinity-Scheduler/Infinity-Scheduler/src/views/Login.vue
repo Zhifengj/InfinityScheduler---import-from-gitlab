@@ -38,7 +38,7 @@
         methods: {
             //local methods go here
             tryLogin() {
-               
+              
                 this.$store.dispatch("auth", {
                     "uname": this.uname,
                     "pword": this.pword
