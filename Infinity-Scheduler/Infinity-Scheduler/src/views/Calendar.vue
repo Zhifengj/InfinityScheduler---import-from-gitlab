@@ -73,6 +73,27 @@
                 </div>
             </div>
         </transition>
+        <transition name="modal">
+            <div v-show="detailToggle" id="detailViewID">
+                <div class="overlay">
+                    <div class="modal">
+                        <h4>Event Title: {{detailTitle}}</h4>
+
+                        <h4>Edit Location: {{detailLocation}}</h4>
+
+                        <h4>Start Time: {{detailsdate}}</h4>
+
+                        <h4>End Time: {{detailedate}}</h4>
+
+                        <h4>Completed: {{detailcompleted}}</h4>
+
+                        <button type="submit" v-on:click="closeDPopUp(); openEditPopUp(); ">Edit event</button>
+                        <button class="button_close_popup" v-on:click="closeDPopUp">Close </button>
+
+                    </div>
+                </div>
+            </div>
+        </transition>
 
     </div>
 
@@ -126,6 +147,12 @@
                 editToggle: false,
                 edittitle: "",
                 editEventID: -1,
+                detailToggle: false,
+                detailTitle: "",
+                detailLocation: "",
+                detailsdate: '',
+                detailedate: '',
+                detailcompleted: false,
              
 
 
@@ -187,13 +214,21 @@
             closePopUp: function() {
                 this.toggle = false;
             },
-            openEditPopUp(e) {
-                this.editEventID = e.schedule.id
+            openEditPopUp: function () {
+                //this.editEventID = e.schedule.id
                 this.editToggle = true;
             },
             closeEPopUp: function () {
                 this.editToggle = false;
             },
+            openDetailview(e) {
+                this.editEventID = e.schedule.id
+                this.detailToggle = true;
+            },
+            closeDPopUp: function () {
+                this.detailToggle = false;
+            },
+
 
             
             onClickSchedule(e) {
@@ -205,11 +240,18 @@
                         eventObj = this.$store.state.events[i];
                     }
                 }
+                this.detailTitle = e.schedule.title;
+                this.detailLocation = e.schedule.location;
+                this.detailsdate = new Date(e.schedule.start);
+                this.detailedate = new Date(e.schedule.end);
+                this.detailcompleted = eventObj.completed;
+                this.openDetailview(e);
+                /*
                 const willModify = confirm(`Title of event: ${e.schedule.title}\n When: ${(new Date(e.schedule.start))} \n to ${(new Date(e.schedule.end))} \n Completion Status: ${eventObj.completed}\n Location: ${e.schedule.location}\n Will you update schedule?`);
-
                 if (willModify) { 
                     this.openEditPopUp(e)    
                 }
+                */
             },
             
             onBeforeCreateSchedule(e) {
