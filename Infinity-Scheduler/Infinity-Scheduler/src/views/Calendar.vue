@@ -97,7 +97,7 @@
 
     </div>
 
-    
+
 
 </template>
 
@@ -110,7 +110,7 @@
     import 'tui-date-picker/dist/tui-date-picker.css';
     import 'tui-time-picker/dist/tui-time-picker.css';
 
-  
+
 
     export default {
         name: 'calendar',
@@ -153,7 +153,7 @@
                 detailsdate: '',
                 detailedate: '',
                 detailcompleted: false,
-             
+
 
 
             }
@@ -191,7 +191,7 @@
                 const evntID = this.editEventID;
 
                 this.$store.commit("deleteEvent", {"id":evntID});
-                
+
                 var schedule = {
                     id: evntID,
                     title: edittitle,
@@ -230,7 +230,7 @@
             },
 
 
-            
+
             onClickSchedule(e) {
                 //console.log('clickSchedule', e);
                 //console.log(this.$store.state.events)
@@ -248,20 +248,20 @@
                 this.openDetailview(e);
                 /*
                 const willModify = confirm(`Title of event: ${e.schedule.title}\n When: ${(new Date(e.schedule.start))} \n to ${(new Date(e.schedule.end))} \n Completion Status: ${eventObj.completed}\n Location: ${e.schedule.location}\n Will you update schedule?`);
-                if (willModify) { 
-                    this.openEditPopUp(e)    
+                if (willModify) {
+                    this.openEditPopUp(e)
                 }
                 */
             },
-            
+
             onBeforeCreateSchedule(e) {
                 //console.log('beforeCreateSchedule', e)
                 this.openPopUp()
                 //const title = prompt('Schedule', 'Enter Title');
-                
+
                 //calendar.createSchedules([schedule]);
                 //this.saveEvent(e)
-                
+
                 //console.log("aaaaaaaaaaaaaaaaa")
                 e.guide.clearGuideElement();
                 //this.$store.commit("addEvent", e)
@@ -277,8 +277,8 @@
                 this.$store.commit("deleteEvent", e.schedule)
                 this.$refs.calref.invoke("deleteSchedule", e.schedule.id, e.schedule.calendarId)
             }
-            
-            
+
+
 
         },
         components: {
@@ -296,7 +296,7 @@
      margin-left: 300px;
      margin-top: 50px;
      padding: 50px;
-     border: 2px groove #329ea8;
+     border: 2px groove #A07855FF;
      border-radius: 5px;
    }
 
@@ -320,11 +320,11 @@
     }
 
     .button_add {
-        float: right
+        float: right;
     }
 
     .button_add {
-        float: right
+        float: right;
     }
 
     .modal {
@@ -350,6 +350,7 @@
         .fadeIn-leave-active.modal {
             transform: scale(1.1);
         }
+
     .overlay {
         position: fixed;
         top: 0;

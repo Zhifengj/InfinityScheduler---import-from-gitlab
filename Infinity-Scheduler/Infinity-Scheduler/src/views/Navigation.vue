@@ -69,7 +69,7 @@ import Notification from './Notification'
   }
 
   .header {
-    background-color: #0670bf;
+    background-color: #343148FF;
     border: 2px solid black;
     border-radius: 5px;
     padding-top: 10px;
@@ -79,9 +79,9 @@ import Notification from './Notification'
   .title {
       display:inline-block;
       text-align: borderLeft;
-      font-size: 35px;
-      color: black;
+      font-size: 38px;
+      color: #F2EDD7FF;
       margin-left:10px;
-      font-family: Acme;
+      font-family: 'Pacifico', cursive;
   }
 </style>
