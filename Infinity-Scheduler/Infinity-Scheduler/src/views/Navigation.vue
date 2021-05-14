@@ -74,9 +74,11 @@ import DBUtil from '../DBUtil'
             this.$store.dispatch("getNotifications")
             this.$store.dispatch("getNextTID");
             this.$store.dispatch("getEvents");
-            
+            this.$store.dispatch("getUserName");
+            this.$store.dispatch("getUserProfileLink");
             this.checkEventMissedInterval = setInterval(() => {
-                this.$store.commit("checkMissedEvent")
+                this.$store.commit("checkMissedEvent"),
+                this.$store.dispatch("getUserProfileLink");
             }, 3000);
         }
 
@@ -91,7 +93,7 @@ import DBUtil from '../DBUtil'
   }
 
   .header {
-    background-color: #0670bf;
+    background-color: #343148FF;
     border: 2px solid black;
     border-radius: 5px;
     padding-top: 10px;
@@ -101,10 +103,10 @@ import DBUtil from '../DBUtil'
   .title {
       display:inline-block;
       text-align: borderLeft;
-      font-size: 35px;
-      color: black;
+      font-size: 38px;
+      color: #F2EDD7FF;
       margin-left:10px;
-      font-family: Acme;
+      font-family: 'Pacifico', cursive;
   }
 
     .modal {

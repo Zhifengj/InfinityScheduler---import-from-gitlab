@@ -1,33 +1,31 @@
 <template>
-    
-    <div class="body">
-        <div class="tab">
-            <button class="tablinks" v-on:click="openTab($event, 'TodoList')">TodoList</button>
-            <button class="tablinks" v-on:click="openTab($event, 'Events')" >Events</button>
-            <button class="tablinks" v-on:click="openTab($event, 'Tasks')">Tasks</button>
-        </div>
-
-        <div id="TodoList" class="tabcontent">
-            <div id="myDIV" class="header">
-                <h2 style="margin:5px">My To Do List</h2>
-                <input type="text" id="myInput" placeholder="Add some todos...">
-                <span v-on:click="newElement" class="addBtn">Add</span>
+    <body onload="document.getElementById('defaultOpen').click();">
+        <div class="body">
+            <div class="tab">
+                <button class="tablinks" v-on:click="openTab($event, 'TodoList')">TodoList</button>
+                <button class="tablinks active" style="display:block" v-on:click="openTab($event, 'Events')" id="defaultOpen">Events</button>
+                <button class="tablinks" v-on:click="openTab($event, 'Tasks')">Tasks</button>
             </div>
 
-            <ul id="myUL">
-               
-            </ul>
-        </div>
+            <div id="TodoList" class="tabcontent">
+                <div id="myDIV" class="header">
+                    <h2 style="margin:5px">My To Do List</h2>
+                    <input type="text" id="myInput" placeholder="Add some todos...">
+                    <span v-on:click="addTodo(); newElement();" class="addBtn">Add</span>
+                </div>
 
-        <div id="Events" class="tabcontent">
-            <div class="main_container">
-                <div class="notes">
-                    <div class="note">
-                        <div>Countdown to upcoming event: </div>
-                        <div class="time">
-                            
-                            <p id="timer"> until next event</p>
-                        </div>
+                <ul id="myUL">
+                </ul>
+            </div>
+
+            <div id="Events" class="tabcontent">
+                <div class="main_container">
+                    <div class="notes">
+                        <div class="note">
+                            <div id="clock">
+                                <p id="date" class="date"></p>
+                                <p id="time" class="time"></p>
+                            </div>
 
                     </div>
                     <div class="note">
@@ -38,16 +36,16 @@
 
 
 
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div id="Tasks" class="tabcontent">
-            <h3>tasks</h3>
+            <div id="Tasks" class="tabcontent">
+                <h3>tasks function coming soon...</h3>
+            </div>
         </div>
-    </div>
-
+        </body>
 </template>
 
 <script>
@@ -60,7 +58,9 @@ export default {
     name: 'nav_home',
     data(){
         return {
-            eventData: null
+            eventData: null,
+            todoList: this.$store.state.todoList,
+
         }
     },
     mounted() {
@@ -95,27 +95,33 @@ export default {
             }
             document.getElementById("myInput").value = "";
 
-            var span = document.createElement("SPAN");
-            var txt = document.createTextNode("\u00D7");
-            span.className = "close";
-            span.appendChild(txt);
-            li.appendChild(span);
-            var i;
-            for (i = 0; i < close.length; i++) {
-                close[i].onclick = function () {
-                    var div = this.parentElement;
-                    div.style.display = "none";
+                var span = document.createElement("SPAN");
+                var txt = document.createTextNode("\u00D7");
+                span.className = "close";
+                span.appendChild(txt);
+                li.appendChild(span);
+                var i;
+                for (i = 0; i < close.length; i++) {
+                    close[i].onclick = function () {
+                        var div = this.parentElement;
+                        div.style.display = "none";
+                    }
                 }
+
+            },
+            addTodo: function () {
+                var input = document.getElementById("myInput").value;
+                console.log(input);
+                //this.$store.commit("addTodo", input);
+
             }
-
         },
-    },
-    components: {
+        components: {
 
-    }
+        }
     }
 
-    
+
     var close = document.getElementsByClassName("close");
     var i;
     for (i = 0; i < close.length; i++) {
@@ -178,8 +184,9 @@ export default {
         })
        
     }, 1000);
-    
-    
+    */
+
+
 
 </script>
 
@@ -187,26 +194,28 @@ export default {
     .tab {
         overflow: hidden;
         border: 1px solid #ccc;
-        background-color: #66bef4;
-    }
-    .tab button {
-      background-color: inherit;
-      float: left;
-      border: none;
-      outline: none;
-      cursor: pointer;
-      padding: 14px 16px;
-      transition: 0.3s;
-      font-size: 17px;
-    }
-    .tab button:hover {
-      background-color: #ddd;
+        background-color: #D7C49EFF;
     }
 
-    
-    .tab button.active {
-      background-color: #9cf466;
-    }
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+
+            .tab button:hover {
+                background-color: #ddd;
+            }
+
+
+            .tab button.active {
+                background-color: #A07855FF;
+            }
 
 
     .tabcontent {
@@ -217,44 +226,43 @@ export default {
     }
 
     ul {
-      margin: 0;
-      padding: 0;
+        margin: 0;
+        padding: 0;
     }
 
-    ul li {
-      cursor: pointer;
-      position: relative;
-      padding: 12px 8px 12px 40px;
-      list-style-type: none;
-      background: #eee;
-      font-size: 18px;
-      transition: 0.2s;
-  
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-    }
+        ul li {
+            cursor: pointer;
+            position: relative;
+            padding: 12px 8px 12px 40px;
+            list-style-type: none;
+            background: #eee;
+            font-size: 18px;
+            transition: 0.2s;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
 
-    ul li:nth-child(odd) {
-      background: #f9f9f9;
-    }
+            ul li:nth-child(odd) {
+                background: #f9f9f9;
+            }
 
-    ul li:hover {
-      background: #ddd;
-    }
+            ul li:hover {
+                background: #ddd;
+            }
 
     .close {
-      position: absolute;
-      right: 0;
-      top: 0;
-      padding: 12px 16px 12px 16px;
+        position: absolute;
+        right: 0;
+        top: 0;
+        padding: 12px 16px 12px 16px;
     }
 
-    .close:hover {
-      background-color: #f44336;
-      color: white;
-    }
+        .close:hover {
+            background-color: #f44336;
+            color: white;
+        }
 
     .header {
         background-color: #98AFC7;
@@ -263,38 +271,74 @@ export default {
         text-align: center;
     }
 
-    .header:after {
-      content: "";
-      display: table;
-      clear: both;
-    }
+        .header:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
 
     input {
-      margin: 0;
-      border: none;
-      border-radius: 0;
-      width: 50%;
-      padding: 10px;
-      float: left;
-      font-size: 16px;
+        margin: 0;
+        border: none;
+        border-radius: 0;
+        width: 50%;
+        padding: 10px;
+        float: left;
+        font-size: 16px;
     }
 
     .addBtn {
-      padding: 10px;
-      width: 10%;
-      background: #d9d9d9;
-      color: #555;
-      float: left;
-      text-align: center;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.3s;
-      border-radius: 0;
+        padding: 10px;
+        width: 10%;
+        background: #d9d9d9;
+        color: #555;
+        float: left;
+        text-align: center;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+        border-radius: 0;
     }
 
-    .addBtn:hover {
-      background-color: #bbb;
+        .addBtn:hover {
+            background-color: #bbb;
+        }
+
+    p {
+        margin: 0;
+        padding: 0;
     }
 
-    
+    #clock {
+        font-family: 'Share Tech Mono', monospace;
+        text-align: center;
+        position: relative;
+        margin-top: 100px;
+        left: 50%;
+        top: 75%;
+        transform: translate(-50%, -50%);
+        color: #A07855FF;
+        text-shadow: 0 0 20px rgba(158, 134, 123, 1), 0 0 20px rgba(158, 134, 123, 0);
+    }
+
+    .time {
+        letter-spacing: 0.05em;
+        font-size: 80px;
+        padding: 5px 0;
+    }
+
+    .date {
+        letter-spacing: 0.1em;
+        font-size: 24px;
+    }
+
+    .text {
+        letter-spacing: 0.1em;
+        font-size: 12px;
+        padding: 20px 0 0;
+    }
+
+    .cdtime {
+        position: relative;
+    }
 </style>

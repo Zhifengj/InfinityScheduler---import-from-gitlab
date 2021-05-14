@@ -8,7 +8,7 @@ import router from './../router'
 import { Date as TZDate } from './../../node_modules/tui-calendar/src/js/common/timezone.js'
 import  DBUtil  from './../DBUtil'
 
-
+import axios from 'axios'
 process.version = 'v14.0.1'
 
 
@@ -21,7 +21,7 @@ Vue.use(Vuex)
 
 function getEventIdxById(events, id) {
     for (let e in events) {
-       
+
         if (events[e].id == id) {
             return e
         }
@@ -93,9 +93,14 @@ export default new Vuex.Store({
         //-1 means that the next id is a new one
         availableEventIds: [-1],
         _nextEventId: 0,
+        timeOffSet: 0,
         events: [],
         nextEvent : null,
         calView: "month",
+        user_info: {
+          username: '',
+          profile_link: ''
+        },
         weekOptions: {
             narrowWeekend: true,
             showTimezoneCollapseButton: true,
@@ -135,7 +140,7 @@ export default new Vuex.Store({
                 return 0
             },
         },
-             
+
         monthNames: [
             "January",
             "February",
@@ -152,11 +157,12 @@ export default new Vuex.Store({
 
 
         ],
-       
+
         loginFailure: false,
         registerFailure: false,
-        notifs: []
-      
+        notifs: [],
+        todoList: [],
+
 
 
 
@@ -164,49 +170,51 @@ export default new Vuex.Store({
     mutations:{
         //functions that modify state should go here, and are called with $store.commit("<name>", <arg1>, etc...)
         //syncronous
-       
+
 
 
         //adds an event e to the calendar
         addEvent(state, e) {
-           
+
             let id = state._nextEventId
-          
+
             e.calendarid = '0'
             e.id = `${id}`
-            
+
             //might have to change this later
             e.category = 'time'
             e.lastupdated = new Date(Date.now())
             e.created = new Date(Date.now())
-            
+
             //update with actual state
             e.state = 0
             //update with actual body text
             e.body = ""
-            
+
 
             state.events.push(e)
             state._nextEventId += 1
             //update the database id if the id is new
-            
+
             this.dispatch("updateLastEventID", id + 1)
             //post the event
             this.dispatch("postEvent", e)
         },
 
-       
+        setTimeOffSet(state, offSet) {
+          state.timeOffSet = offSet
+        },
 
         updateEvent(state, e) {
 
             let ev = getEventIdxById(state.events, e.schedule.id)
-           
+
             state.events[ev].start = e.changes.start
             state.events[ev].end = e.changes.end
             state.events[ev].lastupdated = new Date(Date.now())
             state.events[ev].completed = e.changes.completed
             this.dispatch("updateEvent", state.events[ev])
-            
+
         },
         deleteEvent(state, e) {
             state.availableEventIds.push(e.id)
@@ -215,26 +223,26 @@ export default new Vuex.Store({
         },
 
         auth(state, data) {
-         
+
             state._nextEventId = data.NextTID
-          
-           
+
+
         },
 
         setEvents(state, events) {
-           
+
             for (let e = 0; e < events.length; e++) {
                 //local event names need to be in lowercase
-               
+
                 events[e].start = DBUtil.fromDBDate(events[e].start).getTime()
                 events[e].end = DBUtil.fromDBDate(events[e].end).getTime()
                 events[e].lastupdated = DBUtil.fromDBDate(events[e].lastupdated)
                 events[e].created = DBUtil.fromDBDate(events[e].created)
                 events[e].id = `${events[e].tid}`
                 events[e].category = 'time'
-  
+
             }
-            
+
             state.events = events
         },
         setNotifications(state, notifs) {
@@ -264,6 +272,32 @@ export default new Vuex.Store({
                     this.dispatch("reschedule", state.events[i])
                 }
             }
+        },
+
+        updateUserName(state, username) {
+          state.user_info.username = username;
+        },
+
+        updateUserProfileLink(state, profile_link) {
+          state.user_info.profile_link = profile_link;
+        },
+
+        setTodo(state, todoList) {
+            state.todoList = todoList;
+        },
+
+        addTodo(state, todoList) {
+            state.todoList.push({ "Title": todoList })
+        },
+
+        deleteTodo(state, id) {
+            let idx = 0
+            for (let i = 0; i < state.todoList.length; i++) {
+                if (state.todoList[i].todoID == id) {
+                    idx = i
+                }
+            }
+            this.dispatch("deleteTodo", { "TID": id })
         },
 
     },
@@ -410,9 +444,9 @@ export default new Vuex.Store({
         },*/
 
         async auth(store, ep) {
-           
+
             const res = await DBUtil.execDB("auth", ep);
-         
+
             if (res.hasOwnProperty("error")) {
                 console.log("invalid login")
                 store.state.loginFailure = true
@@ -425,8 +459,8 @@ export default new Vuex.Store({
                 router.go(0)
 
             }
-           
-           
+
+
         },
 
 
@@ -434,9 +468,9 @@ export default new Vuex.Store({
             const res = await DBUtil.execDB("getEvents");
             if (res.hasOwnProperty("error")) {
                 console.log("Error: failed to get events")
-                
+
             } else {
-                
+
                 //convert events from db to local
                 for (let i = 0; i < res.length; i++) {
                     res[i] = DBUtil.fromDBEvent(res[i])
@@ -447,9 +481,9 @@ export default new Vuex.Store({
 
 
             }
-           
+
         },
-  
+
         //DO NOT USE THIS TO ADD AN EVENT use addEvent instead
         async postEvent(store, e) {
 
@@ -486,21 +520,21 @@ export default new Vuex.Store({
                 if (response.data.hasOwnProperty("error")) {
 
                     console.log("Failed to post event")
-                } 
+                }
             } catch (error) {
                 console.error(error);
             }
         },
 
         async deleteEvent(store, event) {
-            
+
             const res = await DBUtil.execDB("deleteEvent", {"TID": event.id })
             if (res.hasOwnProperty("error")) {
 
                 console.log("Failed to delete event")
             } else {
                 console.log(res)
-               
+
 
 
             }
@@ -524,15 +558,15 @@ export default new Vuex.Store({
         },
 
         async updateLastEventID(store, id) {
-            
+
             const res = await DBUtil.execDB("updateLastEventID", { "nextTID": id })
-            
+
             if (res.hasOwnProperty("error")) {
 
                 console.log("Failed to update event")
             } else {
                 console.log(res)
-                
+
 
 
             }
@@ -540,7 +574,7 @@ export default new Vuex.Store({
 
         async register(store, data) {
             const res = await DBUtil.execDB("register", data);
-           
+
             if (res.hasOwnProperty("error")) {
                 console.log("Error: failed to register")
                 store.state.registerFailure = true
@@ -552,19 +586,45 @@ export default new Vuex.Store({
 
             }
         },
+
+        async updateUserPassword(store, data) {
+          const res = await DBUtil.execDB("updateUserPassword", data);
+
+          if (res.hasOwnProperty("error"))
+          {
+              console.log("Failed to update password")
+          }
+
+        },
+
+        async updateEmail(store, data) {
+          const res = await DBUtil.execDB("updateEmail", data);
+
+          if (res.hasOwnProperty("error"))
+          {
+              console.log("Failed to update email")
+          }
+        },
+
+        async uploadProfileLink(store, data) {
+          const res = await DBUtil.execDB("uploadProfileLink", data);
+
+          console.log(res.data);
+        },
+
         async logout(store) {
             await DBUtil.execDB("logout");
         },
 
         async getNextTID(store) {
-           
+
             const res = await DBUtil.execDB("getNextTID")
-           
+
             store.commit("auth", res)
         },
 
         async getNotifications(store) {
-           
+
             const res = await DBUtil.execDB("getNotifications");
             console.log(res)
             if (res.hasOwnProperty("error")) {
@@ -582,9 +642,24 @@ export default new Vuex.Store({
 
 
                 store.commit("setNotifications", res)
-
-
             }
+        },
+
+        async getUserName(store) {
+          const res = await DBUtil.execDB("getUserName");
+          store.commit("updateUserName", res.Name);
+        },
+
+        async getUserProfileLink(store) {
+          const res = await DBUtil.execDB("getUserProfileLink");
+          if(res.imagelink)
+          {
+            store.commit("updateUserProfileLink", res.imagelink);
+          }
+          else
+          {
+            store.commit("updateUserProfileLink", "");
+          }
         },
 
         async postNotification(store, notif) {
@@ -595,9 +670,6 @@ export default new Vuex.Store({
                 console.log("Failed to update notification")
             } else {
                 console.log(res)
-
-
-
             }
         },
 
@@ -612,6 +684,41 @@ export default new Vuex.Store({
 
 
             }
-        }
+        },
+        async getTodo(store) {
+            const res = await DBUtil.execDB("getTodo");
+            if (res.hasOwnProperty("error")) {
+                console.log("Error: failed to get events")
+
+            } else {
+
+                //convert events from db to local
+                for (let i = 0; i < res.length; i++) {
+                    res[i] = DBUtil.fromDBEvent(res[i])
+                }
+            }
+
+        },
+        async postTodo(store, todoList) {
+            const res = await DBUtil.execDB("addToDo", todoList)
+            console.log(res)
+            if (res.hasOwnProperty("error")) {
+
+                console.log("Failed to update todo")
+            } else {
+                console.log(res)
+            }
+        },
+
+        async deleteTodo(store, todoList) {
+
+            const res = await DBUtil.execDB("deleteToDo", { "TID": todoList.id })
+            if (res.hasOwnProperty("error")) {
+
+                console.log("Failed to delete todo")
+            } else {
+                console.log(res)
+            }
+        },
     }
 })

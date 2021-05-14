@@ -22,7 +22,7 @@
             </form>
 
         </div>
-      
+
     </div>
 </template>
 
@@ -57,7 +57,7 @@
                 } else {
                     this.failed = true
                 }
-                
+
             }
 
         }
@@ -76,10 +76,10 @@
         padding: 10px;
         margin-bottom: 50px;
         text-align: center;
-        font-family: Verdana;
+        font-family: 'Pacifico', cursive;
         font-size: 36px;
-        background-color: #0670bf;
-        color: #ffffff;
+        background-color: #343148FF;
+        color: #F2EDD7FF;
         text-shadow: 5px 5px 5px #333;
         font-style: italic;
     }
@@ -95,20 +95,21 @@
         justify-content: center;
         align-items: center;
         text-align: left;
-        background-color: #0670bf;
-        color: #ffffff;
+        background-color: #D7C49EFF;
+        color: #D7C49EFF;
         padding-bottom: 50px;
         padding-right: 30px;
         padding-top:30px;
     }
 
     form {
-        background-color: #0670bf;
+        background-color: #D7C49EFF;
     }
 
     p {
-        background-color: #0670bf;
+        background-color: #D7C49EFF;
         margin-bottom: 0;
+        color:black;
     }
 
     input {
@@ -117,12 +118,13 @@
     }
 
     .reg-button {
-        background-color: #042269;
+        background-color: #A07855FF;
         color: white;
-        width: 125%;
+        width: 131%;
         border: 3px solid black;
         transition: 0.5s ease-in-out;
         font-size: 15px;
+        margin-top: 5px;
     }
 
     .reg-button:hover {

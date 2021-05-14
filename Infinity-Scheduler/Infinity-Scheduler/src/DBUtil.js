@@ -10,7 +10,7 @@ class DBUTil {
     static savedEvent = null
 
     static getServerFuncURL(name, args = false) {
-        let surl =  this.isProd ?  this.PROD_SERVER_URL : this.SERVER_URL 
+        let surl =  this.isProd ?  this.PROD_SERVER_URL : this.SERVER_URL
 
         if (args != false) {
             return `${surl}/server/${name}.php?args=${encodeURIComponent(JSON.stringify(args))}`

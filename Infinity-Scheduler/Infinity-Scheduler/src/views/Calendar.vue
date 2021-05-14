@@ -38,10 +38,12 @@
                         <h4>Enter Location</h4>
                         <input v-model="location" placeholder="Enter event location here..."><br />
                         <h4>Start Time</h4>
-                        <input type="date" v-model="sdate"><br /><br />
+                        <input type="datetime-local" v-model="sdate"><br /><br />
                         <h4>End Time</h4>
                         <input type="date" v-model="edate"><br /><br />
-                        <h4>Event Category</h4>
+                       
+                        <input type="datetime-local" v-model="edate"><br /><br />
+                         <h4>Event Category</h4>
                         <select v-model="category" name="category" id="category">
                             <option value="exercise">Exercise</option>
                             <option value="leisure">Leisure</option>
@@ -68,9 +70,9 @@
                         <h4>Edit Location</h4>
                         <input v-model="location" placeholder="Enter event location here..."><br />
                         <h4>Start Time</h4>
-                        <input type="date" v-model="sdate"><br /><br />
+                        <input type="datetime-local" v-model="sdate"><br /><br />
                         <h4>End Time</h4>
-                        <input type="date" v-model="edate"><br /><br />
+                        <input type="datetime-local" v-model="edate"><br /><br />
                         <h4>Event Category</h4>
                         <select v-model="category" name="category" id="category">
                             <option value="exercise">Exercise</option>
@@ -79,6 +81,7 @@
                             <option value="social">Social</option>
                             <option value="work">Work</option>
                         </select>
+                       
                         <h4>Mark Completed</h4>
                         <input type="checkbox" id="checkbox" v-model="completed">
                         <label for="checkbox">{{ completed }}</label><br /><br />
@@ -89,9 +92,31 @@
                 </div>
             </div>
         </transition>
+        <transition name="modal">
+            <div v-show="detailToggle" id="detailViewID">
+                <div class="overlay">
+                    <div class="modal">
+                        <h4>Event Title: {{detailTitle}}</h4>
+
+                        <h4>Edit Location: {{detailLocation}}</h4>
+
+                        <h4>Start Time: {{detailsdate}}</h4>
+
+                        <h4>End Time: {{detailedate}}</h4>
+
+                        <h4>Completed: {{detailcompleted}}</h4>
+
+                        <button type="submit" v-on:click="closeDPopUp(); openEditPopUp(); ">Edit event</button>
+                        <button class="button_close_popup" v-on:click="closeDPopUp">Close </button>
+
+                    </div>
+                </div>
+            </div>
+        </transition>
+
     </div>
 
-    
+
 
 </template>
 
@@ -104,7 +129,7 @@
     import 'tui-date-picker/dist/tui-date-picker.css';
     import 'tui-time-picker/dist/tui-time-picker.css';
 
-  
+
 
     export default {
         name: 'calendar',
@@ -136,10 +161,18 @@
                 sdate: '',
                 edate: '',
                 completed: false,
+                timesChanged: 0,
                 toggle: false,
                 editToggle: false,
                 edittitle: "",
                 editEventID: -1,
+                detailToggle: false,
+                detailTitle: "",
+                detailLocation: "",
+                detailsdate: '',
+                detailedate: '',
+                detailcompleted: false,
+
                 category: '',
              
 
@@ -153,6 +186,7 @@
                 const sdate = this.sdate;
                 const edate = this.edate;
                 const com = this.completed;
+                const timesChanged = this.timesChanged;
                 const cat = this.category;
                 var schedule = {
                     id: +new Date(),
@@ -161,6 +195,9 @@
                     isAllDay: true,
                     start: sdate,
                     end: edate,
+                    category: 'allday',
+                    completed: com,
+                    timesChanged: timesChanged
                     category: cat,
                     completed: com,
                    
@@ -175,11 +212,12 @@
                 const sdate = this.sdate;
                 const edate = this.edate;
                 const com = this.completed;
+                const timesChanged = this.timesChanged;
                 const evntID = this.editEventID;
                 const cat = this.category;
 
                 this.$store.commit("deleteEvent", {"id":evntID});
-                
+
                 var schedule = {
                     id: evntID,
                     title: edittitle,
@@ -187,6 +225,9 @@
                     isAllDay: true,
                     start: sdate,
                     end: edate,
+                    category: 'allday',
+                    completed: com,
+                    timesChanged: timesChanged
                     category: cat,
                     completed: com
                 };
@@ -201,58 +242,54 @@
             closePopUp: function() {
                 this.toggle = false;
             },
-            openEditPopUp(e) {
-                this.editEventID = e.schedule.id
+            openEditPopUp: function () {
+                //this.editEventID = e.schedule.id
                 this.editToggle = true;
             },
             closeEPopUp: function () {
                 this.editToggle = false;
             },
+            openDetailview(e) {
+                this.editEventID = e.schedule.id
+                this.detailToggle = true;
+            },
+            closeDPopUp: function () {
+                this.detailToggle = false;
+            },
 
-            
+
+
             onClickSchedule(e) {
-                console.log('clickSchedule', e);
-                console.log(this.$store.state.events)
+                //console.log('clickSchedule', e);
+                //console.log(this.$store.state.events)
                 let eventObj = {};
                 for (let i = 0; i < this.$store.state.events.length; i++) {
                     if (this.$store.state.events[i].id == e.schedule.id) {
                         eventObj = this.$store.state.events[i];
                     }
                 }
-                console.log("obejjjjjj", eventObj)
-                const willModify = confirm(`id: ${e.schedule.id} \n title: ${e.schedule.title}\n when: ${(new Date(e.schedule.start))} \n to ${(new Date(e.schedule.end))} \n status: ${eventObj.completed}\n location: ${e.schedule.location}\n Will you update schedule?`);
-
-                if (willModify) { 
+                this.detailTitle = e.schedule.title;
+                this.detailLocation = e.schedule.location;
+                this.detailsdate = new Date(e.schedule.start);
+                this.detailedate = new Date(e.schedule.end);
+                this.detailcompleted = eventObj.completed;
+                this.openDetailview(e);
+                /*
+                const willModify = confirm(`Title of event: ${e.schedule.title}\n When: ${(new Date(e.schedule.start))} \n to ${(new Date(e.schedule.end))} \n Completion Status: ${eventObj.completed}\n Location: ${e.schedule.location}\n Will you update schedule?`);
+                if (willModify) {
                     this.openEditPopUp(e)
-                    //e.schedule.title = prompt('Schedule', e.schedule.title);
-                    //e.schedule.start = prompt('enter time', e.schedule.start);
-                    //console.log(e.schedule.title);
-                    //this.$store.commit("updateEvent", e)
-                    //this.$refs.calref.invoke("updateSchedule", e.schedule.id, e.schedule.calendarId, e.changes)
-                    //console.log(e.schedule.start);
-                    //e.events.start = prompt('enter time', e.events.start);
-                    //console.log("events.start", e.events.start);
-                    //this.$store.commit("updateEvent", e)
-                    //this.$refs.calref.invoke("updateSchedule", e.schedule.id, e.schedule.calendarId, e.changes)
-                    //calendar.updateSchedule(e.schedule.id, e.schedule.calendarId, e.schedule);
-                    //e.schedule.start = e.start;
-                    //e.schedule.end = e.schedule.end;
-                    //e.schedule.start = prompt('Schedule.start', e.schedule.start);
-                    //console.log(e.schedule.start)
-                    //console.log(e.schedule.end)
-                    
-                    
                 }
+                */
             },
-            
+
             onBeforeCreateSchedule(e) {
                 //console.log('beforeCreateSchedule', e)
                 this.openPopUp()
                 //const title = prompt('Schedule', 'Enter Title');
-                
+
                 //calendar.createSchedules([schedule]);
                 //this.saveEvent(e)
-                
+
                 //console.log("aaaaaaaaaaaaaaaaa")
                 e.guide.clearGuideElement();
                 //this.$store.commit("addEvent", e)
@@ -268,8 +305,8 @@
                 this.$store.commit("deleteEvent", e.schedule)
                 this.$refs.calref.invoke("deleteSchedule", e.schedule.id, e.schedule.calendarId)
             }
-            
-            
+
+
 
         },
         components: {
@@ -287,7 +324,7 @@
      margin-left: 300px;
      margin-top: 50px;
      padding: 50px;
-     border: 2px groove #329ea8;
+     border: 2px groove #A07855FF;
      border-radius: 5px;
    }
 
@@ -311,11 +348,11 @@
     }
 
     .button_add {
-        float: right
+        float: right;
     }
 
     .button_add {
-        float: right
+        float: right;
     }
 
     .modal {
@@ -341,6 +378,7 @@
         .fadeIn-leave-active.modal {
             transform: scale(1.1);
         }
+
     .overlay {
         position: fixed;
         top: 0;

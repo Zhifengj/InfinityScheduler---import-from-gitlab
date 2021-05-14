@@ -43,7 +43,7 @@ export default {
     computed: {
         events: function () {
             let es = []
-           
+
             for (let i in this.$store.state.notifs) {
                 for (let e in this.$store.state.events) {
                     if (this.$store.state.notifs[i].eventID == this.$store.state.events[e].id) {
@@ -74,11 +74,11 @@ export default {
       min-width: 80%;
       display:inline-block;
       float:left;
-      background-color: #a1d5f0;
+      background-color: #D7C49EFF;
       color: #000000;
       height:700px;
       font-family: Verdana;
-      border: 2px groove #329ea8;
+      border: 2px groove #A07855FF;
       border-radius: 5px;
   }
 
