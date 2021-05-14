@@ -16,22 +16,6 @@ process.version = 'v14.0.1'
 
 Vue.use(Vuex)
 
-function sendNotification(title, body, onclick) {
-    if (!('Notification' in window)) {
-        console.log("This browser does not support notifications.");
-    } else {
-        if (Notification.permission === 'default' || Notification.permission === 'denied') {
-            Notification.requestPermission(function (permission) {
-                
-            });
-        } else {
-            let n = new Notification(title, { "body": body })
-            n.onclick = onclick
-        }
-       
-        
-    }
-}
 
 
 
@@ -335,7 +319,10 @@ export default new Vuex.Store({
                                         id: ev.id
                                     }
                                 }
-                                sendNotification("Event Rescheduled", ev.title + "is rescheduled for" + ev.start, null)
+                                DBUtil.sendNotification("Event Rescheduled", ev.title + "is rescheduled for" + ev.start, function () {
+                                    window.open(DBUtil.getUseURL() + "/#?/navigation")
+
+                                })
                                 this.commit("updateEvent", e)
                                 return
                             }
@@ -371,7 +358,10 @@ export default new Vuex.Store({
                                 id: ev.id
                             }
                         } 
-                        sendNotification("Event Rescheduled", ev.title + "is rescheduled for" + ev.start, null)
+                        DBUtil.sendNotification("Event Rescheduled", ev.title + "is rescheduled for" + ev.start, function () {
+                            window.open(DBUtil.getUseURL() + "/#?/navigation")
+                          
+                        })
                         this.commit("updateEvent", e)
                         return
                     }

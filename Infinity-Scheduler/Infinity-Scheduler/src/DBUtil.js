@@ -7,6 +7,8 @@ class DBUTil {
     static SERVER_URL = "http://localhost:80"
     static PROD_SERVER_URL = "http://infinityscheduler.com"
 
+    static savedEvent = null
+
     static getServerFuncURL(name, args = false) {
         let surl =  this.isProd ?  this.PROD_SERVER_URL : this.SERVER_URL 
 
@@ -16,6 +18,10 @@ class DBUTil {
             return `${surl}/server/${name}.php`
         }
 
+    }
+
+    static getUseURL() {
+        return this.isProd ? this.PROD_SERVER_URL : this.SERVER_URL 
     }
 
     //adds the 0 in front of 1 digit numbers
@@ -77,6 +83,24 @@ class DBUTil {
             return error
         }
     }
+
+    static sendNotification(title, body, onclick) {
+        if (!('Notification' in window)) {
+            console.log("This browser does not support notifications.");
+        } else {
+            if (Notification.permission === 'default' || Notification.permission === 'denied') {
+                Notification.requestPermission(function (permission) {
+
+                });
+            } else {
+                let n = new Notification(title, { "body": body })
+                n.onclick = onclick
+            }
+
+
+        }
+    }
+
 }
 
 export default DBUTil

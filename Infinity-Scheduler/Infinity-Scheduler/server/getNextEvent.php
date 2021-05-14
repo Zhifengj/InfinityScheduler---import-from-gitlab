@@ -5,7 +5,7 @@
 	
 		
 		$stmt = mysqli_stmt_init($link);
-		if (mysqli_stmt_prepare($stmt, "SELECT Title, Body, Start, End, Completed FROM TaskEvent WHERE UID=? ORDER BY Start ASC")) {
+		if (mysqli_stmt_prepare($stmt, "SELECT Title, Body, Start, End, Completed FROM TaskEvent WHERE UID=? AND (UNIX_TIMESTAMP(Start) > UNIX_TIMESTAMP()) ORDER BY (UNIX_TIMESTAMP(Start) - UNIX_TIMESTAMP()) ASC")) {
 
 			/* bind parameters for markers */
 			mysqli_stmt_bind_param($stmt, "i", $_SESSION["UID"]);
@@ -15,7 +15,7 @@
 			$result = mysqli_stmt_get_result($stmt);
 
 			
-			echo json_encode(mysqli_fetch_all($result, MYSQLI_ASSOC));
+			echo json_encode(mysqli_fetch_all($result, MYSQLI_ASSOC)[0]);
 			
 
 			

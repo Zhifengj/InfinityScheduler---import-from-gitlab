@@ -31,28 +31,9 @@
 
                     </div>
                     <div class="note">
-                        <div>Upcoming Events: </div>
+                        <div>Upcoming Event: </div>
                         <div id="upcoming-events">
-                            <table border='1' width='80%' style='border-collapse: collapse;'>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Body</th>
-                                    <th>Location</th>
-                                    <th>Start</th>
-                                    <th>End</th>
-                                    <th>Completed</th>
-                                </tr>
-                                <tr v-for="event in eventData">
-                                    <th>{{event.Title}}</th>
-                                    <th>{{event.Body}}</th>
-                                    <th>{{event.Location}}</th>
-                                    <th>{{event.Start}}</th>
-                                    <th>{{event.End}}</th>
-                                    <th>{{event.Completed}}</th>
-
-                                </tr>
-
-                            </table>
+                          
                         </div>
 
 
@@ -70,19 +51,10 @@
 </template>
 
 <script>
+
+    import DBUtil from "./../DBUtil"
     
-    import axios from 'axios'
-    //document.getElementById("defaultTab").click();
-
-    const SERVER_URL = "http://localhost:80"
-    function getServerFuncURL(name, args = false) {
-        if (args != false) {
-            return `${SERVER_URL}/server/${name}.php?args=${encodeURIComponent(JSON.stringify(args))}`
-        } else {
-            return `${SERVER_URL}/server/${name}.php`
-        }
-
-    }
+   
     
 export default {
     name: 'nav_home',
@@ -93,10 +65,7 @@ export default {
     },
     mounted() {
         
-        axios
-            .get(getServerFuncURL("getNextEvent"))
-            .then(response => (this.eventData = response.data))
-         
+       
        //this.eventData = this.$store.dispatch("getUpcomingEvent");
     },
     methods: {
@@ -168,31 +137,46 @@ export default {
 
     //this will be time of next event
     
-    var countDownDate = new Date("Feb 30, 2021 15:37:25").getTime();
-
+    let hasNotified = false
+    let lastStartTime = 0
     var x = setInterval(function () {
+        let event = DBUtil.execDB("getNextEvent")
+        event.then((event) => {
+            if (event.start != lastStartTime) {
+                hasNotified = false
+                lastStartTime = event.Start
+            }
+            let countDownDate = DBUtil.fromDBDate(event.Start).getTime()
+            // Get today's date and time
+            var now = new Date().getTime();
 
-        // Get today's date and time
-        var now = new Date().getTime();
+            // Find the distance between now and the count down date
+            var distance = countDownDate - now;
 
-        // Find the distance between now and the count down date
-        var distance = countDownDate - now;
+            // Time calculations for days, hours, minutes and seconds
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-        // Time calculations for days, hours, minutes and seconds
-        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            // Output the result in an element with id="timer"
+            if (document.getElementById("timer")) {
+                document.getElementById("timer").innerHTML = days + "d " + hours + "h "
+                    + minutes + "m " + seconds + "s ";
+                document.getElementById("upcoming-events").innerHTML = event.Title
+            }
 
-        // Output the result in an element with id="timer"
-        document.getElementById("timer").innerHTML = days + "d " + hours + "h "
-            + minutes + "m " + seconds + "s ";
+            // If the count down is over, write some text 
+            if (hasNotified && minutes < 5) {
+                hasNotified = true
+                DBUtil.sendNotification("Upcoming Event", event.Title + " is starting at " + event.Start + ". Will you attend?", function () {
+                    window.open(DBUtil.getUseURL() + "/#?/navigation")
+                    DBUtil.savedEvent = event
 
-        // If the count down is over, write some text 
-        if (distance < 0) {
-            clearInterval(x);
-            document.getElementById("timer").innerHTML = "EXPIRED";
-        }
+                })
+            }
+        })
+       
     }, 1000);
     
     
