@@ -38,9 +38,9 @@
                         <h4>Enter Location</h4>
                         <input v-model="location" placeholder="Enter event location here..."><br />
                         <h4>Start Time</h4>
-                        <input type="date" v-model="sdate"><br /><br />
+                        <input type="datetime-local" v-model="sdate"><br /><br />
                         <h4>End Time</h4>
-                        <input type="date" v-model="edate"><br /><br />
+                        <input type="datetime-local" v-model="edate"><br /><br />
                         <h4>Mark Completed</h4>
                         <input type="checkbox" id="checkbox" v-model="completed">
                         <label for="checkbox">{{ completed }}</label><br /><br />
@@ -60,9 +60,9 @@
                         <h4>Edit Location</h4>
                         <input v-model="location" placeholder="Enter event location here..."><br />
                         <h4>Start Time</h4>
-                        <input type="date" v-model="sdate"><br /><br />
+                        <input type="datetime-local" v-model="sdate"><br /><br />
                         <h4>End Time</h4>
-                        <input type="date" v-model="edate"><br /><br />
+                        <input type="datetime-local" v-model="edate"><br /><br />
                         <h4>Mark Completed</h4>
                         <input type="checkbox" id="checkbox" v-model="completed">
                         <label for="checkbox">{{ completed }}</label><br /><br />
