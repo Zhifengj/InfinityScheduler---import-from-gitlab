@@ -107,6 +107,7 @@ export default new Vuex.Store({
         availableEventIds: [-1],
         _nextEventId: 0,
         events: [],
+        nextEvent : null,
         calView: "month",
         weekOptions: {
             narrowWeekend: true,
@@ -465,6 +466,7 @@ export default new Vuex.Store({
                 title: e.title,
                 body: e.body,
                 LID: 0,
+                CID: e.cid,
                 completed: e.completed ? 1 : 0,
                 state: e.state,
                 start: e.start,
