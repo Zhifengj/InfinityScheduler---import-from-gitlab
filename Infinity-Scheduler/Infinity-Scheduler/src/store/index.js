@@ -75,8 +75,11 @@ function normalizeDate(date) {
     if (date instanceof TZDate) {
         return date.getUTCTime()
     }
+    
     else if (typeof date == 'number') {
         return date
+    } else if (typeof date == 'string') {
+        return new Date(date)
     }
     else {
         
@@ -311,7 +314,7 @@ export default new Vuex.Store({
 
                     for (let t = (7 * 60 * 60) + timeOffset; t < (21 * 60 * 60) + timeOffset; t += 60) {
                         for (let i = 0; i < takenTimes.length; i++) {
-                            if (!(t > takenTimes[i][0] && t < takenTimes[i][1]) && !((t + eventLength) > takenTimes[i][0] && (t + eventLength) < takenTimes[i][1])) {
+                            if (!(t >= takenTimes[i][0] && t <= takenTimes[i][1]) && !((t + eventLength) >= takenTimes[i][0] && (t + eventLength) <= takenTimes[i][1])) {
                                 console.log("hits best time")
                                 let e = {
                                     changes: {
@@ -323,7 +326,7 @@ export default new Vuex.Store({
                                         id: ev.id
                                     }
                                 }
-                                DBUtil.sendNotification("Event Rescheduled", ev.title + "is rescheduled for" + ev.start, function () {
+                                DBUtil.sendNotification("Event Rescheduled", ev.title + " has been rescheduled for " + new Date(normalizeDate(ev.start)), function () {
                                     window.open(DBUtil.getUseURL() + "/#?/navigation")
 
                                 })
@@ -338,13 +341,13 @@ export default new Vuex.Store({
 
 
                 let candidateDate = calcRealDate(bestDay, bestTime)
-
+                console.log(new Date(candidateDate))
                 for (let i = 0; i < takenTimes.length; i++) {
-                    if (candidateDate > takenTimes[i][0] && candidateDate < takenTimes[i][1]) { //start time overlap
+                    if (candidateDate >= takenTimes[i][0] && candidateDate <= takenTimes[i][1]) { //start time overlap
                         timeTries++
                         break
                     }
-                    else if ((candidateDate + eventLength) > takenTimes[i][0] && (candidateDate + eventLength) < takenTimes[i][1]) { //endtime overlap
+                    else if ((candidateDate + eventLength) >= takenTimes[i][0] && (candidateDate + eventLength) <= takenTimes[i][1]) { //endtime overlap
                         timeTries++
                         break
                     }
@@ -359,7 +362,7 @@ export default new Vuex.Store({
                                 id: ev.id
                             }
                         } 
-                        DBUtil.sendNotification("Event Rescheduled", ev.title + "is rescheduled for" + ev.start, function () {
+                        DBUtil.sendNotification("Event Rescheduled", ev.title + " has been rescheduled for " + new Date(normalizeDate(ev.start)), function () {
                             window.open(DBUtil.getUseURL() + "/#?/navigation")
                           
                         })
@@ -465,24 +468,16 @@ export default new Vuex.Store({
                 state: e.state,
                 start: e.start,
                 end: e.end,
-                lastUpdated: e.lastupdated,
+                lastupdated: e.lastupdated, 
                 created: e.created
 
 
             }
-           
-            if (typeof e.start !== "string") {
-                payload.start = DBUtil.toDBDate(e.start.toDate())
-            }
-            if (typeof e.end !== "string") {
-                payload.end = DBUtil.toDBDate(e.end.toDate())
-            }
-            if (typeof e.lastUpdated !== "string") {
-                payload.lastupdated = DBUtil.toDBDate(e.lastupdated)
-            }
-            if (typeof e.created !== "string") {
-                payload.created = DBUtil.toDBDate(e.created)
-            }
+            payload.start = DBUtil.toDBDate(new Date(normalizeDate(e.start)))
+            payload.end = DBUtil.toDBDate(new Date(normalizeDate(e.end)))
+            payload.lastupdated = DBUtil.toDBDate(new Date(normalizeDate(e.lastupdated)))
+            payload.created = DBUtil.toDBDate(new Date(normalizeDate(payload.created)))
+         
            
             console.log(e)
             try {
