@@ -149,7 +149,7 @@
                 var input = document.getElementById("myInput").value;
                 console.log(input);
                 //this.$store.commit("addTodo", input);
-                
+
             }
         },
         components: {
@@ -239,7 +239,7 @@
     .tab {
         overflow: hidden;
         border: 1px solid #ccc;
-        background-color: #66bef4;
+        background-color: #D7C49EFF;
     }
 
         .tab button {
@@ -259,7 +259,7 @@
 
 
             .tab button.active {
-                background-color: #9cf466;
+                background-color: #A07855FF;
             }
 
 
@@ -356,15 +356,14 @@
 
     #clock {
         font-family: 'Share Tech Mono', monospace;
-        color: #1E90FF;
         text-align: center;
         position: relative;
         margin-top: 100px;
         left: 50%;
         top: 75%;
         transform: translate(-50%, -50%);
-        color: #1E90FF;
-        text-shadow: 0 0 20px rgba(10, 175, 230, 1), 0 0 20px rgba(10, 175, 230, 0);
+        color: #A07855FF;
+        text-shadow: 0 0 20px rgba(158, 134, 123, 1), 0 0 20px rgba(158, 134, 123, 0);
     }
 
     .time {

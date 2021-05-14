@@ -144,7 +144,7 @@ export default {
           }
           else
           {
-            this.profile_link = "user_temp.png";
+            this.profile_link = "profile.png";
           }
         }, 1000);
     }
@@ -158,7 +158,7 @@ export default {
       width:100%;
       display:inline-block;
       float:auto;
-      background-color: #a1d5f0;
+      background-color: #D7C49EFF;
       color: #000000;
       width:100%;
       height:700px;
@@ -194,7 +194,7 @@ export default {
   .change_profile_button{
     width: 120px;
     margin-left: 200px;
-    border: 2px groove #329ea8;
+    border: 2px groove #A07855FF;
     border-radius: 5px;
     font-size: 15px;
     font-family: vidaloka;
@@ -227,7 +227,7 @@ export default {
     width: 120px;
     margin-left: 200px;
     margin-top: 330px;
-    border: 2px groove #329ea8;
+    border: 2px groove #A07855FF;
     border-radius: 5px;
     font-size: 15px;
     font-family: vidaloka;
