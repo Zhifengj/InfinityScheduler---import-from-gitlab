@@ -55,13 +55,20 @@ function convertToTimezone(date) {
 } 
 
 function calcRealDate(dayOfWeek, time) {
-    let currentTime = new Date().getTime();
+    let currentTime = new Date()
 
-    let currentDay = new Date().getDay();
+    let currYear = currentTime.getUTCFullYear() 
+    let currMonth = currentTime.getUTCMonth()
+    let currDay = currentTime.getUTCDate()
+
+    currentTime = new Date(currYear, currMonth, currDay, 0, 0, 0, 1).getTime() //gets time of the start of the day
+
+    let currentDay = new Date().getDay()
 
     let diffOfDays = Math.abs(currentDay - dayOfWeek - 7)
 
-    return new Date(currentTime + time + (diffOfDays*60*60*24))
+    let newTime = (currentTime + (time*1000) + (diffOfDays * 1000 * 60 * 60 * 24)) //convert to milliseconds
+    return new Date(newTime)
 }
 
 function normalizeDate(date) {
@@ -263,8 +270,8 @@ export default new Vuex.Store({
         async reschedule(store, ev) {
             //TODO: make AI better lmao
 
-            let dayTries = 1
-            let timeTries = 1
+            let dayTries = 0
+            let timeTries = 0
             let dayShifts = 0
 
             let takenTimes = []
@@ -275,7 +282,7 @@ export default new Vuex.Store({
 
             while (true) {
 
-                let bestTime = await DBUtil.execDB("ai/getNthBestHourTimeslot", { CID: 0, N: timeTries })// change CID to events.category
+                let bestTime = await DBUtil.execDB("ai/getNthBestHourTimeslot", { CID: ev.cid, N: timeTries })// change CID to events.category
                 bestTime = bestTime.Time
                 let splitTime = bestTime.split(":")
                 let hour = parseInt(splitTime[0])
@@ -283,12 +290,11 @@ export default new Vuex.Store({
                 let sec = parseInt(splitTime[2])
                 bestTime = hour*60*60 + min*60 + sec
 
-                let bestDay = await DBUtil.execDB("ai/getNthBestDayTimeslot", { CID: 0, N: dayTries }) // change CID to events.category
+                let bestDay = await DBUtil.execDB("ai/getNthBestDayTimeslot", { CID: ev.cid, N: dayTries }) // change CID to events.category
                 bestDay = bestDay.Day
                 let timePref = true
                 let dayPref = true
 
-                console.log(bestTime)
 
                 if (typeof (bestDay) != 'number') { //no preference for day of week, tries to reschedule for next day
                     dayPref = false
@@ -302,8 +308,6 @@ export default new Vuex.Store({
                     let dayDiff = Math.abs(currentDate.getDay() - bestDay - 7)
                     let timeOffset = new Date(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate() + dayDiff).getTime()
 
-                    console.log(dayDiff + "day diff")
-                    console.log(timeOffset + "timeOff")
 
                     for (let t = (7 * 60 * 60) + timeOffset; t < (21 * 60 * 60) + timeOffset; t += 60) {
                         for (let i = 0; i < takenTimes.length; i++) {
@@ -329,13 +333,11 @@ export default new Vuex.Store({
                         }
                     }
                     dayTries++
-                    timeTries = 1
+                    timeTries = 0
                 }
 
-               
 
-                let candidateDate = calcRealDate(bestDay, bestTime);
-                console.log(candidateDate)
+                let candidateDate = calcRealDate(bestDay, bestTime)
 
                 for (let i = 0; i < takenTimes.length; i++) {
                     if (candidateDate > takenTimes[i][0] && candidateDate < takenTimes[i][1]) { //start time overlap
@@ -347,7 +349,6 @@ export default new Vuex.Store({
                         break
                     }
                     else { //no overlap
-                        console.log("hits candidate")
                         let e = {
                             changes: {
                                 start: DBUtil.toDBDate(new Date(candidateDate)),
@@ -448,7 +449,11 @@ export default new Vuex.Store({
   
         //DO NOT USE THIS TO ADD AN EVENT use addEvent instead
         async postEvent(store, e) {
-            
+
+            if (e.cid == null) {
+                e.cid = 0
+            }
+
             let payload = {
                 id: e.id,
                 calendarid: e.calendarId ? e.calendarId : 0,
