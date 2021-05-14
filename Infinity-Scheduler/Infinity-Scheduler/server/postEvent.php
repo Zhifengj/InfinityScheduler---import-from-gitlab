@@ -14,11 +14,11 @@
 			$stmt = mysqli_stmt_init($link);
 			if (mysqli_stmt_prepare($stmt, 
 			"INSERT INTO TaskEvent (Title,CalendarId,Body,TID,Start,End,Created,LastUpdated,State,Completed,UID,LID,CID)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 			")) {
 
 				/* bind parameters for markers */
-				mysqli_stmt_bind_param($stmt, "sisissssiiii", 
+				mysqli_stmt_bind_param($stmt, "sisissssiiiii", 
 				$args["title"], 
 				$args["calendarid"],
 				$args["body"],

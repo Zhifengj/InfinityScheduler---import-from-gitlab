@@ -459,7 +459,11 @@ export default new Vuex.Store({
   
         //DO NOT USE THIS TO ADD AN EVENT use addEvent instead
         async postEvent(store, e) {
-            
+
+            if (e.cid == null) {
+                e.cid = 0
+            }
+
             let payload = {
                 id: e.id,
                 calendarid: e.calendarId ? e.calendarId : 0,
