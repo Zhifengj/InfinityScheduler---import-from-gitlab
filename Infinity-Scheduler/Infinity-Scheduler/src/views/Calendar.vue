@@ -41,6 +41,14 @@
                         <input type="date" v-model="sdate"><br /><br />
                         <h4>End Time</h4>
                         <input type="date" v-model="edate"><br /><br />
+                        <h4>Event Category</h4>
+                        <select v-model="category" name="category" id="category">
+                            <option value="exercise">Exercise</option>
+                            <option value="leisure">Leisure</option>
+                            <option value="school">School</option>
+                            <option value="social">Social</option>
+                            <option value="work">Work</option>
+                        </select>
                         <h4>Mark Completed</h4>
                         <input type="checkbox" id="checkbox" v-model="completed">
                         <label for="checkbox">{{ completed }}</label><br /><br />
@@ -63,6 +71,14 @@
                         <input type="date" v-model="sdate"><br /><br />
                         <h4>End Time</h4>
                         <input type="date" v-model="edate"><br /><br />
+                        <h4>Event Category</h4>
+                        <select v-model="category" name="category" id="category">
+                            <option value="exercise">Exercise</option>
+                            <option value="leisure">Leisure</option>
+                            <option value="school">School</option>
+                            <option value="social">Social</option>
+                            <option value="work">Work</option>
+                        </select>
                         <h4>Mark Completed</h4>
                         <input type="checkbox" id="checkbox" v-model="completed">
                         <label for="checkbox">{{ completed }}</label><br /><br />
@@ -124,6 +140,7 @@
                 editToggle: false,
                 edittitle: "",
                 editEventID: -1,
+                category: '',
              
 
 
@@ -136,6 +153,7 @@
                 const sdate = this.sdate;
                 const edate = this.edate;
                 const com = this.completed;
+                const cat = this.category;
                 var schedule = {
                     id: +new Date(),
                     title: title,
@@ -143,8 +161,9 @@
                     isAllDay: true,
                     start: sdate,
                     end: edate,
-                    category: 'allday',
-                    completed: com
+                    category: cat,
+                    completed: com,
+                   
                 };
                 console.log(schedule.start)
                 this.$store.commit("addEvent", schedule)
@@ -157,6 +176,7 @@
                 const edate = this.edate;
                 const com = this.completed;
                 const evntID = this.editEventID;
+                const cat = this.category;
 
                 this.$store.commit("deleteEvent", {"id":evntID});
                 
@@ -167,7 +187,7 @@
                     isAllDay: true,
                     start: sdate,
                     end: edate,
-                    category: 'allday',
+                    category: cat,
                     completed: com
                 };
                 this.$store.commit("addEvent", schedule);
