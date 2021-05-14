@@ -23,3 +23,5 @@ each update is made in order to see any changes made.
 
 -Custom Categories
 
+-Automatic categorization based on event title
+
