@@ -40,7 +40,7 @@
                         <h4>Start Time</h4>
                         <input type="datetime-local" v-model="sdate"><br /><br />
                         <h4>End Time</h4>
-                        <input type="date" v-model="edate"><br /><br />
+                       
                        
                         <input type="datetime-local" v-model="edate"><br /><br />
                          <h4>Event Category</h4>
@@ -195,9 +195,9 @@
                     isAllDay: true,
                     start: sdate,
                     end: edate,
-                    category: 'allday',
+                    category: 'time',
                     completed: com,
-                    timesChanged: timesChanged
+                    timesChanged: timesChanged,
                     category: cat,
                     completed: com,
                    
@@ -225,9 +225,9 @@
                     isAllDay: true,
                     start: sdate,
                     end: edate,
-                    category: 'allday',
+                    category: 'time',
                     completed: com,
-                    timesChanged: timesChanged
+                    timesChanged: timesChanged,
                     category: cat,
                     completed: com
                 };

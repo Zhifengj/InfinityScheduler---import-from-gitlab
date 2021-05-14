@@ -28,11 +28,15 @@
                             </div>
 
                     </div>
-                    <div class="note">
-                        <div>Upcoming Event: </div>
-                        <div id="upcoming-events">
-                          
-                        </div>
+                        <div class="note">
+
+                            <div>Upcoming Event: </div>
+                            <div id="upcoming-events">
+
+                            </div>
+                            <div id="timer">
+
+                            </div>
 
 
 
@@ -51,8 +55,23 @@
 <script>
 
     import DBUtil from "./../DBUtil"
-    
-   
+    import { Date as TZDate } from './../../node_modules/tui-calendar/src/js/common/timezone.js'
+    function normalizeDate(date) {
+        if (date instanceof TZDate) {
+            return date.getUTCTime()
+        }
+
+        else if (typeof date == 'number') {
+            return date
+        } else if (typeof date == 'string') {
+            return new Date(date)
+        }
+        else {
+
+            return date.getTime()
+        }
+    }
+
     
 export default {
     name: 'nav_home',
@@ -148,7 +167,7 @@ export default {
     var x = setInterval(function () {
         let event = DBUtil.execDB("getNextEvent")
         event.then((event) => {
-            if (event.start != lastStartTime) {
+            if (event.Start != lastStartTime) {
                 hasNotified = false
                 lastStartTime = event.Start
             }
@@ -175,7 +194,7 @@ export default {
             // If the count down is over, write some text 
             if (hasNotified && minutes < 5) {
                 hasNotified = true
-                DBUtil.sendNotification("Upcoming Event", event.Title + " is starting at " + event.Start + ". Will you attend?", function () {
+                DBUtil.sendNotification("Upcoming Event", event.Title + " is starting at " + new Date(event.Start) + ". Will you attend?", function () {
                     window.open(DBUtil.getUseURL() + "/#?/navigation")
                     DBUtil.savedEvent = event
 
@@ -184,7 +203,7 @@ export default {
         })
        
     }, 1000);
-    */
+    
 
 
 

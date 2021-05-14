@@ -490,6 +490,9 @@ export default new Vuex.Store({
             if (e.cid == null) {
                 e.cid = 0
             }
+            if (e.timesChanged == null) {
+                e.timesChanged = 0
+            }
 
             let payload = {
                 id: e.id,
@@ -503,7 +506,8 @@ export default new Vuex.Store({
                 start: e.start,
                 end: e.end,
                 lastupdated: e.lastupdated, 
-                created: e.created
+                created: e.created,
+                timesChanged: e.timesChanged
 
 
             }
