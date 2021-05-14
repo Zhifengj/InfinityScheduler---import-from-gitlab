@@ -13,7 +13,7 @@
 		
 			$stmt = mysqli_stmt_init($link);
 			if (mysqli_stmt_prepare($stmt, 
-			"INSERT INTO TaskEvent (Title,CalendarId,Body,TID,Start,End,Created,LastUpdated,State,Completed,UID,LID)
+			"INSERT INTO TaskEvent (Title,CalendarId,Body,TID,Start,End,Created,LastUpdated,State,Completed,UID,LID,CID)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 			")) {
 
@@ -30,7 +30,8 @@
 				$args["state"],
 				$args["completed"],
 				$_SESSION["UID"],
-				$args["LID"]
+				$args["LID"],
+				$args["CID"]
 				);
 
 				/* execute query */
