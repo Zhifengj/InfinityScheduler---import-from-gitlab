@@ -68,6 +68,29 @@ function getNextEventID(state) {
 function convertToTimezone(date) {
     let formatter = new Intl.DateTimeFormat("en-US", { timeZone: "America/Los_Angeles" })
     return formatter.format(date)
+} 
+
+function calcRealDate(dayOfWeek, time) {
+    let currentTime = new Date().getTime();
+
+    let currentDay = new Date().getDay();
+
+    let diffOfDays = Math.abs(currentDay - dayOfWeek - 7)
+
+    return new Date(currentTime + time + (diffOfDays*60*60*24))
+}
+
+function normalizeDate(date) {
+    if (date instanceof TZDate) {
+        return date.getUTCTime()
+    }
+    else if (typeof date == 'number') {
+        return date
+    }
+    else {
+        
+        return date.getTime()
+    }
 }
 
 
@@ -253,42 +276,144 @@ export default new Vuex.Store({
     actions: {
         //can be async, called with $store.dispatch("<name>", args, options)
 
-        async reschedule(state, ev) {
+        async reschedule(store, ev) {
             //TODO: make AI better lmao
-            let nextDay = 1000 * 60 * 60 * 24
-            nextDay = nextDay - 28800000 //nextDay scheduled 1 day + 8hrs ahead so this fixes it to make full 24hrs
 
-            const result = await DBUtil.execDB("getEventsByDate", { date: new Date(DBUtil.toDBDate(new Date(ev.start + nextDay)).split(" ")[0]).getTime(), date2: (new Date(DBUtil.toDBDate(new Date(ev.start + nextDay)).split(" ")[0]).getTime()) + (1000 * 60 * 60 * 24 - 1) })
-            let newStart = 0
-            let newEnd = 0
+            let dayTries = 1
+            let timeTries = 1
+            let dayShifts = 0
 
-           // console.log(result)
+            let takenTimes = []
+            for (let i = 0; i < store.state.events.length; i++) {
+                takenTimes.push([normalizeDate(store.state.events[i].start), normalizeDate(store.state.events[i].end)])
+            }
+            let eventLength = normalizeDate(ev.end) - normalizeDate(ev.start)
 
-            for (let i = 0; i < result.length; i++) { 
+            while (true) {
 
-                if (((ev.start).getTime() + nextDay) == result[i].start) { //currently will never hit this statment
-                    newStart = result[i].end
-                    newEnd = newStart + ev.end + newDay
+                let bestTime = await DBUtil.execDB("ai/getNthBestHourTimeslot", { CID: 0, N: timeTries })// change CID to events.category
+                bestTime = bestTime.Time
+                let splitTime = bestTime.split(":")
+                let hour = parseInt(splitTime[0])
+                let min = parseInt(splitTime[1])
+                let sec = parseInt(splitTime[2])
+                bestTime = hour*60*60 + min*60 + sec
+
+                let bestDay = await DBUtil.execDB("ai/getNthBestDayTimeslot", { CID: 0, N: dayTries }) // change CID to events.category
+                bestDay = bestDay.Day
+                let timePref = true
+                let dayPref = true
+
+                console.log(bestTime)
+
+                if (typeof (bestDay) != 'number') { //no preference for day of week, tries to reschedule for next day
+                    dayPref = false
+                    bestDay = new Date().getDay() + dayShifts
+                    dayShifts++
                 }
-                else {
-                    newStart = ev.start + nextDay
-                    newEnd = ev.end + nextDay
+
+                if (typeof (bestTime) != 'number') {
+                    timePref = false
+                    let currentDate = new Date()
+                    let dayDiff = Math.abs(currentDate.getDay() - bestDay - 7)
+                    let timeOffset = new Date(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate() + dayDiff).getTime()
+
+                    console.log(dayDiff + "day diff")
+                    console.log(timeOffset + "timeOff")
+
+                    for (let t = (7 * 60 * 60) + timeOffset; t < (21 * 60 * 60) + timeOffset; t += 60) {
+                        for (let i = 0; i < takenTimes.length; i++) {
+                            if (!(t > takenTimes[i][0] && t < takenTimes[i][1]) && !((t + eventLength) > takenTimes[i][0] && (t + eventLength) < takenTimes[i][1])) {
+                                console.log("hits best time")
+                                let e = {
+                                    changes: {
+                                        start: DBUtil.toDBDate(new Date(t)),
+                                        end: DBUtil.toDBDate(new Date(t + eventLength))
+
+                                    },
+                                    schedule: {
+                                        id: ev.id
+                                    }
+                                }
+                                sendNotification("Event Rescheduled", ev.title + "is rescheduled for" + ev.start, null)
+                                this.commit("updateEvent", e)
+                                return
+                            }
+                        }
+                    }
+                    dayTries++
+                    timeTries = 1
+                }
+
+               
+
+                let candidateDate = calcRealDate(bestDay, bestTime);
+                console.log(candidateDate)
+
+                for (let i = 0; i < takenTimes.length; i++) {
+                    if (candidateDate > takenTimes[i][0] && candidateDate < takenTimes[i][1]) { //start time overlap
+                        timeTries++
+                        break
+                    }
+                    else if ((candidateDate + eventLength) > takenTimes[i][0] && (candidateDate + eventLength) < takenTimes[i][1]) { //endtime overlap
+                        timeTries++
+                        break
+                    }
+                    else { //no overlap
+                        console.log("hits candidate")
+                        let e = {
+                            changes: {
+                                start: DBUtil.toDBDate(new Date(candidateDate)),
+                                end: DBUtil.toDBDate(new Date(candidateDate + eventLength))
+
+                            },
+                            schedule: {
+                                id: ev.id
+                            }
+                        } 
+                        sendNotification("Event Rescheduled", ev.title + "is rescheduled for" + ev.start, null)
+                        this.commit("updateEvent", e)
+                        return
+                    }
                 }
             }
 
-            let e = {
-                changes: {
-                    start: DBUtil.toDBDate(new Date(newStart)),
-                    end: DBUtil.toDBDate(new Date(newEnd))
-
-                },
-                schedule: {
-                    id: ev.id
-                }
-            }
-
-            this.commit("updateEvent", e)
         },
+
+        /*async aiTime(state, ev) { //needs to get current date, the actual category of event, and taken times for tht day 
+            let bestTime = await DBUtil.execDB("ai/getNthBestHourTimeslot", 0, 1) //checks for the best time
+            let eventCat = await DBUtil.execDB("category/getCategories") //does this just get all the categories?
+            let currentDate = DBUtil.toDBDate(new Date()).split(" ")[0]
+            let currentTime = DBUtil.toDBDate(new Date()).split(" ")[1]
+
+            var year = parseInt(currentDate.split("-")[0], 10)
+            var month = parseInt(currentDate.split("-")[1], 10)
+            var day = parseInt(currentDate.split("-")[2], 10)
+            var bestHour = parseInt(bestTime.split(":")[0], 10)
+            var bestMin = parseInt(bestTime.split(":")[1], 10)
+            var bestSec = parseInt(bestTime.split(":")[2], 10)
+            let currentDateCheck = DBUtil.toDBDate(new Date(year, month - 1, day, hour, min, sec))
+
+         //   let currentDateCheck = DBUtil.toDBDate( //date on the current day w/ best time
+
+            if (bestTime == null) {
+               // reschedule to next day between 7-9
+            }
+            else {
+                let i = 1
+                while (currentDateCheck != null) {
+                    if (currentDateCheck != takentimes) {
+                        // send to reschedule
+                        break;
+                    }
+                    else {
+                        currentDateCheck = await DBUtil.execDB("ai/getNthBestHourTimeslot", 0, i) //checks for the next best time if the first one doesn't work
+                    }
+                    i += 1
+                }
+            }
+
+        },*/
 
         async auth(store, ep) {
            
@@ -309,6 +434,7 @@ export default new Vuex.Store({
            
            
         },
+
 
         async getEvents(store) {    
             const res = await DBUtil.execDB("getEvents");
