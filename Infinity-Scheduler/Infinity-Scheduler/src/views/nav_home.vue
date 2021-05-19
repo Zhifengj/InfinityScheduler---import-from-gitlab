@@ -10,12 +10,18 @@
             <div id="TodoList" class="tabcontent">
                 <div id="myDIV" class="header">
                     <h2 style="margin:5px">My To Do List</h2>
-                    <input type="text" id="myInput" placeholder="Add some todos...">
-                    <span v-on:click="addTodo(); newElement();" class="addBtn">Add</span>
+                    <p>
+                        <input v-model="newTodo">
+                        <button class="addBtn" @click="addTodo">Add Todo</button>
+                    </p>
                 </div>
 
-                <ul id="myUL">
-                </ul>
+                <div v-for="(toDo, n) in todoList">
+                    <p class="myTodoList">
+                        <span class="todo">{{ toDo }}</span>
+                        <button class="closeBtn" @click="removeTodo(n)">Remove</button>
+                    </p>
+                </div>
             </div>
 
             <div id="Events" class="tabcontent">
@@ -39,6 +45,7 @@
                                         <th>Start</th>
                                         <th>End</th>
                                         <th>Completed</th>
+                                        <th>Time left</th>
                                     </tr>
                                     <tr v-for="event in eventData">
                                         <th>{{event.Title}}</th>
@@ -86,12 +93,16 @@
     export default {
         name: 'nav_home',
         data() {
+ 
             return {
                 eventData: null,
                 time: '',
                 date: '',
                 week: ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'],
-                todoList: this.$store.state.todoList,
+                countdown: '1010-20-20',
+                todoList: [],
+                newTodo: null,
+               // todoList: this.$store.state.todoList,
 
             }
         },
@@ -102,6 +113,14 @@
                 .then(response => (this.eventData = response.data))
 
             //this.eventData = this.$store.dispatch("getUpcomingEvent");
+
+            if (localStorage.getItem('todoList')) {
+                try {
+                    this.todoList = JSON.parse(localStorage.getItem('todoList'));
+                } catch (e) {
+                    localStorage.removeItem('todoList');
+                }
+            }
         },
         methods: {
             openTab: function (evt, tabID) {
@@ -120,7 +139,9 @@
             newElement: function () {
 
                 var li = document.createElement("li");
+                //get todo from database here.
                 var inputValue = document.getElementById("myInput").value;
+                
                 var t = document.createTextNode(inputValue);
                 li.appendChild(t);
                 if (inputValue === '') {
@@ -145,12 +166,29 @@
                 }
 
             },
+
             addTodo: function () {
-                var input = document.getElementById("myInput").value;
-                console.log(input);
+                //var input = document.getElementById("myInput").value;
+                //console.log(input);
                 //this.$store.commit("addTodo", input);
 
-            }
+                if (!this.newTodo) {
+                    return;
+                }
+
+                this.todoList.push(this.newTodo);
+                this.newTodo = '';
+                this.saveTodo();
+            },
+            removeTodo(x) {
+                this.todoList.splice(x, 1);
+                this.saveTodo();
+            },
+            saveTodo() {
+                const parsed = JSON.stringify(this.todoList);
+                localStorage.setItem('todoList', parsed);
+            },
+
         },
         components: {
 
@@ -200,6 +238,9 @@
         document.getElementById("time").innerHTML = hour + ":" + min + ":" + sec;
     }, 1000);
 
+
+    //var temp = this.eventData;
+    //console.log(temp);
     /*
     //this will be time of next event
 
@@ -332,6 +373,14 @@
         font-size: 16px;
     }
 
+    .myTodoList > span:nth-child(odd) {
+        background-color: lightcyan;
+        font-size:medium;
+        border-radius: 10px;
+        width: 100px;
+        padding: 10px;
+    }
+
     .addBtn {
         padding: 10px;
         width: 10%;
@@ -345,9 +394,22 @@
         border-radius: 0;
     }
 
-        .addBtn:hover {
-            background-color: #bbb;
-        }
+    .addBtn:hover {
+        background-color: #bbb;
+    }
+    .closeBtn {
+        border-radius: 25px;
+        background-color: lightcoral;
+        border: none;
+        color: black;
+        padding: 5px 10px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 12px;
+        margin: 4px 2px;
+        cursor: pointer;
+    }
 
     p {
         margin: 0;
