@@ -16,10 +16,10 @@
                     </p>
                 </div>
 
-                <div v-for="(toDo, n) in todoList">
+                <div v-for="(toDo,n) in todoList" v-bind:key="toDo.TID">
                     <p class="myTodoList">
-                        <span class="todo">{{ toDo }}</span>
-                        <button class="closeBtn" @click="removeTodo(n)">Remove</button>
+                        <span class="todo">{{ toDo.Title }}</span>
+                        <button class="closeBtn" @click="removeTodo(toDo.TID, n)">Remove</button>
                     </p>
                 </div>
             </div>
@@ -102,7 +102,8 @@
                 countdown: '1010-20-20',
                 todoList: [],
                 newTodo: null,
-               // todoList: this.$store.state.todoList,
+                tempid: 0,
+                temp_todo_array: this.$store.state.todoList,
 
             }
         },
@@ -110,17 +111,22 @@
 
             axios
                 .get(getServerFuncURL("getNextEvent"))
-                .then(response => (this.eventData = response.data))
+                .then(response => (this.eventData = response.data));
 
-            //this.eventData = this.$store.dispatch("getUpcomingEvent");
+            axios
+                .get(getServerFuncURL("getTodo"))
+                .then(response => (this.todoList = response.data))
 
-            if (localStorage.getItem('todoList')) {
+
+            /*
+            if (localStorage.getItem('temp_todo_array')) {
                 try {
-                    this.todoList = JSON.parse(localStorage.getItem('todoList'));
+                    this.temp_todo_array = JSON.parse(localStorage.getItem('temp_todo_array'));
                 } catch (e) {
-                    localStorage.removeItem('todoList');
+                    localStorage.removeItem('temp_todo_array');
                 }
             }
+            */
         },
         methods: {
             openTab: function (evt, tabID) {
@@ -168,25 +174,37 @@
             },
 
             addTodo: function () {
-                //var input = document.getElementById("myInput").value;
-                //console.log(input);
-                //this.$store.commit("addTodo", input);
-
                 if (!this.newTodo) {
                     return;
                 }
 
-                this.todoList.push(this.newTodo);
+                let temp = {
+                    title: this.newTodo,
+                    id: this.tempid
+                };
+                this.$store.dispatch("postTodo", temp);
+                //this.$store.commit("addTodo", temp);
+                //this.todoList = this.$store.dispatch("getTodo");
+                //this.temp_todo_array.push(this.newTodo);
                 this.newTodo = '';
-                this.saveTodo();
+                axios
+                    .get(getServerFuncURL("getTodo"))
+                    .then(response => (this.todoList = response.data))
+                //this.saveTodo();
             },
-            removeTodo(x) {
-                this.todoList.splice(x, 1);
-                this.saveTodo();
+            removeTodo: function (id,n) {
+                //console.log("id is:ssssss: ", id);
+                this.$store.dispatch("deleteTodo", { "TID": id });
+                axios
+                    .get(getServerFuncURL("getTodo"))
+                    .then(response => (this.todoList = response.data))
+              
+                //this.temp_todo_array.splice(n, 1);
+                //this.saveTodo();
             },
-            saveTodo() {
-                const parsed = JSON.stringify(this.todoList);
-                localStorage.setItem('todoList', parsed);
+            saveTodo: function() {
+                const parsed = JSON.stringify(this.temp_todo_array);
+                localStorage.setItem('temp_todo_array', parsed);
             },
 
         },

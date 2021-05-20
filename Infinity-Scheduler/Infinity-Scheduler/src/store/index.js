@@ -252,17 +252,17 @@ export default new Vuex.Store({
         },
 
         addTodo(state, todoList) {
-            state.todoList.push({ "Title": todoList })
+            state.todoList.push({ "Title": todoList.Title, "TID": todoList.TID })
         },
 
-        deleteTodo(state, id) {
+        deleteTodos(state, id) {
             let idx = 0
             for (let i = 0; i < state.todoList.length; i++) {
                 if (state.todoList[i].todoID == id) {
                     idx = i
                 }
             }
-            this.dispatch("deleteTodo", { "TID": id })
+            
         },
 
     },
@@ -556,8 +556,6 @@ export default new Vuex.Store({
                 console.log("Error: failed to get events")
 
             } else {
-
-                //convert events from db to local
                 for (let i = 0; i < res.length; i++) {
                     res[i] = DBUtil.fromDBEvent(res[i])
                 }
@@ -575,9 +573,9 @@ export default new Vuex.Store({
             }
         },
 
-        async deleteTodo(store, todoList) {
+        async deleteTodo(store, id) {
 
-            const res = await DBUtil.execDB("deleteToDo", { "TID": todoList.id })
+            const res = await DBUtil.execDB("deleteToDo", id)
             if (res.hasOwnProperty("error")) {
 
                 console.log("Failed to delete todo")

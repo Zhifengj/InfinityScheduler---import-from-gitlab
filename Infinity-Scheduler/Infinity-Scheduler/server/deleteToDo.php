@@ -12,7 +12,7 @@
 		
 		
 			$stmt = mysqli_stmt_init($link);
-			if (mysqli_stmt_prepare($stmt, "DELETE FROM Todo WHERE UID=? AND TID=?")) {
+			if (mysqli_stmt_prepare($stmt, "DELETE FROM `Todo` WHERE UID=? AND TID=?")) {
 
 				/* bind parameters for markers */
 				mysqli_stmt_bind_param($stmt, "ii", $_SESSION["UID"], $args["TID"]);
