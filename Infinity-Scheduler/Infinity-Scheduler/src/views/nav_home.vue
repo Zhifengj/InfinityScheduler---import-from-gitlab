@@ -10,12 +10,18 @@
             <div id="TodoList" class="tabcontent">
                 <div id="myDIV" class="header">
                     <h2 style="margin:5px">My To Do List</h2>
-                    <input type="text" id="myInput" placeholder="Add some todos...">
-                    <span v-on:click="addTodo(); newElement();" class="addBtn">Add</span>
+                    <p>
+                        <input v-model="newTodo">
+                        <button class="addBtn" @click="addTodo">Add Todo</button>
+                    </p>
                 </div>
 
-                <ul id="myUL">
-                </ul>
+                <div v-for="(toDo,n) in todoList" v-bind:key="toDo.TID">
+                    <p class="myTodoList">
+                        <span class="todo">{{ toDo.Title }}</span>
+                        <button class="closeBtn" @click="removeTodo(toDo.TID, n)">Remove</button>
+                    </p>
+                </div>
             </div>
 
             <div id="Events" class="tabcontent">
@@ -72,47 +78,73 @@
         }
     }
 
-    
-export default {
-    name: 'nav_home',
-    data(){
-        return {
-            eventData: null,
-            todoList: this.$store.state.todoList,
+    export default {
+        name: 'nav_home',
+        data() {
+ 
+            return {
+                eventData: null,
+                time: '',
+                date: '',
+                week: ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'],
+                countdown: '1010-20-20',
+                todoList: [],
+                newTodo: null,
+                tempid: 0,
+                temp_todo_array: this.$store.state.todoList,
 
-        }
-    },
-    mounted() {
-        
-       
-       //this.eventData = this.$store.dispatch("getUpcomingEvent");
-    },
-    methods: {
-        openTab: function(evt, tabID) {
-            var i, tabcontent, tablinks;
-            tabcontent = document.getElementsByClassName("tabcontent");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
             }
-            tablinks = document.getElementsByClassName("tablinks");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
-            }
-            document.getElementById(tabID).style.display = "block";
-            evt.currentTarget.className += " active";
         },
-        newElement: function () {
-         
-            var li = document.createElement("li");
-            var inputValue = document.getElementById("myInput").value;
-            var t = document.createTextNode(inputValue);
-            li.appendChild(t);
-            if (inputValue === '') {
-                alert("You must write something!");
-            } else {
-                document.getElementById("myUL").appendChild(li);
+        mounted() {
+
+            axios
+                .get(getServerFuncURL("getNextEvent"))
+                .then(response => (this.eventData = response.data));
+
+            axios
+                .get(getServerFuncURL("getTodo"))
+                .then(response => (this.todoList = response.data))
+
+
+            /*
+            if (localStorage.getItem('temp_todo_array')) {
+                try {
+                    this.temp_todo_array = JSON.parse(localStorage.getItem('temp_todo_array'));
+                } catch (e) {
+                    localStorage.removeItem('temp_todo_array');
+                }
             }
-            document.getElementById("myInput").value = "";
+            */
+        },
+        methods: {
+            openTab: function (evt, tabID) {
+                var i, tabcontent, tablinks;
+                tabcontent = document.getElementsByClassName("tabcontent");
+                for (i = 0; i < tabcontent.length; i++) {
+                    tabcontent[i].style.display = "none";
+                }
+                tablinks = document.getElementsByClassName("tablinks");
+                for (i = 0; i < tablinks.length; i++) {
+                    tablinks[i].className = tablinks[i].className.replace(" active", "");
+                }
+                document.getElementById(tabID).style.display = "block";
+                evt.currentTarget.className += " active";
+            },
+            newElement: function () {
+
+                var li = document.createElement("li");
+                //get todo from database here.
+                var inputValue = document.getElementById("myInput").value;
+                
+                var t = document.createTextNode(inputValue);
+                li.appendChild(t);
+                if (inputValue === '') {
+                    alert("You must write something!");
+                } else {
+                    document.getElementById("myUL").appendChild(li);
+                }
+                console.log(inputValue);
+                document.getElementById("myInput").value = "";
 
                 var span = document.createElement("SPAN");
                 var txt = document.createTextNode("\u00D7");
@@ -128,12 +160,41 @@ export default {
                 }
 
             },
-            addTodo: function () {
-                var input = document.getElementById("myInput").value;
-                console.log(input);
-                //this.$store.commit("addTodo", input);
 
-            }
+            addTodo: function () {
+                if (!this.newTodo) {
+                    return;
+                }
+
+                let temp = {
+                    title: this.newTodo,
+                    id: this.tempid
+                };
+                this.$store.dispatch("postTodo", temp);
+                //this.$store.commit("addTodo", temp);
+                //this.todoList = this.$store.dispatch("getTodo");
+                //this.temp_todo_array.push(this.newTodo);
+                this.newTodo = '';
+                axios
+                    .get(getServerFuncURL("getTodo"))
+                    .then(response => (this.todoList = response.data))
+                //this.saveTodo();
+            },
+            removeTodo: function (id,n) {
+                //console.log("id is:ssssss: ", id);
+                this.$store.dispatch("deleteTodo", { "TID": id });
+                axios
+                    .get(getServerFuncURL("getTodo"))
+                    .then(response => (this.todoList = response.data))
+              
+                //this.temp_todo_array.splice(n, 1);
+                //this.saveTodo();
+            },
+            saveTodo: function() {
+                const parsed = JSON.stringify(this.temp_todo_array);
+                localStorage.setItem('temp_todo_array', parsed);
+            },
+
         },
         components: {
 
@@ -306,6 +367,14 @@ export default {
         font-size: 16px;
     }
 
+    .myTodoList > span:nth-child(odd) {
+        background-color: lightcyan;
+        font-size:medium;
+        border-radius: 10px;
+        width: 100px;
+        padding: 10px;
+    }
+
     .addBtn {
         padding: 10px;
         width: 10%;
@@ -319,9 +388,22 @@ export default {
         border-radius: 0;
     }
 
-        .addBtn:hover {
-            background-color: #bbb;
-        }
+    .addBtn:hover {
+        background-color: #bbb;
+    }
+    .closeBtn {
+        border-radius: 25px;
+        background-color: lightcoral;
+        border: none;
+        color: black;
+        padding: 5px 10px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 12px;
+        margin: 4px 2px;
+        cursor: pointer;
+    }
 
     p {
         margin: 0;
