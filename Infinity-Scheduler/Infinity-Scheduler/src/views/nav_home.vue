@@ -62,6 +62,7 @@
 
     import DBUtil from "./../DBUtil"
     import { Date as TZDate } from './../../node_modules/tui-calendar/src/js/common/timezone.js'
+    import axios from "axios";
     function normalizeDate(date) {
         if (date instanceof TZDate) {
             return date.getUTCTime()
@@ -98,11 +99,11 @@
         mounted() {
 
             axios
-                .get(getServerFuncURL("getNextEvent"))
+                .get(DBUtil.getServerFuncURL("getNextEvent"))
                 .then(response => (this.eventData = response.data));
 
             axios
-                .get(getServerFuncURL("getTodo"))
+                .get(DBUtil.getServerFuncURL("getTodo"))
                 .then(response => (this.todoList = response.data))
 
 
@@ -176,7 +177,7 @@
                 //this.temp_todo_array.push(this.newTodo);
                 this.newTodo = '';
                 axios
-                    .get(getServerFuncURL("getTodo"))
+                    .get(DBUtil.getServerFuncURL("getTodo"))
                     .then(response => (this.todoList = response.data))
                 //this.saveTodo();
             },
@@ -184,7 +185,7 @@
                 //console.log("id is:ssssss: ", id);
                 this.$store.dispatch("deleteTodo", { "TID": id });
                 axios
-                    .get(getServerFuncURL("getTodo"))
+                    .get(DBUtil.getServerFuncURL("getTodo"))
                     .then(response => (this.todoList = response.data))
               
                 //this.temp_todo_array.splice(n, 1);
