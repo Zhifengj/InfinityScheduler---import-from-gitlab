@@ -36,7 +36,7 @@
                     </div>
                         <div class="note">
 
-                            <div>Upcoming Event: </div>
+                            <div>Next upcoming event is: </div>
                             <div id="upcoming-events">
 
                             </div>
@@ -255,7 +255,9 @@
                 hasNotified = false
                 lastStartTime = event.Start
             }
-            let countDownDate = DBUtil.fromDBDate(event.Start).getTime()
+            //let countDownDate = DBUtil.fromDBDate(event.Start).getTime()
+            let countDownDate = new Date(event.Start);
+            
             // Get today's date and time
             var now = new Date().getTime();
 

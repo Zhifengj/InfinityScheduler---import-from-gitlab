@@ -40,8 +40,6 @@
                         <h4>Start Time</h4>
                         <input type="datetime-local" v-model="sdate"><br /><br />
                         <h4>End Time</h4>
-                       
-                       
                         <input type="datetime-local" v-model="edate"><br /><br />
                          <h4>Event Category</h4>
                         <select v-model="category" name="category" id="category">
@@ -66,13 +64,13 @@
                 <div class="overlay">
                     <div class="modal">
                         <h4>Edit Title</h4>
-                        <input type="text" v-model="edittitle" placeholder="Enter event title here..." required><br />
+                        <input type="text" v-model="edittitle" id="editTitleid" required><br />
                         <h4>Edit Location</h4>
                         <input v-model="location" placeholder="Enter event location here..."><br />
                         <h4>Start Time</h4>
-                        <input type="datetime-local" v-model="sdate"><br /><br />
+                        <input type="datetime-local" v-model="sdate" required><br /><br />
                         <h4>End Time</h4>
-                        <input type="datetime-local" v-model="edate"><br /><br />
+                        <input type="datetime-local" v-model="edate" required><br /><br />
                         <h4>Event Category</h4>
                         <select v-model="category" name="category" id="category">
                             <option value="exercise">Exercise</option>
@@ -173,8 +171,10 @@
                 detailsdate: '',
                 detailedate: '',
                 detailcompleted: '',
-
                 category: '',
+                detailcategory: '',
+                tempsd: '',
+                temped: '',
              
 
 
@@ -216,7 +216,7 @@
                 const timesChanged = this.timesChanged;
                 const evntID = this.editEventID;
                 const cat = this.category;
-
+                
                 this.$store.commit("deleteEvent", {"id":evntID});
 
                 var schedule = {
@@ -252,6 +252,7 @@
             openEditPopUp: function () {
                 //this.editEventID = e.schedule.id
                 this.editToggle = true;
+                this.populateEditPopUp();
             },
             closeEPopUp: function () {
                 this.editToggle = false;
@@ -262,6 +263,24 @@
             },
             closeDPopUp: function () {
                 this.detailToggle = false;
+            },
+            populateEditPopUp: function () {
+                this.edittitle = this.detailTitle;
+                this.location = this.detailLocation;
+
+                var sd = this.tempsd;
+                var temp = JSON.stringify(new Date(sd));
+                temp = temp.replace('\"', '');
+                temp = temp.slice(0, -2);
+                this.sdate = temp;
+
+                var ed = this.temped;
+                var tmp = JSON.stringify(new Date(ed));
+                tmp = tmp.replace('\"', '');
+                tmp = tmp.slice(0, -2);
+                this.edate = tmp;
+
+                this.completed = this.detailcompleted;
             },
 
 
@@ -279,16 +298,18 @@
                 this.detailLocation = e.schedule.location;
                 this.detailsdate = new Date(e.schedule.start).toLocaleString();
                 this.detailedate = new Date(e.schedule.end).toLocaleString();
-
-                
-                console.log(eventObj.completed);
+                this.tempsd = e.schedule.start;
+                this.temped = e.schedule.end;
+               
                 if (eventObj.completed == 1) {
                     this.detailcompleted = 'Yes';
                 } else {
                     this.detailcompleted = 'No';
                 }
 
+                
                 this.openDetailview(e);
+                
                 /*
                 const willModify = confirm(`Title of event: ${e.schedule.title}\n When: ${(new Date(e.schedule.start))} \n to ${(new Date(e.schedule.end))} \n Completion Status: ${eventObj.completed}\n Location: ${e.schedule.location}\n Will you update schedule?`);
                 if (willModify) {
