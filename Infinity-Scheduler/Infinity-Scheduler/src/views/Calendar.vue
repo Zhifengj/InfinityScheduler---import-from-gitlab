@@ -104,7 +104,7 @@
 
                         <h4>End Time: {{detailedate}}</h4>
 
-                        <h4>Completed: {{detailcompleted}}</h4>
+                        <h4>Event Finished? {{detailcompleted}}</h4>
 
                         <button type="submit" v-on:click="closeDPopUp(); openEditPopUp(); ">Edit event</button>
                         <button type="submit" v-on:click="deleteEvent">Delete event</button>
@@ -172,7 +172,7 @@
                 detailLocation: "",
                 detailsdate: '',
                 detailedate: '',
-                detailcompleted: false,
+                detailcompleted: '',
 
                 category: '',
              
@@ -279,7 +279,15 @@
                 this.detailLocation = e.schedule.location;
                 this.detailsdate = new Date(e.schedule.start).toLocaleString();
                 this.detailedate = new Date(e.schedule.end).toLocaleString();
-                this.detailcompleted = eventObj.completed;
+
+                
+                console.log(eventObj.completed);
+                if (eventObj.completed == 1) {
+                    this.detailcompleted = 'Yes';
+                } else {
+                    this.detailcompleted = 'No';
+                }
+
                 this.openDetailview(e);
                 /*
                 const willModify = confirm(`Title of event: ${e.schedule.title}\n When: ${(new Date(e.schedule.start))} \n to ${(new Date(e.schedule.end))} \n Completion Status: ${eventObj.completed}\n Location: ${e.schedule.location}\n Will you update schedule?`);
