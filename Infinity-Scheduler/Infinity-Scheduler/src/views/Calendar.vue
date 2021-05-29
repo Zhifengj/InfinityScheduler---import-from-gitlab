@@ -107,6 +107,7 @@
                         <h4>Completed: {{detailcompleted}}</h4>
 
                         <button type="submit" v-on:click="closeDPopUp(); openEditPopUp(); ">Edit event</button>
+                        <button type="submit" v-on:click="deleteEvent">Delete event</button>
                         <button class="button_close_popup" v-on:click="closeDPopUp">Close </button>
 
                     </div>
@@ -236,6 +237,12 @@
                 //this.$refs.calref.invoke("updateSchedule", e.schedule.id, e.schedule.calendarId, e.changes)
                 this.closeEPopUp();
             },
+            deleteEvent: function (e) {
+                const evntID = this.editEventID;
+                this.$store.commit("deleteEvent", { "id": evntID });
+                this.closeDPopUp();
+                //this.$refs.calref.invoke("deleteSchedule", e.schedule.id, e.schedule.calendarId)
+            },
             openPopUp() {
                 this.toggle = true;
             },
@@ -270,8 +277,8 @@
                 }
                 this.detailTitle = e.schedule.title;
                 this.detailLocation = e.schedule.location;
-                this.detailsdate = new Date(e.schedule.start);
-                this.detailedate = new Date(e.schedule.end);
+                this.detailsdate = new Date(e.schedule.start).toLocaleString();
+                this.detailedate = new Date(e.schedule.end).toLocaleString();
                 this.detailcompleted = eventObj.completed;
                 this.openDetailview(e);
                 /*
