@@ -244,8 +244,11 @@
         var min = d.getMinutes();
         var sec = d.getSeconds();
 
-        document.getElementById("date").innerHTML = month + " " + date + " " + year + " " + day;
-        document.getElementById("time").innerHTML = hour + ":" + min + ":" + sec;
+        if (document.getElementById("date")) {
+            document.getElementById("date").innerHTML = month + " " + date + " " + year + " " + day;
+            document.getElementById("time").innerHTML = hour + ":" + min + ":" + sec;
+        }
+        
     }, 1000);
 
     //this will be time of next event
