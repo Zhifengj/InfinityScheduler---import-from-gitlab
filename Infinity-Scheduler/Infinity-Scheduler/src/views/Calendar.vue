@@ -203,7 +203,7 @@
                     completed: com,
                    
                 };
-                console.log(schedule.start)
+                
                 this.$store.commit("addEvent", schedule)
                 this.toggle = false;
             },
@@ -286,8 +286,7 @@
 
 
             onClickSchedule(e) {
-                //console.log('clickSchedule', e);
-                //console.log(this.$store.state.events)
+              
                 let eventObj = {};
                 for (let i = 0; i < this.$store.state.events.length; i++) {
                     if (this.$store.state.events[i].id == e.schedule.id) {
@@ -319,14 +318,14 @@
             },
 
             onBeforeCreateSchedule(e) {
-                //console.log('beforeCreateSchedule', e)
+               
                 this.openPopUp()
                 //const title = prompt('Schedule', 'Enter Title');
 
                 //calendar.createSchedules([schedule]);
                 //this.saveEvent(e)
 
-                //console.log("aaaaaaaaaaaaaaaaa")
+            
                 e.guide.clearGuideElement();
                 //this.$store.commit("addEvent", e)
                 //this.$refs.calref.invoke("createSchedules", [e])

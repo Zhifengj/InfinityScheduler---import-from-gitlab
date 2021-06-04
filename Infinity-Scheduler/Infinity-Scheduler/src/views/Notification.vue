@@ -32,7 +32,7 @@ export default {
     },
     methods: {
         deletes: function(eid) {
-            console.log(eid)
+            
             this.$store.commit("deleteNotification", eid)
         },
         
