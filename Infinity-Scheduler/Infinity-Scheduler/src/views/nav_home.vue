@@ -97,11 +97,12 @@
                 newTodo: null,
                 tempid: 0,
                 temp_todo_array: this.$store.state.todoList,
+                counterInterval: "",
 
             }
         },
         mounted() {
-
+            
             axios
                 .get(DBUtil.getServerFuncURL("getNextEvent"))
                 .then(response => (this.eventData = response.data));
@@ -110,11 +111,12 @@
                 .get(DBUtil.getServerFuncURL("getTodo"))
                 .then(response => (this.todoList = response.data))
 
-
+            
             let hasNotified = false
             let lastStartTime = 0
 
-            var x = setInterval(function () {
+            
+            this.counterInterval = setInterval(function () {
                 let event = DBUtil.execDB("getNextEvent")
                 event.then((event) => {
                     if (event.Start != lastStartTime) {
@@ -157,6 +159,10 @@
                 })
 
             }, 1000);
+            
+        },
+        destroyed() {
+            clearInterval(this.counterInterval)
         },
         methods: {
             openTab: function (evt, tabID) {
