@@ -247,7 +247,7 @@ export default new Vuex.Store({
         },
         setNotifications(state, notifs) {
             state.notifs = notifs
-            console.log(state.notifs)
+           
         },
         deleteNotification(state, id) {
             let idx = 0
@@ -500,10 +500,10 @@ export default new Vuex.Store({
             payload.created = DBUtil.toDBDate(new Date(normalizeDate(payload.created)))
          
            
-            console.log(e)
+           
             try {
                 const response = await DBUtil.execDB("postEvent", payload);
-                console.log(response)
+                
                 if (response.data.hasOwnProperty("error")) {
 
                     console.log("Failed to post event")
@@ -531,7 +531,7 @@ export default new Vuex.Store({
 
         async updateEvent(store, event) {
             const res = await DBUtil.execDB("deleteEvent", { "TID": event.id })
-            console.log("del:", res)
+            
             if (res.hasOwnProperty("error")) {
 
                 console.log("Failed to delete event")
@@ -613,7 +613,7 @@ export default new Vuex.Store({
         async getNotifications(store) {
 
             const res = await DBUtil.execDB("getNotifications");
-            console.log(res)
+           
             if (res.hasOwnProperty("error")) {
                 console.log("Error: failed to get notifications")
 
@@ -651,7 +651,7 @@ export default new Vuex.Store({
 
         async postNotification(store, notif) {
             const res = await DBUtil.execDB("addNotification", notif)
-            console.log(res)
+           
             if (res.hasOwnProperty("error")) {
 
                 console.log("Failed to update notification")
@@ -686,7 +686,7 @@ export default new Vuex.Store({
         },
         async postTodo(store, todoList) {
             const res = await DBUtil.execDB("addToDo", todoList)
-            console.log(res)
+            
             if (res.hasOwnProperty("error")) {
 
                 console.log("Failed to update todo")

@@ -189,7 +189,7 @@
                 } else {
                     document.getElementById("myUL").appendChild(li);
                 }
-                console.log(inputValue);
+               
                 document.getElementById("myInput").value = "";
 
                 var span = document.createElement("SPAN");
@@ -227,7 +227,7 @@
                 
             },
             removeTodo: function (id,n) {
-                //console.log("id is:ssssss: ", id);
+                
                 this.$store.dispatch("deleteTodo", { "TID": id });
                 axios
                     .get(DBUtil.getServerFuncURL("getTodo"))
