@@ -2,7 +2,7 @@
 import axios from 'axios'
 
 class DBUTil {
-    static isProd = false
+    static isProd = true
 
     static SERVER_URL = "http://localhost:80"
     static PROD_SERVER_URL = "http://infinityscheduler.com"
