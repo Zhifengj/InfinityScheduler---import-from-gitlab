@@ -161,9 +161,7 @@
             }, 1000);
             
         },
-        destroyed() {
-            clearInterval(this.counterInterval)
-        },
+        
         methods: {
             openTab: function (evt, tabID) {
                 var i, tabcontent, tablinks;
@@ -246,6 +244,9 @@
         },
         components: {
 
+        },
+        destroyed() {
+            clearInterval(this.counterInterval);
         }
     }
 

@@ -80,6 +80,9 @@ import DBUtil from '../DBUtil'
                 this.$store.commit("checkMissedEvent"),
                 this.$store.dispatch("getUserProfileLink");
             }, 3000);
+        },
+        destroyed() {
+            clearInterval(this.checkEventMissedInterval);
         }
 
     }

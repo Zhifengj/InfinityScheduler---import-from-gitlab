@@ -95,7 +95,8 @@ export default {
           change_profile: false,
           image_link: "",
           pword: "",
-          new_email: "",
+            new_email: "",
+          intervalcounter: "",
         }
     },
     methods: {
@@ -136,7 +137,7 @@ export default {
 
     },
     mounted() {
-        setInterval( () => {
+        this.intervalcounter = setInterval( () => {
           this.username = this.$store.state.user_info.username;
           if (this.$store.state.user_info.profile_link)
           {
@@ -147,6 +148,9 @@ export default {
             this.profile_link = "profile.png";
           }
         }, 1000);
+    },
+    destroyed() {
+        clearInterval(this.intervalcounter);
     }
 
 }
