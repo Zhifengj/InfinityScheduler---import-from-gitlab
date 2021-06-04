@@ -305,21 +305,19 @@ export default new Vuex.Store({
         //can be async, called with $store.dispatch("<name>", args, options)
 
         async reschedule(store, ev) {
-            //TODO: make AI better lmao
-
             let dayTries = 0
             let timeTries = 0
             let dayShifts = 0
 
-            let takenTimes = []
-            for (let i = 0; i < store.state.events.length; i++) {
+            let takenTimes = [] 
+            for (let i = 0; i < store.state.events.length; i++) { //gets list of future events
                 takenTimes.push([normalizeDate(store.state.events[i].start), normalizeDate(store.state.events[i].end)])
             }
-            let eventLength = normalizeDate(ev.end) - normalizeDate(ev.start)
+            let eventLength = normalizeDate(ev.end) - normalizeDate(ev.start) //length of event being rescheduled 
 
             while (true) {
 
-                let bestTime = await DBUtil.execDB("ai/getNthBestHourTimeslot", { CID: ev.cid, N: timeTries })// change CID to events.category
+                let bestTime = await DBUtil.execDB("ai/getNthBestHourTimeslot", { CID: ev.cid, N: timeTries }) //gets the users preferred time of day for type of event
                 bestTime = bestTime.Time
                 let splitTime = bestTime.split(":")
                 let hour = parseInt(splitTime[0])
@@ -327,7 +325,7 @@ export default new Vuex.Store({
                 let sec = parseInt(splitTime[2])
                 bestTime = hour*60*60 + min*60 + sec
 
-                let bestDay = await DBUtil.execDB("ai/getNthBestDayTimeslot", { CID: ev.cid, N: dayTries }) // change CID to events.category
+                let bestDay = await DBUtil.execDB("ai/getNthBestDayTimeslot", { CID: ev.cid, N: dayTries }) //gets the users preferred day of week for type of event
                 bestDay = bestDay.Day
                 let timePref = true
                 let dayPref = true
@@ -339,7 +337,7 @@ export default new Vuex.Store({
                     dayShifts++
                 }
 
-                if (typeof (bestTime) != 'number') {
+                if (typeof (bestTime) != 'number') { //no preference for time of day, tries to reschedule next available time on preferred day
                     timePref = false
                     let currentDate = new Date()
                     let dayDiff = Math.abs(currentDate.getDay() - bestDay - 7)
@@ -348,10 +346,9 @@ export default new Vuex.Store({
 
                     for (let t = (7 * 60 * 60) + timeOffset; t < (21 * 60 * 60) + timeOffset; t += 60) {
                         for (let i = 0; i < takenTimes.length; i++) {
-                            if (!(t >= takenTimes[i][0] && t <= takenTimes[i][1]) && !((t + eventLength) >= takenTimes[i][0] && (t + eventLength) <= takenTimes[i][1])) {
-                                console.log("hits best time")
+                            if (!(t >= takenTimes[i][0] && t <= takenTimes[i][1]) && !((t + eventLength) >= takenTimes[i][0] && (t + eventLength) <= takenTimes[i][1])) { //checks overlap
                                 let e = {
-                                    changes: {
+                                    changes: { //schedules event
                                         start: DBUtil.toDBDate(new Date(t)),
                                         end: DBUtil.toDBDate(new Date(t + eventLength))
 
@@ -360,7 +357,7 @@ export default new Vuex.Store({
                                         id: ev.id
                                     }
                                 }
-                                DBUtil.sendNotification("Event Rescheduled", ev.title + " has been rescheduled for " + new Date(normalizeDate(ev.start)), function () {
+                                DBUtil.sendNotification("Event Rescheduled", ev.title + " has been rescheduled for " + new Date(normalizeDate(ev.start)), function () { //pushes notification that event was scheduled
                                     window.open(DBUtil.getUseURL() + "/#?/navigation")
 
                                 })
@@ -374,7 +371,7 @@ export default new Vuex.Store({
                 }
 
 
-                let candidateDate = calcRealDate(bestDay, bestTime)
+                let candidateDate = calcRealDate(bestDay, bestTime) //start time of event at best day and time for event
                 console.log(new Date(candidateDate))
                 for (let i = 0; i < takenTimes.length; i++) {
                     if (candidateDate >= takenTimes[i][0] && candidateDate <= takenTimes[i][1]) { //start time overlap
@@ -385,8 +382,16 @@ export default new Vuex.Store({
                         timeTries++
                         break
                     }
+                    else if (((candidateDate >= takenTimes[i][0]) && (candidateDate + eventLength) <= takenTimes[i][1]))  { //checks if new event would be scheduled inside of the takenTimes event
+                        timeTries++
+                        break
+                    }
+                    else if (((candidateDate <= takenTimes[i][0]) && (candidateDate + eventLength) >= takenTimes[i][1])) { //checks if event is encompassing takenTimes event, EX: takenTimes is from 4pm-5pm and candidate is 3pm-6pm
+                        timeTries++
+                        break
+                    }
                     else { //no overlap
-                        let e = {
+                        let e = { //schedules event
                             changes: {
                                 start: DBUtil.toDBDate(new Date(candidateDate)),
                                 end: DBUtil.toDBDate(new Date(candidateDate + eventLength))
@@ -396,7 +401,7 @@ export default new Vuex.Store({
                                 id: ev.id
                             }
                         } 
-                        DBUtil.sendNotification("Event Rescheduled", ev.title + " has been rescheduled for " + new Date(normalizeDate(ev.start)), function () {
+                        DBUtil.sendNotification("Event Rescheduled", ev.title + " has been rescheduled for " + new Date(normalizeDate(ev.start)), function () { //pushes notification that event was scheduled
                             window.open(DBUtil.getUseURL() + "/#?/navigation")
                           
                         })
@@ -407,41 +412,6 @@ export default new Vuex.Store({
             }
 
         },
-
-        /*async aiTime(state, ev) { //needs to get current date, the actual category of event, and taken times for tht day 
-            let bestTime = await DBUtil.execDB("ai/getNthBestHourTimeslot", 0, 1) //checks for the best time
-            let eventCat = await DBUtil.execDB("category/getCategories") //does this just get all the categories?
-            let currentDate = DBUtil.toDBDate(new Date()).split(" ")[0]
-            let currentTime = DBUtil.toDBDate(new Date()).split(" ")[1]
-
-            var year = parseInt(currentDate.split("-")[0], 10)
-            var month = parseInt(currentDate.split("-")[1], 10)
-            var day = parseInt(currentDate.split("-")[2], 10)
-            var bestHour = parseInt(bestTime.split(":")[0], 10)
-            var bestMin = parseInt(bestTime.split(":")[1], 10)
-            var bestSec = parseInt(bestTime.split(":")[2], 10)
-            let currentDateCheck = DBUtil.toDBDate(new Date(year, month - 1, day, hour, min, sec))
-
-         //   let currentDateCheck = DBUtil.toDBDate( //date on the current day w/ best time
-
-            if (bestTime == null) {
-               // reschedule to next day between 7-9
-            }
-            else {
-                let i = 1
-                while (currentDateCheck != null) {
-                    if (currentDateCheck != takentimes) {
-                        // send to reschedule
-                        break;
-                    }
-                    else {
-                        currentDateCheck = await DBUtil.execDB("ai/getNthBestHourTimeslot", 0, i) //checks for the next best time if the first one doesn't work
-                    }
-                    i += 1
-                }
-            }
-
-        },*/
 
         async auth(store, ep) {
 
