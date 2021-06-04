@@ -111,15 +111,52 @@
                 .then(response => (this.todoList = response.data))
 
 
-            /*
-            if (localStorage.getItem('temp_todo_array')) {
-                try {
-                    this.temp_todo_array = JSON.parse(localStorage.getItem('temp_todo_array'));
-                } catch (e) {
-                    localStorage.removeItem('temp_todo_array');
-                }
-            }
-            */
+            let hasNotified = false
+            let lastStartTime = 0
+
+            var x = setInterval(function () {
+                let event = DBUtil.execDB("getNextEvent")
+                event.then((event) => {
+                    if (event.Start != lastStartTime) {
+                        hasNotified = false
+                        lastStartTime = event.Start
+                    }
+                    //let countDownDate = DBUtil.fromDBDate(event.Start).getTime()
+                    let countDownDate = new Date(event.Start);
+
+                    // Get today's date and time
+                    var now = new Date().getTime();
+
+                    // Find the distance between now and the count down date
+                    var distance = countDownDate - now;
+
+                    // Time calculations for days, hours, minutes and seconds
+                    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                    // Output the result in an element with id="timer"
+                    if (document.getElementById("timer")) {
+                        document.getElementById("timer").innerHTML = days + "d " + hours + "h "
+                            + minutes + "m " + seconds + "s ";
+                        document.getElementById("upcoming-events").innerHTML = event.Title
+                    }
+
+                    // If the count down is over, write some text 
+
+                    if (hasNotified && minutes < 5) {
+                        hasNotified = true
+                        DBUtil.sendNotification("Upcoming Event", event.Title + " is starting at " + new Date(event.Start) + ". Will you attend?", function () {
+                            window.open(DBUtil.getUseURL() + "/#?/navigation")
+                            DBUtil.savedEvent = event
+
+                        })
+                    }
+
+                })
+
+            }, 1000);
         },
         methods: {
             openTab: function (evt, tabID) {
@@ -183,7 +220,7 @@
                 axios
                     .get(DBUtil.getServerFuncURL("getTodo"))
                     .then(response => (this.todoList = response.data))
-                //this.saveTodo();
+                
             },
             removeTodo: function (id,n) {
                 //console.log("id is:ssssss: ", id);
@@ -225,6 +262,7 @@
         }, false);
     }
 
+    
     window.onload = setInterval(function () {
         var d = new Date();
 
@@ -249,52 +287,6 @@
             document.getElementById("time").innerHTML = hour + ":" + min + ":" + sec;
         }
         
-    }, 1000);
-
-    //this will be time of next event
-    
-    let hasNotified = false
-    let lastStartTime = 0
-    var x = setInterval(function () {
-        let event = DBUtil.execDB("getNextEvent")
-        event.then((event) => {
-            if (event.Start != lastStartTime) {
-                hasNotified = false
-                lastStartTime = event.Start
-            }
-            //let countDownDate = DBUtil.fromDBDate(event.Start).getTime()
-            let countDownDate = new Date(event.Start);
-            
-            // Get today's date and time
-            var now = new Date().getTime();
-
-            // Find the distance between now and the count down date
-            var distance = countDownDate - now;
-
-            // Time calculations for days, hours, minutes and seconds
-            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            // Output the result in an element with id="timer"
-            if (document.getElementById("timer")) {
-                document.getElementById("timer").innerHTML = days + "d " + hours + "h "
-                    + minutes + "m " + seconds + "s ";
-                document.getElementById("upcoming-events").innerHTML = event.Title
-            }
-
-            // If the count down is over, write some text 
-            if (hasNotified && minutes < 5) {
-                hasNotified = true
-                DBUtil.sendNotification("Upcoming Event", event.Title + " is starting at " + new Date(event.Start) + ". Will you attend?", function () {
-                    window.open(DBUtil.getUseURL() + "/#?/navigation")
-                    DBUtil.savedEvent = event
-
-                })
-            }
-        })
-       
     }, 1000);
     
 

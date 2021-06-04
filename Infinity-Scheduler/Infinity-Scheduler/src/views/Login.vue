@@ -3,7 +3,7 @@
      <div class="login-header">Infinity Scheduler (Beta)</div>
 `    <div >
          <div class="login-container">
-             <div v-if="this.$store.state.loginFailure">Invalid username or password</div>
+             
 
              <form class="login_windows">
                  <p class="username_text">Username:</p>
@@ -13,11 +13,13 @@
                  <input type="password" id="pword" v-model="pword">
                  <br><br><br>
                  <button class="login-botton" v-on:click="tryLogin">Log In</button>
-
                  <div class="regis">
-                     <router-link to="/register">Register</router-link>
+                     <router-link to="/register" tag="button">Register</router-link>
                  </div>
+                 <div v-if="this.$store.state.loginFailure">Invalid username or password</div>
+
              </form>
+             
          </div>
 
     </div>
@@ -25,6 +27,8 @@
 </template>
 
 <script>
+import router from "../router";
+
     export default {
         name: 'login',
         data(){
@@ -43,7 +47,8 @@
                     "uname": this.uname,
                     "pword": this.pword
                 })
-            }
+            },
+
         },
         mounted() {
             this.$store.dispatch("auth");

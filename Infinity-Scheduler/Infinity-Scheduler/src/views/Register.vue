@@ -2,23 +2,29 @@
     <div id="registation">
         <div class="registate">Infinity Scheduler (Beta 1)</div>
         <div class="registation_container">
-            <div v-if="this.$store.state.registerFailure">Your username is already in use</div>
-            <div v-if="failed">Passwords do not match</div>
+            
+            
             <form>
+
                 <p>Username</p>
-                <input type="text" id="user_name" v-model="user_name">
+                <input type="text" id="user_name" v-model="user_name" required>
                 <p>First Name</p>
-                <input type="text" id="first_name" v-model="first_name">
+                <input type="text" id="first_name" v-model="first_name" required>
                 <p>Last Name</p>
-                <input type="text" id="last_name" v-model="last_name">
+                <input type="text" id="last_name" v-model="last_name" required>
                 <p>E-mail Address</p>
-                <input type="text" id="email" v-model="email">
+                <input type="text" id="email" v-model="email" required>
                 <p>Password</p>
-                <input type="text" id="pas_word" v-model="pas_word">
+                <input type="text" id="pas_word" v-model="pas_word" required>
                 <p>Confirm Password</p>
-                <input type="text" id="conf_word" v-model="conf_word">
+                <input type="text" id="conf_word" v-model="conf_word" required>
                 <p></p>
-                <button class="reg-button" v-on:click="tryRegister">Register</button>
+                <button type="submit" class="reg-button" v-on:click="tryRegister">Register</button>
+                <div class="gobacklogin">
+                    <router-link to="/" >Back</router-link>
+                </div>
+                <div v-if="this.$store.state.registerFailure">Your username is already in use</div>
+                <div v-if="failed">Passwords do not match</div>
             </form>
 
         </div>
@@ -47,7 +53,7 @@
         methods: {
             //local methods go here
             tryRegister() {
-                if (this.pas_word == this.conf_word) {
+                if (this.user_name != "" && this.pas_word != "" && this.pas_word == this.conf_word) {
                     let data = {
                         "username": this.user_name,
                         "password": this.pas_word,
@@ -132,5 +138,16 @@
         color: black;
         transition: 0.5s ease-in-out;
         font-size: 15px;
+    }
+
+    .gobacklogin {
+        background-color: #A07855FF;
+        color: white;
+        width: 131%;
+        text-align: center;
+        border: 3px solid black;
+        transition: 0.5s ease-in-out;
+        font-size: 15px;
+        margin-top: 5px;
     }
 </style>
