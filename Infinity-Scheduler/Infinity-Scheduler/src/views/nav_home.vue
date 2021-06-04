@@ -19,8 +19,9 @@
                 <div v-for="(toDo,n) in todoList" v-bind:key="toDo.TID">
                     <p class="myTodoList">
                         <span class="todo">{{ toDo.Title }}</span>
-                        <button class="closeBtn" @click="removeTodo(toDo.TID, n)">Remove</button>
                     </p>
+                    <button class="closeBtn" @click="removeTodo(toDo.TID, n)">Remove</button>
+
                 </div>
             </div>
 
@@ -33,13 +34,16 @@
                                 <p id="time" class="time"></p>
                             </div>
 
-                    </div>
+                        </div>
                         <div class="note">
-
-                            <div>Next upcoming event is: </div>
+                            
+                            <div id=" next-event-title">
+                                <h2 style="color: #A07855FF; text-align:center;">Next upcoming event is: </h2>
+                            </div>
                             <div id="upcoming-events">
 
                             </div>
+                            <h2 style="color: #A07855FF; text-align:center;">Happening in: </h2>
                             <div id="timer">
 
                             </div>
@@ -390,27 +394,32 @@
         padding: 10px;
         float: left;
         font-size: 16px;
+        display: inline-block;
     }
 
-    .myTodoList > span:nth-child(odd) {
+    .myTodoList {
+        display: inline-block;
         background-color: lightcyan;
+        border:solid;
+        border-color:lightblue;
         font-size:medium;
         border-radius: 10px;
-        width: 100px;
+        width: 65%;
         padding: 10px;
     }
 
     .addBtn {
+        float: left;
         padding: 10px;
-        width: 10%;
+        width: 18%;
         background: #d9d9d9;
         color: #555;
-        float: left;
         text-align: center;
         font-size: 16px;
         cursor: pointer;
         transition: 0.3s;
         border-radius: 0;
+        display: inline-block;
     }
 
     .addBtn:hover {
@@ -421,7 +430,7 @@
         background-color: lightcoral;
         border: none;
         color: black;
-        padding: 5px 10px;
+        padding: 10px;
         text-align: center;
         text-decoration: none;
         display: inline-block;
@@ -433,6 +442,21 @@
     p {
         margin: 0;
         padding: 0;
+    }
+
+
+    #upcoming-events {
+        text-align: center;
+        font-size: 50px;
+        padding: 5px 0;
+        color: #A07855FF;
+    }
+
+    #timer {
+        text-align: center;
+        font-size: 50px;
+        padding: 5px 0;
+        color: #A07855FF;
     }
 
     #clock {
