@@ -1,4 +1,9 @@
 <?php
+//Testing
+// define('DB_SERVER', "localhost");
+// define('DB_USERNAME', "root");
+// define('DB_PASSWORD', "");
+// define('DB_NAME', "dbzsjyjqfinn66");
 
 define('DB_SERVER', "ns2.giowm1215.siteground.biz");
 define('DB_USERNAME', "urkmnjh23juah");

@@ -13,26 +13,15 @@
 		
 			$stmt = mysqli_stmt_init($link);
 			if (mysqli_stmt_prepare($stmt, 
-			"INSERT INTO TaskEvent (Title,CalendarId,Body,TID,Start,End,Created,LastUpdated,State,Completed,TimesChanged,UID,LID,CID)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+			"INSERT INTO Todo (Title,TID,UID)
+				VALUES (?, ?, ?)
 			")) {
 
 				/* bind parameters for markers */
-				mysqli_stmt_bind_param($stmt, "sisissssiiiiii", 
+				mysqli_stmt_bind_param($stmt, "sii", 
 				$args["title"], 
-				$args["calendarid"],
-				$args["body"],
 				$args["id"],
-				$args["start"],
-				$args["end"],
-				$args["created"],
-				$args["lastupdated"],
-				$args["state"],
-				$args["completed"],
-				$args["timesChanged"],
-				$_SESSION["UID"],
-				$args["LID"],
-				$args["CID"]
+				$_SESSION["UID"]
 				);
 
 				/* execute query */

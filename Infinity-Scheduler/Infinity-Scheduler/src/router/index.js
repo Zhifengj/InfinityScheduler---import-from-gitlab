@@ -7,7 +7,10 @@ import Register from '@/views/Register'
 import Navigation from '@/views/Navigation'
 
 
-Vue.use(Router)
+
+Vue.use(Router);
+
+
 
 export default new Router({
     routes: [
@@ -38,4 +41,6 @@ export default new Router({
             component: Navigation
         }
     ]
+
+    
 })
