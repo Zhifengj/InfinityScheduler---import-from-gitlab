@@ -12,6 +12,8 @@ xampp/htdocs/. Then, make sure xampp is running and navigate to xampp/htdocs/Inf
 the vueJS frontend and copy the php server files into xampp/htdocs. The site should be running at localhost at this point. "npm run devbuild" will have to be run after
 each update is made in order to see any changes made.
 
+# Test
+
 # Features To Add
 -Cross scheduling referencing
 
